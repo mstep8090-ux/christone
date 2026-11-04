@@ -101,14 +101,16 @@ export function QuizGame({
             setEditingQuestions(quizzes[currentUserId].questions);
           }
         }
-        if (partnerId && quizzes[partnerId]) {
-          setPartnerQuiz(quizzes[partnerId]);
+        const pKey = partnerId || Object.keys(quizzes).find((k) => k !== currentUserId);
+        if (pKey && quizzes[pKey]) {
+          setPartnerQuiz(quizzes[pKey]);
         }
         if (currentUserId && attempts[currentUserId]) {
           setMyAttempt(attempts[currentUserId]);
         }
-        if (partnerId && attempts[partnerId]) {
-          setPartnerAttempt(attempts[partnerId]);
+        const pAttemptKey = partnerId || Object.keys(attempts).find((k) => k !== currentUserId);
+        if (pAttemptKey && attempts[pAttemptKey]) {
+          setPartnerAttempt(attempts[pAttemptKey]);
         }
       }
     } catch (err) {
@@ -147,14 +149,16 @@ export function QuizGame({
           if (currentUserId && quizzes[currentUserId]) {
             setMyQuiz(quizzes[currentUserId]);
           }
-          if (partnerId && quizzes[partnerId]) {
-            setPartnerQuiz(quizzes[partnerId]);
+          const pKey = partnerId || Object.keys(quizzes).find((k) => k !== currentUserId);
+          if (pKey && quizzes[pKey]) {
+            setPartnerQuiz(quizzes[pKey]);
           }
           if (currentUserId && attempts[currentUserId]) {
             setMyAttempt(attempts[currentUserId]);
           }
-          if (partnerId && attempts[partnerId]) {
-            setPartnerAttempt(attempts[partnerId]);
+          const pAttemptKey = partnerId || Object.keys(attempts).find((k) => k !== currentUserId);
+          if (pAttemptKey && attempts[pAttemptKey]) {
+            setPartnerAttempt(attempts[pAttemptKey]);
           }
         }
       )

@@ -61,7 +61,7 @@ export function FeedbackButton({ coupleId, userId }: FeedbackButtonProps) {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 right-5 sm:right-8 z-40 w-12 h-12 rounded-full bg-[#FFC2CE] hover:bg-[#FFB2C2] text-[#1A1A1E] flex items-center justify-center shadow-[0_8px_32px_rgba(255,90,126,0.22)] border border-white/60 transition-transform active:scale-95 select-none"
+        className="fixed bottom-24 right-4 sm:right-8 z-30 w-12 h-12 rounded-full bg-[#FFC2CE] hover:bg-[#FFB2C2] text-[#1A1A1E] flex items-center justify-center shadow-[0_8px_32px_rgba(255,90,126,0.22)] border border-white/60 transition-transform active:scale-95 select-none"
         title="Share Feedback"
       >
         <Heart size={20} strokeWidth={1.5} className="fill-primary/20 text-[#FF5A7E]" />
@@ -70,12 +70,12 @@ export function FeedbackButton({ coupleId, userId }: FeedbackButtonProps) {
       {/* Feedback Modal / Sheet */}
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 pb-20 bg-ink/40 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.94, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.94, y: 10 }}
-              className="relative w-full max-w-[380px] bg-white rounded-[24px] border border-border p-6 shadow-[0_8px_32px_rgba(255,90,126,0.14)] space-y-4"
+              className="relative w-full max-w-[380px] bg-white rounded-[24px] border border-border p-6 shadow-[0_8px_32px_rgba(255,90,126,0.14)] space-y-4 max-h-[85vh] overflow-y-auto"
             >
               <button
                 type="button"

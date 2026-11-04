@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase/client";
 import { Paywall } from "@/components/paywall";
 import { checkAccess, getCoupleSubscription } from "@/lib/subscription";
+import { recordCoupleActivity } from "@/lib/retention";
 import {
   THIS_OR_THAT_PROMPTS,
   WOULD_YOU_RATHER_PROMPTS,
@@ -104,13 +105,18 @@ function GameDetailContent() {
           data: { user },
         } = await supabase.auth.getUser();
 
-        if (user) {
-          setCurrentUserId(user.id);
+        let uid = user?.id;
+        if (!uid && typeof window !== "undefined") {
+          uid = localStorage.getItem("user_id") || "";
+        }
+
+        if (uid) {
+          setCurrentUserId(uid);
 
           const { data: myProfile } = await supabase
             .from("profiles")
             .select("display_name, stage")
-            .eq("id", user.id)
+            .eq("id", uid)
             .maybeSingle();
 
           if (myProfile) {
@@ -118,21 +124,28 @@ function GameDetailContent() {
             if (myProfile.stage) setUserStage(myProfile.stage);
           }
 
-          // 2. Couple
-          const { data: coupleData } = await supabase
+          // 2. Couple - find paired first or latest couple
+          const { data: coupleList } = await supabase
             .from("couples")
             .select("*")
-            .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-            .eq("status", "paired")
-            .maybeSingle();
+            .or(`partner_a.eq.${uid},partner_b.eq.${uid}`)
+            .order("created_at", { ascending: false });
+
+          const coupleData =
+            coupleList?.find((c) => c.status === "paired") ||
+            coupleList?.[0] ||
+            null;
 
           if (coupleData) {
             setCoupleId(coupleData.id);
+            if (typeof window !== "undefined") {
+              localStorage.setItem("couple_id", coupleData.id);
+            }
             const sub = await getCoupleSubscription(coupleData.id);
             setIsPremium(sub.isPremium);
 
             const pId =
-              coupleData.partner_a === user.id
+              coupleData.partner_a === uid
                 ? coupleData.partner_b
                 : coupleData.partner_a;
 
@@ -228,11 +241,17 @@ function GameDetailContent() {
             setRoundIndex(playData.round_index);
           }
           if (playData.choices) {
-            if (currentUserId && playData.choices[currentUserId]) {
-              setMyChoice(playData.choices[currentUserId]);
+            const choices = playData.choices;
+            if (currentUserId && choices[currentUserId]) {
+              setMyChoice(choices[currentUserId]);
             }
-            if (partnerId && playData.choices[partnerId]) {
-              setPartnerChoice(playData.choices[partnerId]);
+            if (partnerId && choices[partnerId]) {
+              setPartnerChoice(choices[partnerId]);
+            } else {
+              const otherKey = Object.keys(choices).find((k) => k !== currentUserId);
+              if (otherKey && choices[otherKey]) {
+                setPartnerChoice(choices[otherKey]);
+              }
             }
           }
         } else if (game.type === "truth") {
@@ -252,12 +271,34 @@ function GameDetailContent() {
     loadActivePlay();
   }, [coupleId, game?.id, currentUserId, partnerId]);
 
-  // Realtime subscription for live gameplay sync between partners
+  // Realtime subscription + Broadcast for sub-100ms sync between partners
   React.useEffect(() => {
     if (!coupleId || !game?.id) return;
 
+    const channelName = `game_sync_${coupleId}_${game.id}`;
     const channel = supabase
-      .channel(`realtime-game-play-${coupleId}-${game.id}`)
+      .channel(channelName, {
+        config: { broadcast: { self: false } },
+      })
+      .on("broadcast", { event: "choice_pick" }, (payload) => {
+        const data = payload.payload;
+        if (!data) return;
+        if (typeof data.round_index === "number" && data.round_index !== roundIndex) {
+          setRoundIndex(data.round_index);
+        }
+        if (data.user_id && data.user_id !== currentUserId && data.choice) {
+          setPartnerChoice(data.choice);
+        }
+      })
+      .on("broadcast", { event: "next_question" }, (payload) => {
+        const data = payload.payload;
+        if (typeof data?.round_index === "number") {
+          setRoundIndex(data.round_index);
+          setMyChoice(null);
+          setPartnerChoice(null);
+          setSavedToSpace(false);
+        }
+      })
       .on(
         "postgres_changes",
         {
@@ -278,15 +319,17 @@ function GameDetailContent() {
               setRoundIndex(playData.round_index);
             }
             if (playData?.choices) {
-              if (currentUserId && playData.choices[currentUserId]) {
-                setMyChoice(playData.choices[currentUserId]);
-              } else {
-                setMyChoice(null);
+              const choices = playData.choices;
+              if (currentUserId && choices[currentUserId]) {
+                setMyChoice(choices[currentUserId]);
               }
-              if (partnerId && playData.choices[partnerId]) {
-                setPartnerChoice(playData.choices[partnerId]);
+              if (partnerId && choices[partnerId]) {
+                setPartnerChoice(choices[partnerId]);
               } else {
-                setPartnerChoice(null);
+                const otherKey = Object.keys(choices).find((k) => k !== currentUserId);
+                if (otherKey && choices[otherKey]) {
+                  setPartnerChoice(choices[otherKey]);
+                }
               }
             }
             if (playData?.saved_to_space) setSavedToSpace(true);
@@ -310,7 +353,48 @@ function GameDetailContent() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [coupleId, game?.id, currentUserId, partnerId]);
+  }, [coupleId, game?.id, currentUserId, partnerId, roundIndex]);
+
+  // High-speed polling fallback while waiting for partner to pick
+  React.useEffect(() => {
+    if (!coupleId || !game?.id || myChoice === null || partnerChoice !== null) return;
+
+    let isMounted = true;
+    const interval = setInterval(async () => {
+      try {
+        const { data } = await supabase
+          .from("game_plays")
+          .select("id, data")
+          .eq("couple_id", coupleId)
+          .eq("game_id", game.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (data && isMounted) {
+          const playData = data.data as any;
+          if (playData?.round_index === roundIndex && playData?.choices) {
+            const choices = playData.choices;
+            if (partnerId && choices[partnerId]) {
+              setPartnerChoice(choices[partnerId]);
+            } else {
+              const otherKey = Object.keys(choices).find((k) => k !== currentUserId);
+              if (otherKey && choices[otherKey]) {
+                setPartnerChoice(choices[otherKey]);
+              }
+            }
+          }
+        }
+      } catch (err) {
+        // silent fallback
+      }
+    }, 1000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [coupleId, game?.id, myChoice, partnerChoice, roundIndex, partnerId, currentUserId]);
 
   // Dares pool filtered for stage
   const eligibleDares = React.useMemo(() => {
@@ -322,10 +406,39 @@ function GameDetailContent() {
 
   // Handle choice submission for This or That / WYR
   const handleSelectChoice = async (choice: "a" | "b") => {
-    if (!coupleId || !game?.id || !currentUserId || isSubmitting) return;
+    let resolvedUid = currentUserId;
+    let resolvedCoupleId = coupleId;
+
+    if (!resolvedUid) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      resolvedUid =
+        user?.id ||
+        (typeof window !== "undefined" ? localStorage.getItem("user_id") || "" : "");
+      if (resolvedUid) setCurrentUserId(resolvedUid);
+    }
+
+    if (!resolvedCoupleId && resolvedUid) {
+      const { data: coupleList } = await supabase
+        .from("couples")
+        .select("id, status")
+        .or(`partner_a.eq.${resolvedUid},partner_b.eq.${resolvedUid}`)
+        .order("created_at", { ascending: false });
+      const foundCouple =
+        coupleList?.find((c) => c.status === "paired") || coupleList?.[0];
+      if (foundCouple) {
+        resolvedCoupleId = foundCouple.id;
+        setCoupleId(foundCouple.id);
+      } else if (typeof window !== "undefined") {
+        resolvedCoupleId = localStorage.getItem("couple_id") || "";
+      }
+    }
+
+    if (!resolvedCoupleId || !game?.id || !resolvedUid || isSubmitting) return;
 
     if (!isPremium) {
-      const access = await checkAccess(coupleId, "games");
+      const access = await checkAccess(resolvedCoupleId, "games");
       if (!access.allowed) {
         setIsPaywallOpen(true);
         return;
@@ -335,32 +448,75 @@ function GameDetailContent() {
     setIsSubmitting(true);
     setMyChoice(choice);
 
-    try {
-      const updatedChoices = {
-        ...(partnerChoice && partnerId ? { [partnerId]: partnerChoice } : {}),
-        [currentUserId]: choice,
-      };
+    // 1. Broadcast instant pick to partner over realtime channel
+    const channelName = `game_sync_${resolvedCoupleId}_${game.id}`;
+    supabase
+      .channel(channelName)
+      .send({
+        type: "broadcast",
+        event: "choice_pick",
+        payload: {
+          user_id: resolvedUid,
+          choice,
+          round_index: roundIndex,
+        },
+      })
+      .catch(() => {});
 
-      const promptsList = game.type === "wyr" ? WOULD_YOU_RATHER_PROMPTS : THIS_OR_THAT_PROMPTS;
+    try {
+      const promptsList =
+        game.type === "wyr" ? WOULD_YOU_RATHER_PROMPTS : THIS_OR_THAT_PROMPTS;
       const currentPrompt = promptsList[roundIndex % promptsList.length];
 
+      // 2. Fetch latest row to merge atomically without wiping partner's pick
+      const { data: latestRows } = await supabase
+        .from("game_plays")
+        .select("*")
+        .eq("couple_id", resolvedCoupleId)
+        .eq("game_id", game.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      const existingRow = latestRows && latestRows.length > 0 ? latestRows[0] : null;
+      const existingData = (existingRow?.data as any) || {};
+      const isSameRound = existingData.round_index === roundIndex;
+      const existingChoices = isSameRound ? (existingData.choices || {}) : {};
+
+      // Merge choices safely
+      const mergedChoices = {
+        ...existingChoices,
+        [resolvedUid]: choice,
+      };
+
+      // If partner's choice is already in database, update local state immediately
+      if (partnerId && existingChoices[partnerId]) {
+        setPartnerChoice(existingChoices[partnerId]);
+      } else {
+        const otherKey = Object.keys(existingChoices).find((k) => k !== resolvedUid);
+        if (otherKey && existingChoices[otherKey]) {
+          setPartnerChoice(existingChoices[otherKey]);
+        }
+      }
+
       const playPayload = {
+        ...existingData,
         round_index: roundIndex,
         prompt_id: currentPrompt.id,
         question: { a: currentPrompt.a, b: currentPrompt.b },
-        choices: updatedChoices,
+        choices: mergedChoices,
       };
 
-      if (currentGamePlayId) {
+      if (existingRow) {
         await supabase
           .from("game_plays")
           .update({ data: playPayload })
-          .eq("id", currentGamePlayId);
+          .eq("id", existingRow.id);
+        setCurrentGamePlayId(existingRow.id);
       } else {
         const { data: inserted } = await supabase
           .from("game_plays")
           .insert({
-            couple_id: coupleId,
+            couple_id: resolvedCoupleId,
             game_id: game.id,
             data: playPayload,
           })
@@ -369,6 +525,11 @@ function GameDetailContent() {
 
         if (inserted) setCurrentGamePlayId(inserted.id);
       }
+
+      // Record couple activity for streak & connection
+      recordCoupleActivity(resolvedCoupleId).catch((err) =>
+        console.error("Streak error:", err)
+      );
     } catch (err) {
       console.error("Failed to save choice:", err);
     } finally {
@@ -378,7 +539,8 @@ function GameDetailContent() {
 
   // Next round for choice games
   const handleNextChoiceQuestion = async () => {
-    const promptsList = game.type === "wyr" ? WOULD_YOU_RATHER_PROMPTS : THIS_OR_THAT_PROMPTS;
+    const promptsList =
+      game.type === "wyr" ? WOULD_YOU_RATHER_PROMPTS : THIS_OR_THAT_PROMPTS;
     const nextIdx = (roundIndex + 1) % promptsList.length;
     setRoundIndex(nextIdx);
     setMyChoice(null);
@@ -386,6 +548,17 @@ function GameDetailContent() {
     setSavedToSpace(false);
 
     if (!coupleId || !game?.id) return;
+
+    // Send broadcast to partner for instant advance
+    const channelName = `game_sync_${coupleId}_${game.id}`;
+    supabase
+      .channel(channelName)
+      .send({
+        type: "broadcast",
+        event: "next_question",
+        payload: { round_index: nextIdx },
+      })
+      .catch(() => {});
 
     try {
       const playPayload = {
@@ -626,7 +799,7 @@ function GameDetailContent() {
   // RENDER FOR TRUTH
   if (game?.type === "truth") {
     return (
-      <div className="space-y-6 pb-20">
+      <div className="space-y-6 pb-28">
         <Link
           href="/games"
           className="inline-flex items-center space-x-1.5 text-xs text-inkSoft hover:text-ink transition-colors"
@@ -704,7 +877,7 @@ function GameDetailContent() {
   // RENDER FOR DARE KINGDOM
   if (game?.type === "dare") {
     return (
-      <div className="space-y-6 pb-20">
+      <div className="space-y-6 pb-28">
         <Link
           href="/games"
           className="inline-flex items-center space-x-1.5 text-xs text-inkSoft hover:text-ink transition-colors"
@@ -788,7 +961,7 @@ function GameDetailContent() {
   const progressPercent = ((roundIndex + 1) / promptsList.length) * 100;
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-28">
       {/* Top Header & Navigation */}
       <div className="space-y-3">
         <Link

@@ -260,7 +260,7 @@ export function ComposerSheet({
       {/* 2. BOTTOM SHEET MODAL */}
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-end justify-center">
+          <div className="fixed inset-0 z-[60] flex items-end justify-center">
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -276,7 +276,7 @@ export function ComposerSheet({
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 250 }}
-              className="relative z-10 w-full max-w-[480px] rounded-t-[28px] bg-white border-t border-border shadow-[0_-8px_32px_rgba(255,90,126,0.12)] p-6 space-y-4 max-h-[85vh] overflow-y-auto"
+              className="relative z-10 w-full max-w-[480px] rounded-t-[28px] bg-white border-t border-border shadow-[0_-8px_32px_rgba(255,90,126,0.12)] p-6 pb-10 sm:pb-6 space-y-4 max-h-[88vh] overflow-y-auto"
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-2 border-b border-border/50">

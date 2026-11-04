@@ -85,8 +85,9 @@ export function PhotoChallengeGame({
         if (currentUserId && photos[currentUserId]?.image_url) {
           setMyPhoto(photos[currentUserId].image_url);
         }
-        if (partnerId && photos[partnerId]?.image_url) {
-          setPartnerPhoto(photos[partnerId].image_url);
+        const pKey = partnerId || Object.keys(photos).find((k) => k !== currentUserId);
+        if (pKey && photos[pKey]?.image_url) {
+          setPartnerPhoto(photos[pKey].image_url);
         }
       }
     } catch (err) {
@@ -124,8 +125,9 @@ export function PhotoChallengeGame({
           if (currentUserId && photos[currentUserId]?.image_url) {
             setMyPhoto(photos[currentUserId].image_url);
           }
-          if (partnerId && photos[partnerId]?.image_url) {
-            setPartnerPhoto(photos[partnerId].image_url);
+          const pKey = partnerId || Object.keys(photos).find((k) => k !== currentUserId);
+          if (pKey && photos[pKey]?.image_url) {
+            setPartnerPhoto(photos[pKey].image_url);
           }
         }
       )

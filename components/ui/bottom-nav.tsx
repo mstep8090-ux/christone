@@ -66,7 +66,7 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
+    <div className="fixed bottom-0 left-0 right-0 z-40 pointer-events-none">
       <div className="mx-auto max-w-[480px] w-full px-4 pb-3">
         <nav className="pointer-events-auto h-[72px] w-full rounded-[24px] bg-white/90 backdrop-blur-md border border-[#F5E6E8] shadow-[0_8px_32px_rgba(255,90,126,0.08)] flex items-center justify-around px-2">
           {tabs.map((tab) => {

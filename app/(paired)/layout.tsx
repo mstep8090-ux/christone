@@ -123,7 +123,7 @@ export default function PairedLayout({
         }}
       />
 
-      <div className="relative z-10 mx-auto max-w-[480px] px-6 pt-6 pb-[100px]">
+      <div className="relative z-10 mx-auto max-w-[480px] px-6 pt-6 pb-36">
         {/* Top Header */}
         <header className="flex items-center justify-between h-12 mb-6">
           {/* Left: Overlapping Avatars 32px */}

@@ -15,6 +15,7 @@ import {
 import { RomanceIdeaModal } from "@/components/romance-idea-modal";
 import { Paywall } from "@/components/paywall";
 import { checkAccess } from "@/lib/subscription";
+import { recordCoupleActivity } from "@/lib/retention";
 import { cn } from "@/lib/utils";
 
 function TalkDeckDetailContent() {
@@ -84,14 +85,19 @@ function TalkDeckDetailContent() {
           data: { user },
         } = await supabase.auth.getUser();
 
-        if (user) {
-          setCurrentUserId(user.id);
+        let uid = user?.id;
+        if (!uid && typeof window !== "undefined") {
+          uid = localStorage.getItem("user_id") || "";
+        }
+
+        if (uid) {
+          setCurrentUserId(uid);
 
           // Get profile
           const { data: myProfile } = await supabase
             .from("profiles")
             .select("display_name, stage, is_married_confirmed")
-            .eq("id", user.id)
+            .eq("id", uid)
             .maybeSingle();
 
           if (myProfile) {
@@ -100,20 +106,27 @@ function TalkDeckDetailContent() {
             if (myProfile.is_married_confirmed) setIsMarriedConfirmed(true);
           }
 
-          // 2. Couple
-          const { data: coupleData } = await supabase
+          // 2. Couple - match paired first or latest couple
+          const { data: coupleList } = await supabase
             .from("couples")
             .select("*")
-            .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-            .eq("status", "paired")
-            .maybeSingle();
+            .or(`partner_a.eq.${uid},partner_b.eq.${uid}`)
+            .order("created_at", { ascending: false });
+
+          const coupleData =
+            coupleList?.find((c) => c.status === "paired") ||
+            coupleList?.[0] ||
+            null;
 
           if (coupleData) {
             setCoupleId(coupleData.id);
+            if (typeof window !== "undefined") {
+              localStorage.setItem("couple_id", coupleData.id);
+            }
             if (coupleData.is_married_confirmed) setIsMarriedConfirmed(true);
 
             const pId =
-              coupleData.partner_a === user.id
+              coupleData.partner_a === uid
                 ? coupleData.partner_b
                 : coupleData.partner_a;
 
@@ -200,9 +213,12 @@ function TalkDeckDetailContent() {
   // Helper functions for prompt status
   const getPromptAnswers = (promptId: string) => {
     const promptAnswers = answers.filter((a) => a.prompt_id === promptId);
-    const myAns = promptAnswers.find((a) => a.user_id === currentUserId) || null;
+    const resolvedUid =
+      currentUserId ||
+      (typeof window !== "undefined" ? localStorage.getItem("user_id") || "" : "");
+    const myAns = promptAnswers.find((a) => a.user_id === resolvedUid) || null;
     const partnerAns =
-      promptAnswers.find((a) => a.user_id !== currentUserId) || null;
+      promptAnswers.find((a) => a.user_id !== resolvedUid) || null;
     return { myAns, partnerAns };
   };
 
@@ -264,34 +280,105 @@ function TalkDeckDetailContent() {
   };
 
   const handleSubmitAnswer = async (promptId: string, answerText: string) => {
-    if (!coupleId || !currentUserId) return false;
+    let resolvedUid = currentUserId;
+    let resolvedCoupleId = coupleId;
+
+    if (!resolvedUid) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      resolvedUid =
+        user?.id ||
+        (typeof window !== "undefined" ? localStorage.getItem("user_id") || "" : "");
+      if (resolvedUid) setCurrentUserId(resolvedUid);
+    }
+
+    if (!resolvedCoupleId && resolvedUid) {
+      const { data: coupleList } = await supabase
+        .from("couples")
+        .select("id, status")
+        .or(`partner_a.eq.${resolvedUid},partner_b.eq.${resolvedUid}`)
+        .order("created_at", { ascending: false });
+      const foundCouple =
+        coupleList?.find((c) => c.status === "paired") || coupleList?.[0];
+      if (foundCouple) {
+        resolvedCoupleId = foundCouple.id;
+        setCoupleId(foundCouple.id);
+      } else if (typeof window !== "undefined") {
+        resolvedCoupleId = localStorage.getItem("couple_id") || "";
+      }
+    }
+
+    if (!resolvedCoupleId || !resolvedUid) {
+      console.error("Missing coupleId or userId for talk answer submission");
+      return false;
+    }
 
     if (!isPremium) {
-      const access = await checkAccess(coupleId, "talks");
+      const access = await checkAccess(resolvedCoupleId, "talks");
       if (!access.allowed) {
         setIsPaywallOpen(true);
         return false;
       }
     }
 
-    const { data, error } = await supabase
+    // Check if an answer already exists for this prompt and user
+    const { data: existingAnswer } = await supabase
       .from("talk_answers")
-      .insert({
-        prompt_id: promptId,
-        couple_id: coupleId,
-        user_id: currentUserId,
-        answer: answerText,
-      })
-      .select()
-      .single();
+      .select("id")
+      .eq("prompt_id", promptId)
+      .eq("couple_id", resolvedCoupleId)
+      .eq("user_id", resolvedUid)
+      .maybeSingle();
 
-    if (error) {
-      console.error("Error submitting answer:", error);
-      return false;
+    let savedAnswer: TalkAnswerItem | null = null;
+
+    if (existingAnswer) {
+      const { data, error } = await supabase
+        .from("talk_answers")
+        .update({ answer: answerText })
+        .eq("id", existingAnswer.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error updating talk answer:", error);
+        return false;
+      }
+      savedAnswer = data;
+    } else {
+      const { data, error } = await supabase
+        .from("talk_answers")
+        .insert({
+          prompt_id: promptId,
+          couple_id: resolvedCoupleId,
+          user_id: resolvedUid,
+          answer: answerText,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error inserting talk answer:", error);
+        return false;
+      }
+      savedAnswer = data;
     }
 
-    if (data) {
-      setAnswers((prev) => [...prev, data]);
+    if (savedAnswer) {
+      setAnswers((prev) => {
+        const filtered = prev.filter(
+          (a) =>
+            a.id !== savedAnswer!.id &&
+            !(a.prompt_id === promptId && a.user_id === resolvedUid)
+        );
+        return [...filtered, savedAnswer!];
+      });
+
+      // Record couple streak activity
+      recordCoupleActivity(resolvedCoupleId).catch((err) =>
+        console.error("Streak activity update error:", err)
+      );
     }
 
     return true;

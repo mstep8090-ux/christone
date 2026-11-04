@@ -118,8 +118,9 @@ export function DrawingBattleGame({
         if (currentUserId && drawings[currentUserId]?.image_url) {
           setMyDrawing(drawings[currentUserId].image_url);
         }
-        if (partnerId && drawings[partnerId]?.image_url) {
-          setPartnerDrawing(drawings[partnerId].image_url);
+        const pKey = partnerId || Object.keys(drawings).find((k) => k !== currentUserId);
+        if (pKey && drawings[pKey]?.image_url) {
+          setPartnerDrawing(drawings[pKey].image_url);
         }
       }
     } catch (err) {
@@ -157,8 +158,9 @@ export function DrawingBattleGame({
           if (currentUserId && drawings[currentUserId]?.image_url) {
             setMyDrawing(drawings[currentUserId].image_url);
           }
-          if (partnerId && drawings[partnerId]?.image_url) {
-            setPartnerDrawing(drawings[partnerId].image_url);
+          const pKey = partnerId || Object.keys(drawings).find((k) => k !== currentUserId);
+          if (pKey && drawings[pKey]?.image_url) {
+            setPartnerDrawing(drawings[pKey].image_url);
           }
         }
       )

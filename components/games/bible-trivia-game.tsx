@@ -75,8 +75,9 @@ export function BibleTriviaGame({
         } else {
           setMyAnswer(null);
         }
-        if (partnerId && typeof answers[partnerId] === "number") {
-          setPartnerAnswer(answers[partnerId]);
+        const pKey = partnerId || Object.keys(answers).find((k) => k !== currentUserId);
+        if (pKey && typeof answers[pKey] === "number") {
+          setPartnerAnswer(answers[pKey]);
         } else {
           setPartnerAnswer(null);
         }
@@ -92,12 +93,34 @@ export function BibleTriviaGame({
     loadTriviaData();
   }, [loadTriviaData]);
 
-  // Realtime subscription
+  // Realtime subscription + Broadcast for sub-100ms sync
   React.useEffect(() => {
     if (!coupleId || !game?.id) return;
 
+    const channelName = `realtime-trivia-play-${coupleId}-${game.id}`;
     const channel = supabase
-      .channel(`realtime-trivia-play-${coupleId}-${game.id}`)
+      .channel(channelName, {
+        config: { broadcast: { self: false } },
+      })
+      .on("broadcast", { event: "trivia_pick" }, (payload) => {
+        const data = payload.payload;
+        if (!data) return;
+        if (typeof data.round_index === "number" && data.round_index !== roundIndex) {
+          setRoundIndex(data.round_index);
+        }
+        if (data.user_id && data.user_id !== currentUserId && typeof data.option_index === "number") {
+          setPartnerAnswer(data.option_index);
+        }
+      })
+      .on("broadcast", { event: "next_trivia" }, (payload) => {
+        const data = payload.payload;
+        if (typeof data?.round_index === "number") {
+          setRoundIndex(data.round_index);
+          setMyAnswer(null);
+          setPartnerAnswer(null);
+          setSavedToSpace(false);
+        }
+      })
       .on(
         "postgres_changes",
         {
@@ -123,8 +146,9 @@ export function BibleTriviaGame({
           } else {
             setMyAnswer(null);
           }
-          if (partnerId && typeof answers[partnerId] === "number") {
-            setPartnerAnswer(answers[partnerId]);
+          const pKey = partnerId || Object.keys(answers).find((k) => k !== currentUserId);
+          if (pKey && typeof answers[pKey] === "number") {
+            setPartnerAnswer(answers[pKey]);
           } else {
             setPartnerAnswer(null);
           }
@@ -135,7 +159,44 @@ export function BibleTriviaGame({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [coupleId, game?.id, currentUserId, partnerId]);
+  }, [coupleId, game?.id, currentUserId, partnerId, roundIndex]);
+
+  // Fast polling while waiting for partner
+  React.useEffect(() => {
+    if (!coupleId || !game?.id || myAnswer === null || partnerAnswer !== null) return;
+
+    let isMounted = true;
+    const interval = setInterval(async () => {
+      try {
+        const { data } = await supabase
+          .from("game_plays")
+          .select("data")
+          .eq("couple_id", coupleId)
+          .eq("game_id", game.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (data && isMounted) {
+          const playData = (data.data as any) || {};
+          if (playData.round_index === roundIndex && playData.trivia_answers) {
+            const answers = playData.trivia_answers;
+            const pKey = partnerId || Object.keys(answers).find((k) => k !== currentUserId);
+            if (pKey && typeof answers[pKey] === "number") {
+              setPartnerAnswer(answers[pKey]);
+            }
+          }
+        }
+      } catch (err) {
+        // silent
+      }
+    }, 1000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [coupleId, game?.id, myAnswer, partnerAnswer, roundIndex, partnerId, currentUserId]);
 
   // Handle selecting an option
   const handleSelectOption = async (optionIndex: number) => {
@@ -145,12 +206,29 @@ export function BibleTriviaGame({
     setIsSubmitting(true);
     setMyAnswer(optionIndex);
 
+    // 1. Broadcast instant pick to partner
+    const channelName = `realtime-trivia-play-${coupleId}-${game.id}`;
+    supabase
+      .channel(channelName)
+      .send({
+        type: "broadcast",
+        event: "trivia_pick",
+        payload: {
+          user_id: currentUserId,
+          option_index: optionIndex,
+          round_index: roundIndex,
+        },
+      })
+      .catch(() => {});
+
     try {
       const { data: existing } = await supabase
         .from("game_plays")
         .select("*")
         .eq("couple_id", coupleId)
         .eq("game_id", game.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
         .maybeSingle();
 
       const existingData = (existing?.data as any) || {};
@@ -160,6 +238,12 @@ export function BibleTriviaGame({
         ...currentAnswers,
         [currentUserId]: optionIndex,
       };
+
+      // If partner's answer is in DB, update local state
+      const pKey = partnerId || Object.keys(currentAnswers).find((k) => k !== currentUserId);
+      if (pKey && typeof currentAnswers[pKey] === "number") {
+        setPartnerAnswer(currentAnswers[pKey]);
+      }
 
       const updatedPayload = {
         ...existingData,
@@ -203,12 +287,25 @@ export function BibleTriviaGame({
     setPartnerAnswer(null);
     setSavedToSpace(false);
 
+    // Broadcast next question to partner
+    const channelName = `realtime-trivia-play-${coupleId}-${game.id}`;
+    supabase
+      .channel(channelName)
+      .send({
+        type: "broadcast",
+        event: "next_trivia",
+        payload: { round_index: nextRound },
+      })
+      .catch(() => {});
+
     try {
       const { data: existing } = await supabase
         .from("game_plays")
         .select("*")
         .eq("couple_id", coupleId)
         .eq("game_id", game.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
         .maybeSingle();
 
       const existingData = (existing?.data as any) || {};

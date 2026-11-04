@@ -101,12 +101,12 @@ export function Paywall({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 pb-20 bg-ink/40 backdrop-blur-sm">
         <motion.div
           initial={{ opacity: 0, scale: 0.94, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.94, y: 12 }}
-          className="relative w-full max-w-[420px] bg-white rounded-[24px] border border-border p-6 sm:p-7 shadow-[0_8px_32px_rgba(255,90,126,0.14)] text-center space-y-5"
+          className="relative w-full max-w-[420px] bg-white rounded-[24px] border border-border p-6 sm:p-7 shadow-[0_8px_32px_rgba(255,90,126,0.14)] text-center space-y-5 max-h-[85vh] overflow-y-auto"
         >
           {/* Close X */}
           <button

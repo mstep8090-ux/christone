@@ -58,11 +58,13 @@ export function TalkAnswerSheet({
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const [savedLocal, setSavedLocal] = React.useState(isSavedToSpace);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   // Sync draft and saved state when prompt changes
   React.useEffect(() => {
     setDraft("");
     setSavedLocal(isSavedToSpace);
+    setErrorMessage(null);
   }, [prompt?.id, isSavedToSpace]);
 
   if (!isOpen || !prompt) return null;
@@ -76,11 +78,16 @@ export function TalkAnswerSheet({
     if (!draft.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
+    setErrorMessage(null);
     try {
       const ok = await onSubmitAnswer(prompt.id, draft.trim());
       if (ok) {
         setDraft("");
+      } else {
+        setErrorMessage("Unable to save your answer right now. Please try again.");
       }
+    } catch (err: any) {
+      setErrorMessage(err?.message || "Failed to submit answer. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -104,7 +111,7 @@ export function TalkAnswerSheet({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+      <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -120,7 +127,7 @@ export function TalkAnswerSheet({
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: "100%", opacity: 0 }}
           transition={{ type: "spring", damping: 28, stiffness: 300 }}
-          className="relative z-10 w-full max-w-[480px] bg-white rounded-t-[24px] sm:rounded-[24px] p-6 shadow-2xl max-h-[92vh] overflow-y-auto"
+          className="relative z-10 w-full max-w-[480px] bg-white rounded-t-[24px] sm:rounded-[24px] p-6 pb-10 sm:pb-6 shadow-2xl max-h-[92vh] overflow-y-auto"
         >
           {/* Top handle pill for mobile */}
           <div className="w-12 h-1 rounded-full bg-border mx-auto mb-4 sm:hidden" />
@@ -335,6 +342,12 @@ export function TalkAnswerSheet({
                   </span>
                 </div>
               </div>
+
+              {errorMessage && (
+                <div className="p-3 rounded-[16px] bg-[#FFF5F7] border border-border text-xs text-deep leading-relaxed">
+                  {errorMessage}
+                </div>
+              )}
 
               {/* Rose Submit Button */}
               <button
