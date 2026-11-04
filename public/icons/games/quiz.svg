@@ -1,0 +1,9 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Blush circle #FFC2CE -->
+  <circle cx="24" cy="24" r="22" fill="#FFC2CE"/>
+  <!-- Magnifying glass circle -->
+  <circle cx="22" cy="22" r="8" stroke="#1A1A1E" stroke-width="1.5"/>
+  <line x1="28" y1="28" x2="35" y2="35" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Small heart inside lens -->
+  <path d="M22 19C21 17.5 19 17.5 18 18.5C17 19.5 22 23 22 23C22 23 27 19.5 26 18.5C25 17.5 23 17.5 22 19Z" fill="#FF5A7E"/>
+</svg>

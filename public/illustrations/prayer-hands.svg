@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
+  <!-- Minimal Line Praying Hands Together -->
+  <g stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Left Hand & Fingers -->
+    <path d="M100 45 C98 52 92 68 88 82 C85 92 84 98 84 106 C84 116 88 126 92 135 L75 160 C70 152 64 138 68 122 C70 114 74 104 77 92 C80 80 88 62 94 48 Z" />
+    <path d="M88 82 C82 92 78 106 78 118" />
+    <path d="M94 48 C97 42 100 40 100 40 C100 40 103 42 106 48" />
+    
+    <!-- Right Hand & Fingers -->
+    <path d="M100 45 C102 52 108 68 112 82 C115 92 116 98 116 106 C116 116 112 126 108 135 L125 160 C130 152 136 138 132 122 C130 114 126 104 123 92 C120 80 112 62 106 48 Z" />
+    <path d="M112 82 C118 92 122 106 122 118" />
+
+    <!-- Clothed Sleeves -->
+    <path d="M52 148 L75 160 L68 178 L42 162 Z" />
+    <path d="M148 148 L125 160 L132 178 L158 162 Z" />
+
+    <!-- Center prayer contact line -->
+    <line x1="100" y1="46" x2="100" y2="128" stroke-dasharray="2 3" opacity="0.4" />
+    <!-- Soft blessing sparkle top -->
+    <path d="M100 24 L100 32" stroke="#FF5A7E" stroke-width="1.5" />
+    <path d="M96 28 L104 28" stroke="#FF5A7E" stroke-width="1.5" />
+  </g>
+</svg>

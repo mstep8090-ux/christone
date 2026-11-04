@@ -1,0 +1,43 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Soft pink background #FFF5F7 -->
+  <rect width="200" height="200" rx="24" fill="#FFF5F7"/>
+  
+  <!-- Subtle background glow -->
+  <circle cx="100" cy="100" r="60" fill="#FFC2CE" fill-opacity="0.25"/>
+
+  <!-- Ground path line -->
+  <path d="M24 164C60 162 140 162 176 164" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Partner Left (Woman walking) -->
+  <!-- Head -->
+  <circle cx="82" cy="56" r="12" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
+  <!-- Hair bun -->
+  <circle cx="73" cy="53" r="5" fill="#1A1A1E"/>
+  <!-- Torso & long modest dress -->
+  <path d="M82 68C76 72 70 82 70 102C70 120 64 144 64 154H96C96 144 92 120 92 102C92 82 88 72 82 68Z" stroke="#1A1A1E" stroke-width="1.5" stroke-linejoin="round" fill="#FFFFFF"/>
+  <!-- Arm extending to hold hand -->
+  <path d="M86 84C92 94 96 104 99 110" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Partner Right (Man walking) -->
+  <!-- Head -->
+  <circle cx="118" cy="52" r="12" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
+  <!-- Short hair -->
+  <path d="M108 52C108 44 112 41 120 41C127 41 130 45 130 52" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Torso & jacket/shirt -->
+  <path d="M118 64C126 68 132 76 132 94C132 110 130 124 130 124H108V94" stroke="#1A1A1E" stroke-width="1.5" stroke-linejoin="round" fill="#FFFFFF"/>
+  <!-- Trousers -->
+  <path d="M111 124L110 156" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M127 124L128 156" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Arm extending to hold hand -->
+  <path d="M114 80C108 90 104 102 101 110" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Hands clasping together in the middle -->
+  <circle cx="100" cy="110" r="4.5" fill="#FF5A7E" stroke="#1A1A1E" stroke-width="1.5"/>
+
+  <!-- Prayer cross/sparkle in sky above them -->
+  <path d="M100 28V38M95 33H105" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="100" cy="33" r="1" fill="#FF5A7E"/>
+
+  <!-- Little heart between their steps -->
+  <path d="M100 82C98.5 79 94.5 79 93 81.5C91 85 100 91.5 100 91.5C100 91.5 109 85 107 81.5C105.5 79 101.5 79 100 82Z" fill="#FFC2CE"/>
+</svg>

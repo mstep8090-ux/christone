@@ -1,0 +1,12 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Blush circle #FFC2CE -->
+  <circle cx="24" cy="24" r="22" fill="#FFC2CE"/>
+  <!-- Minimal Camera Body -->
+  <path d="M14 20C14 18.9 14.9 18 16 18H18.5L20 16H28L29.5 18H32C33.1 18 34 18.9 34 20V31C34 32.1 33.1 33 32 33H16C14.9 33 14 32.1 14 31V20Z" stroke="#1A1A1E" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Lens circle -->
+  <circle cx="24" cy="25.5" r="5" stroke="#1A1A1E" stroke-width="1.5"/>
+  <!-- Heart center in lens -->
+  <circle cx="24" cy="25.5" r="2" fill="#FF5A7E"/>
+  <!-- Flash dot -->
+  <circle cx="30" cy="21" r="1" fill="#1A1A1E"/>
+</svg>

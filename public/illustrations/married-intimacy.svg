@@ -1,0 +1,27 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Soft Canvas Background -->
+  <rect width="300" height="300" rx="32" fill="#FFFBFC"/>
+
+  <!-- Subtle Ambient Glow -->
+  <circle cx="150" cy="150" r="110" fill="#FFF5F7"/>
+
+  <!-- Left Circle: Blush Pink #FFC2CE with soft opacity -->
+  <circle cx="125" cy="140" r="65" fill="#FFC2CE" fill-opacity="0.45" stroke="#FF5A7E" stroke-width="1.5" stroke-opacity="0.6"/>
+
+  <!-- Right Circle: Overlapping Circle forming heart union -->
+  <circle cx="175" cy="140" r="65" fill="#FFC2CE" fill-opacity="0.45" stroke="#FF5A7E" stroke-width="1.5" stroke-opacity="0.6"/>
+
+  <!-- The sacred union / overlapping heart form -->
+  <path d="M150 102C142 92 128 92 120 100C108 112 112 132 150 174C188 132 192 112 180 100C172 92 158 92 150 102Z" fill="#FF5A7E" fill-opacity="0.2" stroke="#FF5A7E" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <!-- Delicate center cross / blessing -->
+  <path d="M150 128V144M142 136H158" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Minimal connecting points -->
+  <circle cx="150" cy="136" r="1.5" fill="#FF5A7E"/>
+  <circle cx="125" cy="140" r="2" fill="#1A1A1E" fill-opacity="0.5"/>
+  <circle cx="175" cy="140" r="2" fill="#1A1A1E" fill-opacity="0.5"/>
+
+  <!-- Subtle bottom arc grounding -->
+  <path d="M110 215C135 222 165 222 190 215" stroke="#F5E6E8" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

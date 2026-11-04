@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <circle cx="32" cy="32" r="30" fill="#FFC2CE"/>
+  <!-- Cozy House Cottage Minimal Line -->
+  <path d="M18 31L32 19L46 31" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="22" y="31" width="20" height="16" rx="1.5" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
+  <path d="M40 21V26" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+  <rect x="29" y="38" width="6" height="9" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFBFC"/>
+  <rect x="24" y="34" width="4" height="4" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
+  <rect x="36" y="34" width="4" height="4" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
+  <circle cx="33.5" cy="42.5" r="0.75" fill="#1A1A1E"/>
+</svg>

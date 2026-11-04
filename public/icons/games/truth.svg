@@ -1,0 +1,9 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Blush circle #FFC2CE -->
+  <circle cx="24" cy="24" r="22" fill="#FFC2CE"/>
+  <!-- Minimal Heart -->
+  <path d="M24 18C22.5 15.5 18 15 15.5 17.5C13 20 13 23.5 16 26.5L24 34L32 26.5C35 23.5 35 20 32.5 17.5C30 15 25.5 15.5 24 18Z" stroke="#1A1A1E" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Keyhole in heart of honesty -->
+  <circle cx="24" cy="22" r="2" fill="#1A1A1E"/>
+  <path d="M23 23H25L25.5 27H22.5L23 23Z" fill="#1A1A1E"/>
+</svg>

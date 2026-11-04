@@ -1,0 +1,24 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Minimalist continuous line art of a couple sitting together facing each other, fully clothed, abstract -->
+  <g stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Partner 1 (Left) - Head, gentle tilt, relaxed sitting posture -->
+    <path d="M148,88 C144,72 152,60 162,56 C174,52 186,60 188,72 C190,82 182,92 174,96 C166,100 152,98 148,88 Z" />
+    <path d="M166,99 C156,110 138,124 130,146 C122,168 120,202 122,238 C122,246 128,252 136,252 L202,252" />
+    <path d="M174,96 C182,108 190,126 192,154 C194,180 188,206 182,232" />
+    <!-- Partner 1 hands resting gently forward -->
+    <path d="M130,146 C144,162 168,180 188,186 C196,188 206,188 214,186" />
+
+    <!-- Partner 2 (Right) - Head, gentle tilt facing partner, calm seated posture -->
+    <path d="M252,88 C256,72 248,60 238,56 C226,52 214,60 212,72 C210,82 218,92 226,96 C234,100 248,98 252,88 Z" />
+    <path d="M234,99 C244,110 262,124 270,146 C278,168 280,202 278,238 C278,246 272,252 264,252 L198,252" />
+    <path d="M226,96 C218,108 210,126 208,154 C206,180 212,206 218,232" />
+    <!-- Partner 2 hands resting gently forward meeting partner -->
+    <path d="M270,146 C256,162 232,180 212,186 C204,188 194,188 186,186" />
+
+    <!-- Subtle shared cushion/ground line -->
+    <path d="M100,252 C150,250 250,250 300,252" stroke-opacity="0.3" />
+
+    <!-- Delicate small heart or spark between their shared gaze -->
+    <path d="M200,120 C200,116 195,112 192,114 C189,116 189,120 200,128 C211,120 211,116 208,114 C205,112 200,116 200,120 Z" stroke="#FF5A7E" fill="#FF5A7E" fill-opacity="0.2" />
+  </g>
+</svg>

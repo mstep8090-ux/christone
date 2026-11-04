@@ -1,0 +1,15 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="24" cy="24" r="22" fill="#FFC2CE" fill-opacity="0.85" />
+  <g transform="translate(10, 11)" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Base band -->
+    <path d="M4 21H24" />
+    <path d="M5 24H23" />
+    <!-- Crown peaks -->
+    <path d="M4 21L2 9L9 14L14 4L19 14L26 9L24 21" />
+    <!-- Cross on top of center peak -->
+    <path d="M14 1V4" />
+    <path d="M12.5 2.5H15.5" />
+    <!-- Heart in center of crown -->
+    <path d="M14 17.5C14 17.5 11 15 11 13.5C11 12.3 12 11.5 13 11.5C13.6 11.5 14 12 14 12C14 12 14.4 11.5 15 11.5C16 11.5 17 12.3 17 13.5C17 15 14 17.5 14 17.5Z" fill="#FF5A7E" stroke="#FF5A7E" stroke-width="1" />
+  </g>
+</svg>
