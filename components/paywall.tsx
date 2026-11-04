@@ -176,32 +176,32 @@ export function Paywall({
             <button
               type="button"
               onClick={() => setSelectedPlan("monthly")}
-              className={`py-1.5 px-3 rounded-full text-xs font-medium transition-all ${
+              className={`py-1.5 px-2.5 rounded-full text-xs font-medium transition-all ${
                 selectedPlan === "monthly"
                   ? "bg-white text-ink shadow-sm"
                   : "text-inkSoft hover:text-ink"
               }`}
             >
-              $7.99 / month
+              ₦7,990 / mo ($7.99)
             </button>
             <button
               type="button"
               onClick={() => setSelectedPlan("yearly")}
-              className={`py-1.5 px-3 rounded-full text-xs font-medium transition-all flex items-center justify-center space-x-1 ${
+              className={`py-1.5 px-2.5 rounded-full text-xs font-medium transition-all flex items-center justify-center space-x-1 ${
                 selectedPlan === "yearly"
                   ? "bg-white text-ink shadow-sm"
                   : "text-inkSoft hover:text-ink"
               }`}
             >
-              <span>$49 / year</span>
-              <span className="text-[10px] text-primary font-semibold">Save 48%</span>
+              <span>₦49,000 / yr</span>
+              <span className="text-[10px] text-primary font-semibold ml-0.5">Save 48%</span>
             </button>
           </div>
 
-          {/* Price EXACT: "$7.99/mo or $49/year - covers both" */}
+          {/* Price Tag */}
           <div className="space-y-1">
             <div className="inline-flex items-center px-3.5 py-1 rounded-full bg-[#FFC2CE]/40 border border-primary/20 text-xs font-semibold text-primary">
-              $7.99/mo or $49/year - covers both
+              ₦7,990/mo or ₦49,000/year - covers both
             </div>
             <div className="flex items-center justify-center space-x-1 text-[11px] text-inkSoft">
               <ShieldCheck size={13} className="text-primary" />

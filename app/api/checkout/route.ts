@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { couple_id, user_id, plan_type = "monthly", email } = body;
+    const { couple_id, user_id, plan_type = "monthly", email, currency: clientCurrency } = body;
 
     if (!couple_id) {
       return NextResponse.json(
@@ -14,34 +14,28 @@ export async function POST(req: Request) {
     }
 
     const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
-    const currency = process.env.PAYSTACK_CURRENCY || "USD";
+    // Default to NGN because the Paystack merchant account is registered in Nigeria
+    const targetCurrency = clientCurrency || process.env.PAYSTACK_CURRENCY || "NGN";
 
     // Amounts in sub-units (cents for USD, kobo for NGN)
-    // Monthly: $7.99 (799 cents) | Yearly: $49 (4900 cents)
-    const amountInSubUnits =
-      currency === "NGN"
-        ? plan_type === "yearly"
-          ? 4900000 // 49,000 NGN in kobo
-          : 799000 // 7,990 NGN in kobo
-        : plan_type === "yearly"
-        ? 4900 // $49.00 in cents
-        : 799; // $7.99 in cents
+    // Monthly: ₦7,990 (799,000 kobo) / $7.99 (799 cents)
+    // Yearly: ₦49,000 (4,900,000 kobo) / $49.00 (4,900 cents)
+    const getSubUnits = (curr: string, plan: string) => {
+      if (curr.toUpperCase() === "NGN") {
+        return plan === "yearly" ? 4900000 : 799000;
+      }
+      return plan === "yearly" ? 4900 : 799;
+    };
 
     const origin = req.headers.get("origin") || "http://localhost:3000";
     const callback_url = `${origin}/pricing?payment=success&plan=${plan_type}`;
 
     // If Paystack Secret Key is configured, call Paystack REST API
     if (paystackSecretKey && !paystackSecretKey.includes("placeholder")) {
-      const response = await fetch("https://api.paystack.co/transaction/initialize", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${paystackSecretKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const initCall = async (curr?: string) => {
+        const payload: Record<string, any> = {
           email: email || "customer@christone.app",
-          amount: amountInSubUnits,
-          currency,
+          amount: getSubUnits(curr || targetCurrency, plan_type),
           metadata: {
             couple_id,
             user_id,
@@ -49,29 +43,56 @@ export async function POST(req: Request) {
             app: "christone-couples",
           },
           callback_url,
-        }),
-      });
+        };
 
-      const data = await response.json();
+        if (curr) {
+          payload.currency = curr;
+        }
 
-      if (!response.ok || !data.status) {
-        console.error("Paystack API error:", data);
+        const res = await fetch("https://api.paystack.co/transaction/initialize", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${paystackSecretKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        return res.json();
+      };
+
+      // 1. Try with the requested currency
+      let paystackData = await initCall(targetCurrency);
+
+      // 2. If currency is not supported by this merchant account (e.g. USD requested on NGN-only merchant account), auto-fallback to NGN
+      if (!paystackData.status && paystackData.message?.toLowerCase().includes("currency")) {
+        console.warn(`[Paystack Checkout] Currency ${targetCurrency} not supported by merchant. Retrying with NGN fallback...`);
+        paystackData = await initCall("NGN");
+      }
+
+      // 3. If still not working, try without currency field (Paystack uses merchant's default account currency)
+      if (!paystackData.status && paystackData.message?.toLowerCase().includes("currency")) {
+        console.warn("[Paystack Checkout] Retrying without explicit currency to use merchant default currency...");
+        paystackData = await initCall(undefined);
+      }
+
+      if (!paystackData.status) {
+        console.error("Paystack API error:", paystackData);
         return NextResponse.json(
-          { error: data.message || "Failed to initialize Paystack checkout" },
+          { error: paystackData.message || "Failed to initialize Paystack checkout" },
           { status: 502 }
         );
       }
 
       return NextResponse.json({
-        authorization_url: data.data.authorization_url,
-        access_code: data.data.access_code,
-        reference: data.data.reference,
+        authorization_url: paystackData.data.authorization_url,
+        access_code: paystackData.data.access_code,
+        reference: paystackData.data.reference,
       });
     }
 
     // TEST / DEMO FALLBACK:
-    // If no PAYSTACK_SECRET_KEY is configured yet, allow instant test activation
-    // so development and test verification succeed without friction.
+    // If no PAYSTACK_SECRET_KEY is configured, allow instant test activation
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const supabaseServiceKey =
       process.env.SUPABASE_SERVICE_ROLE_KEY ||
@@ -104,7 +125,7 @@ export async function POST(req: Request) {
       status: "success",
       simulated: true,
       message:
-        "Test Mode: Paystack keys not set in environment. Upgraded couple to Premium for testing.",
+        "Test Mode: Upgraded couple to Premium for testing.",
       plan_type,
       expires_at: expiresAt,
     });

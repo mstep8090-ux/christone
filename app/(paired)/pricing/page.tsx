@@ -122,28 +122,28 @@ export default function PricingPage() {
 
       {/* Plan Frequency Toggle */}
       <div className="flex justify-center">
-        <div className="grid grid-cols-2 p-1 bg-white rounded-full border border-border shadow-[0_4px_16px_rgba(255,90,126,0.06)] w-full max-w-[280px]">
+        <div className="grid grid-cols-2 p-1 bg-white rounded-full border border-border shadow-[0_4px_16px_rgba(255,90,126,0.06)] w-full max-w-[320px]">
           <button
             type="button"
             onClick={() => setSelectedPlan("monthly")}
-            className={`py-2 px-4 rounded-full text-xs font-medium transition-all ${
+            className={`py-2 px-3 rounded-full text-xs font-medium transition-all ${
               selectedPlan === "monthly"
                 ? "bg-primary text-white shadow-sm"
                 : "text-inkSoft hover:text-ink"
             }`}
           >
-            Monthly ($7.99)
+            Monthly (₦7,990 / $7.99)
           </button>
           <button
             type="button"
             onClick={() => setSelectedPlan("yearly")}
-            className={`py-2 px-4 rounded-full text-xs font-medium transition-all flex items-center justify-center space-x-1 ${
+            className={`py-2 px-3 rounded-full text-xs font-medium transition-all flex items-center justify-center space-x-1 ${
               selectedPlan === "yearly"
                 ? "bg-primary text-white shadow-sm"
                 : "text-inkSoft hover:text-ink"
             }`}
           >
-            <span>Yearly ($49)</span>
+            <span>Yearly (₦49,000)</span>
             <span className="text-[10px] font-bold underline ml-1">Save 48%</span>
           </button>
         </div>
@@ -219,14 +219,14 @@ export default function PricingPage() {
           <div>
             <div className="flex items-baseline space-x-1.5">
               <span className="font-heading text-3xl sm:text-4xl text-ink font-normal">
-                {selectedPlan === "yearly" ? "$49" : "$7.99"}
+                {selectedPlan === "yearly" ? "₦49,000" : "₦7,990"}
               </span>
               <span className="text-xs text-inkSoft">
-                {selectedPlan === "yearly" ? "/year" : "/month"}
+                {selectedPlan === "yearly" ? "/year ($49)" : "/month ($7.99)"}
               </span>
             </div>
             <p className="text-xs text-primary font-medium mt-1">
-              $7.99/mo or $49/year - covers both
+              ₦7,990/mo or ₦49,000/year - covers both partners
             </p>
           </div>
 
