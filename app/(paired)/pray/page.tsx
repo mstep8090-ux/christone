@@ -15,11 +15,13 @@ import {
   Lock,
   Send,
   RotateCcw,
+  PhoneCall,
 } from "lucide-react";
 import { Pill } from "@/components/ui/pill";
 import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { supabase } from "@/lib/supabase/client";
+import { PrayerCallModal } from "@/components/prayer/prayer-call-modal";
 import { cn } from "@/lib/utils";
 
 interface PrayerPoint {
@@ -53,11 +55,14 @@ export default function PrayPage() {
   const [partnerName, setPartnerName] = React.useState<string>("Partner");
   const [partnerAvatar, setPartnerAvatar] = React.useState<string | null>(null);
 
-  // 1. TOP CARD TIMER STATE
+  // 1. TOP CARD TIMER & VOICE CALL STATE
   const [isPraying, setIsPraying] = React.useState<boolean>(false);
   const [timeLeft, setTimeLeft] = React.useState<number>(120); // 2 minutes (120s)
   const [prayerDone, setPrayerDone] = React.useState<boolean>(false);
   const [isSubmittingAmen, setIsSubmittingAmen] = React.useState<boolean>(false);
+  const [isCallModalOpen, setIsCallModalOpen] = React.useState<boolean>(false);
+  const [isCaller, setIsCaller] = React.useState<boolean>(true);
+  const [partnerCalling, setPartnerCalling] = React.useState<boolean>(false);
   const [streak, setStreak] = React.useState<StreakData>({
     current_streak: 1,
     longest_streak: 1,
@@ -257,6 +262,40 @@ export default function PrayPage() {
     };
   }, [coupleId, currentUserId, partnerId, todayDateString]);
 
+  // Check if opened via notification with ?call=join
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("call") === "join") {
+        setIsCaller(false);
+        setIsCallModalOpen(true);
+      }
+    }
+  }, []);
+
+  // Listen for incoming prayer call on this page
+  React.useEffect(() => {
+    if (!coupleId || !currentUserId) return;
+
+    const channel = supabase
+      .channel(`prayer_voice_page_${coupleId}`, {
+        config: { broadcast: { self: false } },
+      })
+      .on("broadcast", { event: "prayer_call_incoming" }, (payload) => {
+        if (payload?.payload?.callerId && payload.payload.callerId !== currentUserId) {
+          setPartnerCalling(true);
+        }
+      })
+      .on("broadcast", { event: "prayer_call_end" }, () => {
+        setPartnerCalling(false);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [coupleId, currentUserId]);
+
   // 2-min Countdown Timer
   React.useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -272,11 +311,91 @@ export default function PrayPage() {
     };
   }, [isPraying, timeLeft]);
 
+  // Handlers for Prayer Voice Call
+  const handleStartPrayerCall = () => {
+    setIsCaller(true);
+    setIsCallModalOpen(true);
+    setPrayerDone(false);
+  };
+
+  const handleJoinPrayerCall = () => {
+    setIsCaller(false);
+    setIsCallModalOpen(true);
+    setPartnerCalling(false);
+    setPrayerDone(false);
+  };
+
+  const handlePrayerCompleted = async () => {
+    setPrayerDone(true);
+    setIsCallModalOpen(false);
+
+    if (!coupleId || !currentUserId) return;
+
+    try {
+      // 1. Insert moment type prayer
+      const prayerMomentContent = `Joined hearts in covenant prayer call today. Amen. 🙏`;
+      await supabase.from("moments").insert({
+        couple_id: coupleId,
+        author_id: currentUserId,
+        type: "prayer",
+        content: prayerMomentContent,
+      });
+
+      // 2. Update streaks table
+      const { data: existingStreak } = await supabase
+        .from("streaks")
+        .select("*")
+        .eq("couple_id", coupleId)
+        .maybeSingle();
+
+      const now = new Date();
+      let newCurrent = 1;
+      let newLongest = 1;
+
+      if (existingStreak) {
+        const lastDate = new Date(existingStreak.last_prayed_at);
+        const diffHours = (now.getTime() - lastDate.getTime()) / (1000 * 60 * 60);
+
+        if (diffHours < 24) {
+          newCurrent = existingStreak.current_streak;
+        } else if (diffHours < 48) {
+          newCurrent = existingStreak.current_streak + 1;
+        } else {
+          newCurrent = 1;
+        }
+
+        newLongest = Math.max(existingStreak.longest_streak, newCurrent);
+
+        await supabase
+          .from("streaks")
+          .update({
+            current_streak: newCurrent,
+            longest_streak: newLongest,
+            last_prayed_at: now.toISOString(),
+          })
+          .eq("id", existingStreak.id);
+      } else {
+        await supabase.from("streaks").insert({
+          couple_id: coupleId,
+          current_streak: 1,
+          longest_streak: 1,
+          last_prayed_at: now.toISOString(),
+        });
+      }
+
+      setStreak({
+        current_streak: newCurrent,
+        longest_streak: newLongest,
+        last_prayed_at: now.toISOString(),
+      });
+    } catch (err) {
+      console.error("Failed to record prayer completion:", err);
+    }
+  };
+
   // Handlers for 2-min Prayer Timer
   const handleStartPrayer = () => {
-    setTimeLeft(120);
-    setIsPraying(true);
-    setPrayerDone(false);
+    handleStartPrayerCall();
   };
 
   const handleAmen = async () => {
@@ -596,6 +715,36 @@ export default function PrayPage() {
               </button>
             </div>
           </div>
+        ) : partnerCalling ? (
+          /* INCOMING PRAYER CALL VIEW */
+          <div className="space-y-4 py-2">
+            <div className="w-16 h-16 rounded-full bg-[#FF5A7E] text-white flex items-center justify-center mx-auto animate-pulse shadow-md">
+              <PhoneCall size={28} strokeWidth={2} />
+            </div>
+
+            <div className="space-y-1">
+              <span className="inline-block text-[11px] font-semibold text-primary uppercase tracking-wider bg-[#FFC2CE]/40 px-3 py-0.5 rounded-full">
+                Incoming Call
+              </span>
+              <h2 className="font-heading text-2xl sm:text-3xl text-ink font-normal">
+                {partnerName} is calling for prayer
+              </h2>
+              <p className="text-xs text-inkSoft max-w-xs mx-auto">
+                Tap below to join hands in live voice prayer.
+              </p>
+            </div>
+
+            <div className="pt-2 max-w-xs mx-auto">
+              <button
+                type="button"
+                onClick={handleJoinPrayerCall}
+                className="w-full h-12 rounded-full bg-primary hover:bg-deep text-white font-medium text-sm transition-all flex items-center justify-center space-x-2 shadow-[0_8px_32px_rgba(255,90,126,0.22)] active:scale-[0.99]"
+              >
+                <PhoneCall size={18} strokeWidth={2} />
+                <span>Join Prayer Call</span>
+              </button>
+            </div>
+          </div>
         ) : (
           /* DEFAULT CARD: Headline EXACT "Pray together today?" */
           <div className="space-y-4">
@@ -622,15 +771,15 @@ export default function PrayPage() {
               </span>
             </div>
 
-            {/* Button EXACT: "Start 2-min prayer" */}
+            {/* Button: "Start prayer call" */}
             <div className="pt-2">
               <button
                 type="button"
-                onClick={handleStartPrayer}
+                onClick={handleStartPrayerCall}
                 className="w-full h-12 rounded-full bg-primary hover:bg-deep text-white font-medium text-sm transition-all flex items-center justify-center space-x-2 shadow-[0_8px_32px_rgba(255,90,126,0.18)] active:scale-[0.99]"
               >
-                <Heart size={16} strokeWidth={1.5} className="fill-current text-white/90" />
-                <span>Start 2-min prayer</span>
+                <PhoneCall size={16} strokeWidth={2} className="text-white/90" />
+                <span>Start prayer call</span>
               </button>
             </div>
           </div>
@@ -900,6 +1049,21 @@ export default function PrayPage() {
           </form>
         )}
       </Card>
+
+      {/* LIVE WEBRTC PRAYER VOICE CALL MODAL */}
+      <PrayerCallModal
+        isOpen={isCallModalOpen}
+        onClose={() => setIsCallModalOpen(false)}
+        coupleId={coupleId}
+        currentUserId={currentUserId}
+        currentUserName={currentUserName}
+        currentUserAvatar={currentUserAvatar}
+        partnerId={partnerId}
+        partnerName={partnerName}
+        partnerAvatar={partnerAvatar}
+        isCaller={isCaller}
+        onPrayerCompleted={handlePrayerCompleted}
+      />
     </div>
   );
 }

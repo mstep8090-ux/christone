@@ -185,27 +185,50 @@ function TalkDeckDetailContent() {
     if (!coupleId) return;
 
     const channel = supabase
-      .channel(`talk_answers_couple_${coupleId}`)
+      .channel(`talk_answers_couple_${coupleId}`, {
+        config: { broadcast: { self: false } },
+      })
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*",
           schema: "public",
           table: "talk_answers",
           filter: `couple_id=eq.${coupleId}`,
         },
         (payload) => {
           const newAnswer = payload.new as TalkAnswerItem;
+          if (!newAnswer?.id) return;
           setAnswers((prev) => {
-            const exists = prev.some((a) => a.id === newAnswer.id);
-            if (exists) return prev;
-            return [...prev, newAnswer];
+            const filtered = prev.filter((a) => a.id !== newAnswer.id);
+            return [...filtered, newAnswer];
           });
         }
       )
+      .on("broadcast", { event: "talk_answer_saved" }, (payload) => {
+        if (payload?.payload?.answer) {
+          const bAnswer = payload.payload.answer as TalkAnswerItem;
+          setAnswers((prev) => {
+            const filtered = prev.filter((a) => a.id !== bAnswer.id);
+            return [...filtered, bAnswer];
+          });
+        }
+      })
       .subscribe();
 
+    // Fast polling fallback while on this talk deck
+    const pollInterval = setInterval(async () => {
+      const { data } = await supabase
+        .from("talk_answers")
+        .select("*")
+        .eq("couple_id", coupleId);
+      if (data && data.length > 0) {
+        setAnswers(data);
+      }
+    }, 2500);
+
     return () => {
+      clearInterval(pollInterval);
       supabase.removeChannel(channel);
     };
   }, [coupleId]);
@@ -311,14 +334,14 @@ function TalkDeckDetailContent() {
 
     if (!resolvedCoupleId || !resolvedUid) {
       console.error("Missing coupleId or userId for talk answer submission");
-      return false;
+      throw new Error("You must be connected with your partner to share answers.");
     }
 
     if (!isPremium) {
       const access = await checkAccess(resolvedCoupleId, "talks");
       if (!access.allowed) {
         setIsPaywallOpen(true);
-        return false;
+        throw new Error("Talk limit reached. Please upgrade to unlock all talks.");
       }
     }
 
@@ -343,7 +366,7 @@ function TalkDeckDetailContent() {
 
       if (error) {
         console.error("Error updating talk answer:", error);
-        return false;
+        throw new Error(error.message || "Failed to update your answer.");
       }
       savedAnswer = data;
     } else {
@@ -360,7 +383,7 @@ function TalkDeckDetailContent() {
 
       if (error) {
         console.error("Error inserting talk answer:", error);
-        return false;
+        throw new Error(error.message || "Failed to save your answer.");
       }
       savedAnswer = data;
     }
@@ -374,6 +397,17 @@ function TalkDeckDetailContent() {
         );
         return [...filtered, savedAnswer!];
       });
+
+      // Broadcast immediately to partner
+      try {
+        supabase.channel(`talk_answers_couple_${resolvedCoupleId}`).send({
+          type: "broadcast",
+          event: "talk_answer_saved",
+          payload: { answer: savedAnswer },
+        });
+      } catch (broadcastErr) {
+        console.warn("Peer broadcast notice:", broadcastErr);
+      }
 
       // Record couple streak activity
       recordCoupleActivity(resolvedCoupleId).catch((err) =>

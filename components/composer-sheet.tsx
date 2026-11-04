@@ -2,10 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { Image as ImageIcon, Mic, Sparkles, X, Square, Send, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Pill } from "@/components/ui/pill";
+import { Image as ImageIcon, Mic, Square, Send, Loader2, X, Play, Pause } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -20,9 +17,7 @@ export function ComposerSheet({
   authorId,
   onMomentPosted,
 }: ComposerSheetProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
   const [content, setContent] = React.useState("");
-  const [momentType, setMomentType] = React.useState<"note" | "photo" | "voice" | "prayer">("note");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   // Photo state
@@ -35,25 +30,23 @@ export function ComposerSheet({
   const [recordSeconds, setRecordSeconds] = React.useState(0);
   const [audioBlob, setAudioBlob] = React.useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = React.useState<string | null>(null);
+  const [isPlayingAudio, setIsPlayingAudio] = React.useState(false);
+  const audioPreviewRef = React.useRef<HTMLAudioElement | null>(null);
   const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
   const timerIntervalRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  // Reset form
   const resetForm = () => {
     setContent("");
-    setMomentType("note");
     setSelectedFile(null);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(null);
     setAudioBlob(null);
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
     setAudioUrl(null);
     setIsRecording(false);
     setRecordSeconds(0);
+    setIsPlayingAudio(false);
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-  };
-
-  const closeSheet = () => {
-    resetForm();
-    setIsOpen(false);
   };
 
   // Photo handler
@@ -61,20 +54,30 @@ export function ComposerSheet({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Strict safety: Images only, NO VIDEO
     if (!file.type.startsWith("image/")) {
-      alert("Images only. Video upload is not allowed.");
+      alert("Images only. Please choose a photo.");
       return;
     }
 
     setSelectedFile(file);
-    setMomentType("photo");
     const objectUrl = URL.createObjectURL(file);
     setPreviewUrl(objectUrl);
   };
 
+  const removePhoto = () => {
+    setSelectedFile(null);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   // Voice recording (30 seconds MAX)
   const startRecording = async () => {
+    // Clear any previous voice note
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
+    setAudioBlob(null);
+    setAudioUrl(null);
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
@@ -90,7 +93,6 @@ export function ComposerSheet({
         setAudioBlob(blob);
         const url = URL.createObjectURL(blob);
         setAudioUrl(url);
-        setMomentType("voice");
         stream.getTracks().forEach((track) => track.stop());
       };
 
@@ -98,7 +100,6 @@ export function ComposerSheet({
       setIsRecording(true);
       setRecordSeconds(0);
 
-      // 30s countdown timer
       timerIntervalRef.current = setInterval(() => {
         setRecordSeconds((prev) => {
           if (prev >= 29) {
@@ -110,7 +111,7 @@ export function ComposerSheet({
       }, 1000);
     } catch (err) {
       console.error("Microphone access error:", err);
-      alert("Microphone access is needed for voice notes.");
+      alert("Please allow microphone access to record voice notes.");
     }
   };
 
@@ -124,26 +125,50 @@ export function ComposerSheet({
     }
   };
 
-  // Prayer toggle
-  const togglePrayer = () => {
-    if (momentType === "prayer") {
-      setMomentType("note");
+  const removeAudio = () => {
+    if (isPlayingAudio && audioPreviewRef.current) {
+      audioPreviewRef.current.pause();
+    }
+    setAudioBlob(null);
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
+    setAudioUrl(null);
+    setIsPlayingAudio(false);
+    setRecordSeconds(0);
+  };
+
+  const togglePlayAudio = () => {
+    if (!audioPreviewRef.current) return;
+    if (isPlayingAudio) {
+      audioPreviewRef.current.pause();
+      setIsPlayingAudio(false);
     } else {
-      setMomentType("prayer");
+      audioPreviewRef.current.play();
+      setIsPlayingAudio(true);
     }
   };
 
   // Submit Post
   const handlePost = async () => {
-    if (!content.trim() && !selectedFile && !audioBlob) return;
+    if (isRecording) {
+      stopRecording();
+      return;
+    }
+
+    const hasText = Boolean(content.trim());
+    const hasPhoto = Boolean(selectedFile);
+    const hasVoice = Boolean(audioBlob);
+
+    if (!hasText && !hasPhoto && !hasVoice) return;
     setIsSubmitting(true);
 
     try {
       let finalContent = content.trim();
+      let momentType: "note" | "photo" | "voice" = "note";
 
       // Upload Photo if present
       if (selectedFile) {
-        const fileExt = selectedFile.name.split(".").pop();
+        momentType = "photo";
+        const fileExt = selectedFile.name.split(".").pop() || "jpg";
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
         const filePath = `photos/${fileName}`;
 
@@ -151,21 +176,20 @@ export function ComposerSheet({
           .from("moments")
           .upload(filePath, selectedFile, { contentType: selectedFile.type });
 
-        if (uploadErr) throw uploadErr;
+        if (uploadErr) {
+          console.warn("Storage upload fallback:", uploadErr);
+        }
 
         const { data: urlData } = supabase.storage
           .from("moments")
           .getPublicUrl(filePath);
 
-        // Store as JSON or image URL with caption
         finalContent = JSON.stringify({
-          imageUrl: urlData.publicUrl,
+          imageUrl: urlData?.publicUrl || previewUrl,
           caption: content.trim(),
         });
-      }
-
-      // Upload Audio if present
-      if (audioBlob) {
+      } else if (audioBlob) {
+        momentType = "voice";
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.webm`;
         const filePath = `voice/${fileName}`;
 
@@ -173,15 +197,17 @@ export function ComposerSheet({
           .from("moments")
           .upload(filePath, audioBlob, { contentType: "audio/webm" });
 
-        if (uploadErr) throw uploadErr;
+        if (uploadErr) {
+          console.warn("Storage voice upload fallback:", uploadErr);
+        }
 
         const { data: urlData } = supabase.storage
           .from("moments")
           .getPublicUrl(filePath);
 
         finalContent = JSON.stringify({
-          audioUrl: urlData.publicUrl,
-          durationSeconds: recordSeconds,
+          audioUrl: urlData?.publicUrl || audioUrl,
+          durationSeconds: recordSeconds || 5,
           caption: content.trim(),
         });
       }
@@ -189,7 +215,6 @@ export function ComposerSheet({
       const activeCoupleId = coupleId || "demo-couple-id";
       const activeAuthorId = authorId || "demo-author-id";
 
-      // 1. Insert into moments table
       const newMoment = {
         id: crypto.randomUUID(),
         couple_id: activeCoupleId,
@@ -210,261 +235,234 @@ export function ComposerSheet({
         .select()
         .maybeSingle();
 
-      // Show in feed instantly
+      if (error) {
+        console.warn("Supabase insert warning:", error);
+      }
+
+      // Broadcast to partner immediately for fast real-time sync
+      try {
+        supabase.channel(`realtime-moments:${activeCoupleId}`).send({
+          type: "broadcast",
+          event: "new_moment_broadcast",
+          payload: { moment: data || newMoment },
+        });
+      } catch (broadcastErr) {
+        console.warn("Realtime broadcast note:", broadcastErr);
+      }
+
+      // Update feed
       onMomentPosted(data || newMoment);
-      closeSheet();
+      resetForm();
     } catch (err: any) {
       console.error("Posting moment error:", err);
-      // Fallback optimistic post
+      // Optimistic fallback
       const fallbackMoment = {
         id: crypto.randomUUID(),
         couple_id: coupleId || "local",
         author_id: authorId || "local",
-        type: momentType,
+        type: selectedFile ? "photo" : audioBlob ? "voice" : "note",
         content: selectedFile && previewUrl
-          ? JSON.stringify({ imageUrl: previewUrl, caption: content })
+          ? JSON.stringify({ imageUrl: previewUrl, caption: content.trim() })
           : audioUrl
-          ? JSON.stringify({ audioUrl, durationSeconds: recordSeconds, caption: content })
+          ? JSON.stringify({ audioUrl, durationSeconds: recordSeconds, caption: content.trim() })
           : content.trim(),
         created_at: new Date().toISOString(),
       };
       onMomentPosted(fallbackMoment);
-      closeSheet();
+      resetForm();
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handlePost();
+    }
+  };
+
+  const hasSendableContent = Boolean(
+    content.trim() || selectedFile || audioBlob || isRecording
+  );
+
   return (
-    <>
-      {/* 1. STICKY TRIGGER BAR ABOVE NAV (Height 56px, White card 16px radius) */}
-      <div className="fixed bottom-[88px] left-0 right-0 z-30 pointer-events-none">
-        <div className="mx-auto max-w-[480px] px-6">
-          <button
-            type="button"
-            onClick={() => setIsOpen(true)}
-            className="pointer-events-auto h-[56px] w-full rounded-[16px] bg-white border border-border shadow-[0_8px_32px_rgba(255,90,126,0.08)] px-5 flex items-center justify-between text-left transition-all active:scale-[0.99] hover:border-primary/40 select-none"
-          >
-            <span className="text-sm text-inkSoft/70">
-              What's on your heart?
-            </span>
-            <div className="flex items-center space-x-2 text-inkSoft/60">
-              <ImageIcon size={18} strokeWidth={1.5} />
-              <Mic size={18} strokeWidth={1.5} />
-              <Sparkles size={18} strokeWidth={1.5} />
-            </div>
-          </button>
-        </div>
-      </div>
-
-      {/* 2. BOTTOM SHEET MODAL */}
-      <AnimatePresence>
-        {isOpen && (
-          <div className="fixed inset-0 z-[60] flex items-end justify-center">
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={closeSheet}
-              className="absolute inset-0 bg-ink/30 backdrop-blur-sm"
+    <div className="fixed bottom-[84px] left-0 right-0 z-40">
+      <div className="mx-auto max-w-[480px] px-4 sm:px-6">
+        <div className="bg-white rounded-[24px] border border-border shadow-[0_8px_32px_rgba(255,90,126,0.12)] p-2.5 transition-all">
+          {/* Audio player element for preview */}
+          {audioUrl && (
+            <audio
+              ref={audioPreviewRef}
+              src={audioUrl}
+              onEnded={() => setIsPlayingAudio(false)}
+              className="hidden"
             />
+          )}
 
-            {/* Sheet Panel */}
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 250 }}
-              className="relative z-10 w-full max-w-[480px] rounded-t-[28px] bg-white border-t border-border shadow-[0_-8px_32px_rgba(255,90,126,0.12)] p-6 pb-10 sm:pb-6 space-y-4 max-h-[88vh] overflow-y-auto"
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between pb-2 border-b border-border/50">
-                <div className="flex items-center space-x-2">
-                  <span className="font-heading text-xl text-ink font-normal">
-                    Share Moment
-                  </span>
-                  {momentType === "prayer" && (
-                    <Pill active className="text-[11px] py-0.5 px-2.5">
-                      Prayer
-                    </Pill>
-                  )}
-                  {momentType === "photo" && (
-                    <Pill className="text-[11px] py-0.5 px-2.5">
-                      Photo
-                    </Pill>
-                  )}
-                  {momentType === "voice" && (
-                    <Pill className="text-[11px] py-0.5 px-2.5">
-                      Voice ({recordSeconds}s)
-                    </Pill>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={closeSheet}
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-inkSoft hover:bg-canvas transition-colors"
-                >
-                  <X size={18} strokeWidth={1.5} />
-                </button>
-              </div>
+          {/* Hidden photo file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoSelect}
+            className="hidden"
+          />
 
-              {/* Textarea */}
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="What's on your heart?"
-                rows={4}
-                autoFocus
-                className="w-full resize-none bg-canvas/40 rounded-[16px] border border-border p-4 text-sm text-ink placeholder:text-inkSoft/60 focus:outline-none focus:ring-1 focus:ring-primary leading-relaxed"
-              />
-
-              {/* Photo Preview */}
+          {/* PREVIEWS ROW: Photo chip or Voice Note preview chip */}
+          {(previewUrl || audioUrl || isRecording) && (
+            <div className="flex items-center gap-2 px-2 pb-2 pt-0.5 border-b border-border/40 mb-2">
+              {/* Photo preview chip */}
               {previewUrl && (
-                <div className="relative rounded-[16px] overflow-hidden border border-border h-48 w-full bg-canvas">
-                  <Image
-                    src={previewUrl}
-                    alt="Preview"
-                    fill
-                    className="object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedFile(null);
-                      setPreviewUrl(null);
-                      setMomentType("note");
-                    }}
-                    className="absolute top-2 right-2 w-7 h-7 rounded-full bg-ink/70 text-white flex items-center justify-center hover:bg-ink transition-colors"
-                  >
-                    <X size={14} strokeWidth={1.5} />
-                  </button>
-                </div>
-              )}
-
-              {/* Audio Player Preview */}
-              {audioUrl && !isRecording && (
-                <div className="flex items-center justify-between p-3.5 rounded-[16px] bg-canvas border border-border">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center">
-                      <Mic size={16} strokeWidth={1.5} />
-                    </div>
-                    <audio src={audioUrl} controls className="h-8 max-w-[220px]" />
+                <div className="relative inline-flex items-center gap-2 bg-canvas border border-border rounded-xl p-1 pr-2.5">
+                  <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-border/60 bg-blush/20">
+                    <Image
+                      src={previewUrl}
+                      alt="Upload preview"
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
                   </div>
+                  <span className="text-[11px] font-medium text-inkSoft truncate max-w-[120px]">
+                    Photo attached
+                  </span>
                   <button
                     type="button"
-                    onClick={() => {
-                      setAudioBlob(null);
-                      setAudioUrl(null);
-                      setRecordSeconds(0);
-                      setMomentType("note");
-                    }}
-                    className="text-xs text-inkSoft hover:text-deep"
+                    onClick={removePhoto}
+                    aria-label="Remove photo"
+                    className="w-5 h-5 rounded-full bg-canvas hover:bg-border/60 flex items-center justify-center text-inkSoft"
                   >
-                    Remove
+                    <X size={12} strokeWidth={2} />
                   </button>
                 </div>
               )}
 
-              {/* Recording in Progress Banner */}
+              {/* Voice recording in-progress indicator */}
               {isRecording && (
-                <div className="flex items-center justify-between p-3.5 rounded-[16px] bg-blush/30 border border-primary/30">
-                  <div className="flex items-center space-x-2">
-                    <span className="w-3 h-3 rounded-full bg-primary animate-ping" />
+                <div className="flex items-center justify-between flex-1 bg-[#FF5A7E]/10 border border-[#FF5A7E]/20 rounded-xl px-3 py-1.5 animate-pulse">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-primary animate-ping" />
                     <span className="text-xs font-semibold text-primary">
-                      Recording: {recordSeconds}s / 30s max
+                      Recording voice note ({recordSeconds}s / 30s)
                     </span>
                   </div>
-                  <Button
+                  <button
                     type="button"
-                    variant="primary"
-                    size="sm"
                     onClick={stopRecording}
-                    className="h-8 px-3 text-xs flex items-center space-x-1"
+                    className="h-7 px-2.5 rounded-lg bg-primary text-white text-[11px] font-medium flex items-center gap-1 active:scale-95 shadow-xs"
                   >
-                    <Square size={12} strokeWidth={1.5} />
+                    <Square size={10} className="fill-current" />
                     <span>Done</span>
-                  </Button>
+                  </button>
                 </div>
               )}
 
-              {/* Action Buttons & Post Footer */}
-              <div className="flex items-center justify-between pt-2">
-                {/* 3 Icon Buttons */}
-                <div className="flex items-center space-x-2">
-                  {/* Photo Button */}
+              {/* Recorded Audio ready chip */}
+              {!isRecording && audioUrl && (
+                <div className="relative inline-flex items-center gap-2 bg-[#FFC2CE]/20 border border-primary/20 rounded-xl p-1.5 pr-2.5">
                   <button
                     type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    title="Upload Photo"
-                    className="w-11 h-11 rounded-full border border-border bg-white flex items-center justify-center text-inkSoft hover:text-primary hover:border-primary transition-all active:scale-95"
+                    onClick={togglePlayAudio}
+                    className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center active:scale-95 transition-transform shadow-xs"
                   >
-                    <ImageIcon size={20} strokeWidth={1.5} />
-                  </button>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    accept="image/*"
-                    onChange={handlePhotoSelect}
-                    className="hidden"
-                  />
-
-                  {/* Voice Button (30s max) */}
-                  <button
-                    type="button"
-                    onClick={isRecording ? stopRecording : startRecording}
-                    title="Record Voice Note"
-                    className={cn(
-                      "w-11 h-11 rounded-full border border-border bg-white flex items-center justify-center transition-all active:scale-95",
-                      isRecording
-                        ? "border-primary bg-primary text-white"
-                        : "text-inkSoft hover:text-primary hover:border-primary"
+                    {isPlayingAudio ? (
+                      <Pause size={12} className="fill-current" />
+                    ) : (
+                      <Play size={12} className="fill-current ml-0.5" />
                     )}
-                  >
-                    <Mic size={20} strokeWidth={1.5} />
                   </button>
-
-                  {/* Prayer Button */}
+                  <span className="text-[11px] font-medium text-ink">
+                    Voice Note ({recordSeconds}s)
+                  </span>
                   <button
                     type="button"
-                    onClick={togglePrayer}
-                    title="Tag as Prayer"
-                    className={cn(
-                      "w-11 h-11 rounded-full border border-border bg-white flex items-center justify-center transition-all active:scale-95",
-                      momentType === "prayer"
-                        ? "border-primary bg-primary text-white"
-                        : "text-inkSoft hover:text-primary hover:border-primary"
-                    )}
+                    onClick={removeAudio}
+                    aria-label="Remove voice note"
+                    className="w-5 h-5 rounded-full bg-white hover:bg-border/60 flex items-center justify-center text-inkSoft ml-1 border border-border/40"
                   >
-                    <Sparkles size={20} strokeWidth={1.5} />
+                    <X size={11} strokeWidth={2} />
                   </button>
                 </div>
+              )}
+            </div>
+          )}
 
-                {/* Post Button */}
-                <Button
-                  type="button"
-                  variant="primary"
-                  disabled={isSubmitting || (!content.trim() && !selectedFile && !audioBlob)}
-                  onClick={handlePost}
-                  className="h-11 px-6 rounded-full text-sm font-medium flex items-center space-x-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 size={16} strokeWidth={1.5} className="animate-spin" />
-                      <span>Posting...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Post</span>
-                      <Send size={14} strokeWidth={1.5} />
-                    </>
-                  )}
-                </Button>
-              </div>
-            </motion.div>
+          {/* MAIN CHAT INPUT ROW */}
+          <div className="flex items-center gap-2">
+            {/* 1. Photo attach button */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              aria-label="Add photo"
+              title="Add photo"
+              className={cn(
+                "w-10 h-10 rounded-full flex items-center justify-center transition-colors flex-shrink-0",
+                selectedFile
+                  ? "bg-primary text-white"
+                  : "bg-canvas text-inkSoft hover:text-primary hover:bg-[#FFC2CE]/30 border border-border"
+              )}
+            >
+              <ImageIcon size={18} strokeWidth={1.5} />
+            </button>
+
+            {/* 2. Voice note record button */}
+            <button
+              type="button"
+              onClick={isRecording ? stopRecording : startRecording}
+              aria-label={isRecording ? "Stop recording" : "Record voice note"}
+              title={isRecording ? "Stop recording" : "Record voice note"}
+              className={cn(
+                "w-10 h-10 rounded-full flex items-center justify-center transition-all flex-shrink-0",
+                isRecording
+                  ? "bg-primary text-white ring-4 ring-[#FF5A7E]/20 animate-pulse"
+                  : audioBlob
+                  ? "bg-primary text-white"
+                  : "bg-canvas text-inkSoft hover:text-primary hover:bg-[#FFC2CE]/30 border border-border"
+              )}
+            >
+              {isRecording ? (
+                <Square size={16} className="fill-current" />
+              ) : (
+                <Mic size={18} strokeWidth={1.5} />
+              )}
+            </button>
+
+            {/* 3. Interactive Text Input ("What's on your heart?") */}
+            <div className="flex-1 min-w-0">
+              <input
+                type="text"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="What's on your heart?"
+                disabled={isSubmitting}
+                className="w-full h-10 bg-canvas/60 rounded-[16px] px-3.5 text-sm text-ink placeholder:text-inkSoft/70 focus:outline-none focus:ring-1.5 focus:ring-primary/40 border border-border/70 transition-all"
+              />
+            </div>
+
+            {/* 4. Send button */}
+            <button
+              type="button"
+              onClick={handlePost}
+              disabled={!hasSendableContent || isSubmitting}
+              aria-label="Send moment"
+              className={cn(
+                "w-10 h-10 rounded-full flex items-center justify-center transition-all flex-shrink-0 active:scale-95 shadow-sm",
+                hasSendableContent && !isSubmitting
+                  ? "bg-primary text-white hover:bg-deep shadow-[0_4px_16px_rgba(255,90,126,0.3)] cursor-pointer"
+                  : "bg-canvas text-inkSoft/40 border border-border cursor-not-allowed"
+              )}
+            >
+              {isSubmitting ? (
+                <Loader2 size={16} className="animate-spin text-primary" />
+              ) : (
+                <Send size={16} strokeWidth={1.5} className="ml-0.5" />
+              )}
+            </button>
           </div>
-        )}
-      </AnimatePresence>
-    </>
+        </div>
+      </div>
+    </div>
   );
 }

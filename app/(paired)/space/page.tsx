@@ -268,7 +268,7 @@ export default function SpacePage() {
   };
 
   return (
-    <div className="space-y-8 pb-28">
+    <div className="space-y-8 pb-36">
       {/* 1. TOP: VISION CARD PINNED */}
       <Card className="rounded-[24px] bg-white border border-border p-5 shadow-[0_8px_32px_rgba(255,90,126,0.08)]">
         <div className="flex items-center justify-between mb-2">
