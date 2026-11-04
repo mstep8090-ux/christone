@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabase/client";
 
 type Role = "lady" | "guy" | null;
 
@@ -13,13 +14,36 @@ export default function OnboardingStep1Page() {
   const [selectedRole, setSelectedRole] = React.useState<Role>(null);
 
   React.useEffect(() => {
+    async function checkExistingPaired() {
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        const user = authData?.user;
+        if (user) {
+          const { data: couples } = await supabase
+            .from("couples")
+            .select("id, status, partner_b")
+            .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
+            .order("created_at", { ascending: false });
+
+          const paired = couples?.find((c) => c.status === "paired" || Boolean(c.partner_b));
+          if (paired) {
+            router.replace("/space");
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Check paired error:", err);
+      }
+    }
+    checkExistingPaired();
+
     if (typeof window !== "undefined") {
       const savedRole = localStorage.getItem("role") as Role;
       if (savedRole === "lady" || savedRole === "guy") {
         setSelectedRole(savedRole);
       }
     }
-  }, []);
+  }, [router]);
 
   const handleSelect = (role: "lady" | "guy") => {
     setSelectedRole(role);

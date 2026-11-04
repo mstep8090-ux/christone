@@ -48,14 +48,18 @@ export async function middleware(request: NextRequest) {
   }
 
   // 2. Check if user has paired couple
-  const { data: couple } = await supabase
+  const { data: pairedList } = await supabase
     .from("couples")
     .select("id, status")
     .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-    .maybeSingle();
+    .eq("status", "paired")
+    .order("created_at", { ascending: false })
+    .limit(1);
 
-  // If user has no paired couple or status pending -> redirect /invite
-  if (!couple || couple.status !== "paired") {
+  const couple = pairedList && pairedList.length > 0 ? pairedList[0] : null;
+
+  // If user has no paired couple -> redirect /invite
+  if (!couple) {
     const inviteUrl = new URL("/invite", request.url);
     return NextResponse.redirect(inviteUrl);
   }

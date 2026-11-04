@@ -1,11 +1,55 @@
+"use client";
+
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Pill } from "@/components/ui/pill";
+import { supabase } from "@/lib/supabase/client";
 
 export default function HomePage() {
+  const [authState, setAuthState] = React.useState<"loading" | "unauthed" | "pending" | "paired">("loading");
+
+  React.useEffect(() => {
+    async function checkUserSession() {
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        const user = authData?.user;
+
+        if (!user) {
+          setAuthState("unauthed");
+          return;
+        }
+
+        const { data: couples } = await supabase
+          .from("couples")
+          .select("id, status, partner_b")
+          .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
+          .order("created_at", { ascending: false });
+
+        const paired = couples?.find((c) => c.status === "paired" || Boolean(c.partner_b));
+        if (paired) {
+          setAuthState("paired");
+          return;
+        }
+
+        const pending = couples?.find((c) => c.status === "pending");
+        if (pending) {
+          setAuthState("pending");
+          return;
+        }
+
+        setAuthState("unauthed");
+      } catch (err) {
+        console.error("Home session check error:", err);
+        setAuthState("unauthed");
+      }
+    }
+
+    checkUserSession();
+  }, []);
+
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden bg-canvas text-ink">
       {/* Background: blob.svg absolute top-right blurred 80px, opacity 0.6 */}
@@ -18,22 +62,38 @@ export default function HomePage() {
         }}
       />
 
-      {/* Top Navbar with Sign In button */}
+      {/* Top Navbar */}
       <header className="relative z-20 mx-auto max-w-[480px] px-6 pt-6 flex items-center justify-between">
         <Link href="/" className="font-heading text-2xl text-ink tracking-tight flex items-center space-x-1.5">
           <span>Christone</span>
         </Link>
         <div className="flex items-center space-x-2">
-          <Link href="/join">
-            <Button variant="ghost" size="sm" className="text-xs px-3 text-inkSoft hover:text-ink">
-              Join Code
-            </Button>
-          </Link>
-          <Link href="/login">
-            <Button variant="primary" size="sm" className="text-xs px-4 py-2 rounded-full font-medium shadow-xs">
-              Sign In
-            </Button>
-          </Link>
+          {authState === "paired" ? (
+            <Link href="/space">
+              <Button variant="primary" size="sm" className="text-xs px-4 py-2 rounded-full font-medium shadow-xs">
+                Enter Space
+              </Button>
+            </Link>
+          ) : authState === "pending" ? (
+            <Link href="/invite">
+              <Button variant="primary" size="sm" className="text-xs px-4 py-2 rounded-full font-medium shadow-xs">
+                Invite Partner
+              </Button>
+            </Link>
+          ) : (
+            <>
+              <Link href="/join">
+                <Button variant="ghost" size="sm" className="text-xs px-3 text-inkSoft hover:text-ink">
+                  Join Code
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button variant="primary" size="sm" className="text-xs px-4 py-2 rounded-full font-medium shadow-xs">
+                  Sign In
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
@@ -50,17 +110,43 @@ export default function HomePage() {
           </p>
 
           <div className="mt-8 w-full max-w-[280px] space-y-2.5">
-            <Link href="/onboarding" className="block w-full">
-              <Button variant="primary" className="w-full text-base font-medium shadow-[0_8px_32px_rgba(255,90,126,0.18)]">
-                Create Our Space
-              </Button>
-            </Link>
-            <div className="flex items-center justify-center space-x-2 text-xs text-inkSoft pt-1">
-              <span>Already paired?</span>
-              <Link href="/login" className="font-semibold text-primary hover:underline">
-                Sign In &rarr;
-              </Link>
-            </div>
+            {authState === "paired" ? (
+              <div className="space-y-2">
+                <Link href="/space" className="block w-full">
+                  <Button variant="primary" className="w-full text-base font-medium shadow-[0_8px_32px_rgba(255,90,126,0.18)]">
+                    Enter Our Space
+                  </Button>
+                </Link>
+                <p className="text-xs text-[#2C6E49] font-medium">
+                  ✓ Space connected with partner
+                </p>
+              </div>
+            ) : authState === "pending" ? (
+              <div className="space-y-2">
+                <Link href="/invite" className="block w-full">
+                  <Button variant="primary" className="w-full text-base font-medium shadow-[0_8px_32px_rgba(255,90,126,0.18)]">
+                    View Invite Code
+                  </Button>
+                </Link>
+                <p className="text-xs text-inkSoft">
+                  Waiting for your partner to join
+                </p>
+              </div>
+            ) : (
+              <>
+                <Link href="/onboarding" className="block w-full">
+                  <Button variant="primary" className="w-full text-base font-medium shadow-[0_8px_32px_rgba(255,90,126,0.18)]">
+                    Create Our Space
+                  </Button>
+                </Link>
+                <div className="flex items-center justify-center space-x-2 text-xs text-inkSoft pt-1">
+                  <span>Already paired?</span>
+                  <Link href="/login" className="font-semibold text-primary hover:underline">
+                    Sign In &rarr;
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="mt-10 w-full flex justify-center">
@@ -152,9 +238,9 @@ export default function HomePage() {
               One subscription covers both. $7.99/mo
             </p>
             <div className="mt-4">
-              <Link href="/onboarding">
+              <Link href={authState === "paired" ? "/pricing" : "/onboarding"}>
                 <Button variant="ghost" size="sm" className="text-xs">
-                  Begin Free Trial
+                  {authState === "paired" ? "View Membership" : "Begin Free Trial"}
                 </Button>
               </Link>
             </div>

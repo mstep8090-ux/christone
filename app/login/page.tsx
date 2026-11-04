@@ -38,36 +38,52 @@ export default function LoginPage() {
         throw new Error("Unable to authenticate. Please check your credentials.");
       }
 
-      // 2. Query couples to find paired space or pending invite
-      const { data: couple, error: coupleError } = await supabase
+      // 2. Query couples for this user, prioritizing any paired space
+      const { data: allCouples, error: coupleError } = await supabase
         .from("couples")
         .select("id, status, partner_a, partner_b, invite_code")
         .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
-        .maybeSingle();
+        .order("created_at", { ascending: false });
 
       if (coupleError) {
         console.error("Couple query error:", coupleError);
       }
 
-      // Store in localStorage for reference
-      if (typeof window !== "undefined") {
-        localStorage.setItem("user_id", user.id);
-        if (couple?.invite_code) {
-          localStorage.setItem("partner_code", couple.invite_code);
+      const pairedCouple = allCouples?.find(
+        (c) => c.status === "paired" || Boolean(c.partner_b)
+      );
+
+      if (pairedCouple) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("user_id", user.id);
+          if (pairedCouple.invite_code) {
+            localStorage.setItem("partner_code", pairedCouple.invite_code);
+          }
         }
+        // Space is paired! Go directly to dashboard
+        router.push("/space");
+        return;
       }
 
-      // 3. Smart routing based on couple status
-      if (couple && couple.status === "paired") {
-        // Paired couple -> go straight to dashboard / space
-        router.push("/space");
-      } else if (couple && couple.status === "pending") {
+      // If not yet paired, check if there is a pending couple where user is partner_a
+      const pendingCouple = allCouples?.find(
+        (c) => c.status === "pending" && c.partner_a === user.id
+      );
+
+      if (pendingCouple) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("user_id", user.id);
+          if (pendingCouple.invite_code) {
+            localStorage.setItem("partner_code", pendingCouple.invite_code);
+          }
+        }
         // Pending partner join -> go to invite screen
         router.push("/invite");
-      } else {
-        // No couple space yet -> guide to onboarding or join
-        router.push("/onboarding");
+        return;
       }
+
+      // No couple space yet -> guide to onboarding
+      router.push("/onboarding");
     } catch (err: any) {
       console.error("Sign in error:", err);
       let message = err.message || "Failed to sign in. Please check your credentials.";

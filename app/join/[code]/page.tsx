@@ -90,6 +90,16 @@ export default function JoinCodePage() {
   // Paired success state
   const [isPairedSuccess, setIsPairedSuccess] = React.useState(false);
 
+  // Auto-redirect to /space after pair celebration
+  React.useEffect(() => {
+    if (isPairedSuccess) {
+      const timer = setTimeout(() => {
+        router.push("/space");
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isPairedSuccess, router]);
+
   // Check auth and load couple by invite_code
   React.useEffect(() => {
     async function init() {
@@ -210,6 +220,15 @@ export default function JoinCodePage() {
 
       if (updateErr) throw updateErr;
 
+      // Initialize streaks for couple
+      await supabase.from("streaks").upsert({
+        couple_id: coupleData.id,
+        count: 1,
+        current_streak: 1,
+        longest_streak: 1,
+        last_activity: new Date().toISOString().split("T")[0],
+      });
+
       setIsPairedSuccess(true);
     } catch (err: any) {
       console.error("Join error:", err);
@@ -276,6 +295,15 @@ export default function JoinCodePage() {
         console.error("Auto pair error:", pairErr);
       }
 
+      // Initialize streaks for couple
+      await supabase.from("streaks").upsert({
+        couple_id: coupleData.id,
+        count: 1,
+        current_streak: 1,
+        longest_streak: 1,
+        last_activity: new Date().toISOString().split("T")[0],
+      });
+
       if (typeof window !== "undefined") {
         localStorage.setItem("user_id", newUser.id);
         localStorage.setItem("display_name", name.trim());
@@ -331,6 +359,15 @@ export default function JoinCodePage() {
       if (pairErr) {
         console.error("Auto pair error:", pairErr);
       }
+
+      // Initialize streaks for couple
+      await supabase.from("streaks").upsert({
+        couple_id: coupleData.id,
+        count: 1,
+        current_streak: 1,
+        longest_streak: 1,
+        last_activity: new Date().toISOString().split("T")[0],
+      });
 
       // 4. Fetch profile to get display name
       const { data: myProfile } = await supabase

@@ -2,30 +2,129 @@
 
 import * as React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
-import { Copy, Check, Share2 } from "lucide-react";
+import { Copy, Check, Share2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { supabase } from "@/lib/supabase/client";
 
 export default function InvitePage() {
+  const router = useRouter();
   const [inviteCode, setInviteCode] = React.useState<string>("A7K9P2");
   const [copied, setCopied] = React.useState(false);
+  const [partnerJoined, setPartnerJoined] = React.useState(false);
+  const [origin, setOrigin] = React.useState<string>("");
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("partner_code");
-      if (stored && stored.trim().length > 0) {
-        setInviteCode(stored.toUpperCase());
-      } else {
-        // Fallback default code uppercase
-        const fallback = "A7K9P2";
-        localStorage.setItem("partner_code", fallback);
-        setInviteCode(fallback);
+      setOrigin(window.location.origin);
+    }
+
+    async function checkCoupleAndListen() {
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        const user = authData?.user;
+
+        if (!user) {
+          router.replace("/login");
+          return;
+        }
+
+        // 1. Check if user already has a paired couple
+        const { data: couples, error } = await supabase
+          .from("couples")
+          .select("id, status, invite_code, partner_a, partner_b")
+          .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          console.error("Error loading couple in invite:", error);
+        }
+
+        // If any couple is paired, redirect immediately to /space!
+        const paired = couples?.find((c) => c.status === "paired" || Boolean(c.partner_b));
+        if (paired) {
+          setPartnerJoined(true);
+          router.replace("/space");
+          return;
+        }
+
+        // Find active pending couple
+        const pending = couples?.find((c) => c.status === "pending");
+        if (pending) {
+          if (pending.invite_code) {
+            setInviteCode(pending.invite_code.toUpperCase());
+            if (typeof window !== "undefined") {
+              localStorage.setItem("partner_code", pending.invite_code.toUpperCase());
+            }
+          }
+
+          // 2. Realtime listener: watch for partner joining this space
+          const channel = supabase
+            .channel(`invite-sync-${pending.id}`)
+            .on(
+              "postgres_changes",
+              {
+                event: "UPDATE",
+                schema: "public",
+                table: "couples",
+                filter: `id=eq.${pending.id}`,
+              },
+              (payload) => {
+                const updated = payload.new as any;
+                if (updated && (updated.status === "paired" || updated.partner_b)) {
+                  setPartnerJoined(true);
+                  setTimeout(() => {
+                    router.replace("/space");
+                  }, 1200);
+                }
+              }
+            )
+            .subscribe();
+
+          // 3. Fallback interval check every 2.5 seconds
+          const interval = setInterval(async () => {
+            const { data: latest } = await supabase
+              .from("couples")
+              .select("status, partner_b")
+              .eq("id", pending.id)
+              .maybeSingle();
+
+            if (latest && (latest.status === "paired" || latest.partner_b)) {
+              setPartnerJoined(true);
+              clearInterval(interval);
+              router.replace("/space");
+            }
+          }, 2500);
+
+          return () => {
+            supabase.removeChannel(channel);
+            clearInterval(interval);
+          };
+        } else {
+          // Check localStorage fallback
+          if (typeof window !== "undefined") {
+            const stored = localStorage.getItem("partner_code");
+            if (stored) setInviteCode(stored.toUpperCase());
+          }
+        }
+      } catch (err) {
+        console.error("Invite init error:", err);
       }
     }
-  }, []);
 
-  const joinUrl = `https://christone.xyz/join/${inviteCode}`;
+    const cleanupPromise = checkCoupleAndListen();
+    return () => {
+      cleanupPromise.then((cleanup) => {
+        if (typeof cleanup === "function") cleanup();
+      });
+    };
+  }, [router]);
+
+  const joinUrl = origin
+    ? `${origin}/join/${inviteCode}`
+    : `https://christone.app/join/${inviteCode}`;
 
   const handleShareWhatsApp = () => {
     const message = `I created our private space on Christone Couples. Join with code ${inviteCode} - christone.xyz/join/${inviteCode}`;
@@ -56,6 +155,15 @@ export default function InvitePage() {
       />
 
       <main className="relative z-10 mx-auto max-w-[480px] flex flex-col items-center text-center">
+        {/* Partner Connected Alert */}
+        {partnerJoined && (
+          <div className="w-full mb-6 p-4 rounded-[20px] bg-[#DDF2E6] border border-[#BCE7CE] text-center space-y-1 text-[#2C6E49] shadow-sm animate-pulse">
+            <Sparkles size={22} className="mx-auto text-[#2C6E49]" />
+            <p className="text-sm font-semibold">Your partner has joined!</p>
+            <p className="text-xs">Entering your private space...</p>
+          </div>
+        )}
+
         {/* Header */}
         <header className="mb-8 space-y-2">
           <h1 className="font-heading text-[32px] text-ink font-normal leading-tight">
