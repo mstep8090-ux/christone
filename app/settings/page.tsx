@@ -497,7 +497,28 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* 8. DANGER ZONE: LEAVE SPACE */}
+      {/* 8. ACCOUNT: SIGN OUT */}
+      <Card className="rounded-[24px] bg-white border border-border p-5 shadow-[0_8px_32px_rgba(255,90,126,0.06)] space-y-2">
+        <span className="text-[11px] font-semibold text-primary uppercase tracking-wider block">
+          Account Session
+        </span>
+        <button
+          type="button"
+          onClick={async () => {
+            await supabase.auth.signOut();
+            if (typeof window !== "undefined") {
+              localStorage.clear();
+            }
+            router.push("/login");
+          }}
+          className="w-full h-11 rounded-full bg-canvas hover:bg-blush/20 text-ink font-medium text-xs transition-colors border border-border flex items-center justify-center space-x-2 active:scale-[0.99]"
+        >
+          <LogOut size={14} className="text-inkSoft" />
+          <span>Sign Out</span>
+        </button>
+      </Card>
+
+      {/* 9. DANGER ZONE: LEAVE SPACE */}
       <Card className="rounded-[24px] bg-white border border-red-100 p-5 shadow-[0_8px_32px_rgba(255,90,126,0.04)] space-y-3">
         <div className="flex items-center space-x-2 text-deep">
           <AlertTriangle size={15} />

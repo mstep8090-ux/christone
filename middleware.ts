@@ -41,9 +41,9 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 1. No session -> redirect /onboarding
+  // 1. No session -> redirect /login
   if (!user) {
-    const redirectUrl = new URL("/onboarding", request.url);
+    const redirectUrl = new URL("/login", request.url);
     return NextResponse.redirect(redirectUrl);
   }
 

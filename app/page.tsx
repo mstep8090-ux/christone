@@ -18,10 +18,29 @@ export default function HomePage() {
         }}
       />
 
+      {/* Top Navbar with Sign In button */}
+      <header className="relative z-20 mx-auto max-w-[480px] px-6 pt-6 flex items-center justify-between">
+        <Link href="/" className="font-heading text-2xl text-ink tracking-tight flex items-center space-x-1.5">
+          <span>Christone</span>
+        </Link>
+        <div className="flex items-center space-x-2">
+          <Link href="/join">
+            <Button variant="ghost" size="sm" className="text-xs px-3 text-inkSoft hover:text-ink">
+              Join Code
+            </Button>
+          </Link>
+          <Link href="/login">
+            <Button variant="primary" size="sm" className="text-xs px-4 py-2 rounded-full font-medium shadow-xs">
+              Sign In
+            </Button>
+          </Link>
+        </div>
+      </header>
+
       {/* Centered column max-w-[480px] for content */}
       <div className="relative z-10 mx-auto max-w-[480px] px-6">
         {/* SECTION 1: HERO */}
-        <section className="pt-[80px] flex flex-col items-center text-center">
+        <section className="pt-[48px] flex flex-col items-center text-center">
           <h1 className="font-heading text-[32px] leading-[1.1] text-ink font-normal tracking-tight max-w-[340px]">
             A private space for two.
           </h1>
@@ -30,12 +49,18 @@ export default function HomePage() {
             Talk, pray, play. Built for kingdom couples.
           </p>
 
-          <div className="mt-8 w-full max-w-[280px]">
+          <div className="mt-8 w-full max-w-[280px] space-y-2.5">
             <Link href="/onboarding" className="block w-full">
-              <Button variant="primary" className="w-full text-base font-medium">
+              <Button variant="primary" className="w-full text-base font-medium shadow-[0_8px_32px_rgba(255,90,126,0.18)]">
                 Create Our Space
               </Button>
             </Link>
+            <div className="flex items-center justify-center space-x-2 text-xs text-inkSoft pt-1">
+              <span>Already paired?</span>
+              <Link href="/login" className="font-semibold text-primary hover:underline">
+                Sign In &rarr;
+              </Link>
+            </div>
           </div>
 
           <div className="mt-10 w-full flex justify-center">

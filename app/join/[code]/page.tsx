@@ -80,6 +80,7 @@ export default function JoinCodePage() {
   const [inviterProfile, setInviterProfile] = React.useState<any>(null);
 
   // Mini onboarding state for non-logged-in users
+  const [authMode, setAuthMode] = React.useState<"signup" | "login">("signup");
   const [role, setRole] = React.useState<"lady" | "guy">("lady");
   const [stage, setStage] = React.useState<"courting" | "engaged" | "married">("courting");
   const [name, setName] = React.useState("");
@@ -275,11 +276,87 @@ export default function JoinCodePage() {
         console.error("Auto pair error:", pairErr);
       }
 
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user_id", newUser.id);
+        localStorage.setItem("display_name", name.trim());
+        localStorage.setItem("partner_code", code);
+      }
+
       setCurrentUser(newUser);
       setIsPairedSuccess(true);
     } catch (err: any) {
       console.error("Signup & join error:", err);
       setErrorMsg(err.message || "Signup failed. Please try again.");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Sign in + auto-pair handler for existing user
+  const handleLoginAndJoin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password || !coupleData) return;
+
+    setActionLoading(true);
+    setErrorMsg(null);
+
+    try {
+      // 1. Sign in existing user
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+
+      if (authError) throw authError;
+
+      const user = authData?.user;
+      if (!user) {
+        throw new Error("Unable to sign in. Please check details.");
+      }
+
+      // 2. Prevent joining own code
+      if (user.id === coupleData.partner_a) {
+        throw new Error("You cannot join your own invite code.");
+      }
+
+      // 3. Auto-pair: update couple row
+      const { error: pairErr } = await supabase
+        .from("couples")
+        .update({
+          partner_b: user.id,
+          status: "paired",
+        })
+        .eq("id", coupleData.id);
+
+      if (pairErr) {
+        console.error("Auto pair error:", pairErr);
+      }
+
+      // 4. Fetch profile to get display name
+      const { data: myProfile } = await supabase
+        .from("profiles")
+        .select("display_name")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (myProfile?.display_name) {
+        setName(myProfile.display_name);
+      }
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user_id", user.id);
+        localStorage.setItem("partner_code", code);
+      }
+
+      setCurrentUser(user);
+      setIsPairedSuccess(true);
+    } catch (err: any) {
+      console.error("Login & join error:", err);
+      let message = err.message || "Failed to sign in and join space.";
+      if (message.toLowerCase().includes("invalid login credentials")) {
+        message = "Incorrect email or password. Please try again.";
+      }
+      setErrorMsg(message);
     } finally {
       setActionLoading(false);
     }
@@ -394,11 +471,11 @@ export default function JoinCodePage() {
           </Card>
         )}
 
-        {/* NOT LOGGED IN USER: MINI ONBOARDING */}
+        {/* NOT LOGGED IN USER: MINI ONBOARDING OR SIGN IN */}
         {!loading && !errorMsg && !isPairedSuccess && !currentUser && (
           <Card className="p-6 sm:p-8 rounded-[24px]">
             {/* Overlapping Avatars Header */}
-            <div className="flex flex-col items-center text-center mb-6">
+            <div className="flex flex-col items-center text-center mb-5">
               <div className="w-16 h-16 rounded-full border-2 border-white bg-blush/60 flex items-center justify-center text-ink font-heading text-2xl shadow-sm mb-3">
                 {inviterName.charAt(0).toUpperCase()}
               </div>
@@ -406,125 +483,210 @@ export default function JoinCodePage() {
                 {inviterName} invited you to your private space
               </h1>
               <p className="text-xs text-inkSoft">
-                Create your account to accept and unlock your space.
+                {authMode === "signup"
+                  ? "Create your own account to join and link your space."
+                  : "Sign in with your account to join and link your space."}
               </p>
             </div>
 
-            <form onSubmit={handleSignupAndJoin} className="space-y-4">
-              {/* Role Selection */}
-              <div>
-                <label className="text-xs font-medium text-inkSoft block mb-1.5">
-                  I am...
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setRole("lady")}
-                    className={cn(
-                      "py-2.5 rounded-full text-xs font-medium border transition-all",
-                      role === "lady"
-                        ? "border-primary bg-primary text-white"
-                        : "border-border bg-white text-ink hover:border-blush"
-                    )}
-                  >
-                    Lady
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setRole("guy")}
-                    className={cn(
-                      "py-2.5 rounded-full text-xs font-medium border transition-all",
-                      role === "guy"
-                        ? "border-primary bg-primary text-white"
-                        : "border-border bg-white text-ink hover:border-blush"
-                    )}
-                  >
-                    Guy
-                  </button>
-                </div>
-              </div>
+            {/* Auth Mode Toggle */}
+            <div className="flex p-1 bg-canvas rounded-full border border-border mb-5">
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthMode("signup");
+                  setErrorMsg(null);
+                }}
+                className={cn(
+                  "flex-1 py-2 text-xs font-semibold rounded-full transition-all",
+                  authMode === "signup"
+                    ? "bg-primary text-white shadow-xs"
+                    : "text-inkSoft hover:text-ink"
+                )}
+              >
+                Create Account
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthMode("login");
+                  setErrorMsg(null);
+                }}
+                className={cn(
+                  "flex-1 py-2 text-xs font-semibold rounded-full transition-all",
+                  authMode === "login"
+                    ? "bg-primary text-white shadow-xs"
+                    : "text-inkSoft hover:text-ink"
+                )}
+              >
+                Already Have Account
+              </button>
+            </div>
 
-              {/* Stage Selection */}
-              <div>
-                <label className="text-xs font-medium text-inkSoft block mb-1.5">
-                  Our Season
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {(["courting", "engaged", "married"] as const).map((s) => (
+            {authMode === "signup" ? (
+              <form onSubmit={handleSignupAndJoin} className="space-y-4">
+                {/* Role Selection */}
+                <div>
+                  <label className="text-xs font-medium text-inkSoft block mb-1.5">
+                    I am...
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
                     <button
-                      key={s}
                       type="button"
-                      onClick={() => setStage(s)}
+                      onClick={() => setRole("lady")}
                       className={cn(
-                        "py-2 rounded-full text-[11px] font-medium capitalize border transition-all",
-                        stage === s
+                        "py-2.5 rounded-full text-xs font-medium border transition-all",
+                        role === "lady"
                           ? "border-primary bg-primary text-white"
                           : "border-border bg-white text-ink hover:border-blush"
                       )}
                     >
-                      {s}
+                      Lady
                     </button>
-                  ))}
+                    <button
+                      type="button"
+                      onClick={() => setRole("guy")}
+                      className={cn(
+                        "py-2.5 rounded-full text-xs font-medium border transition-all",
+                        role === "guy"
+                          ? "border-primary bg-primary text-white"
+                          : "border-border bg-white text-ink hover:border-blush"
+                      )}
+                    >
+                      Guy
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              {/* Name */}
-              <div>
-                <label className="text-xs font-medium text-inkSoft">First Name</label>
-                <Input
-                  type="text"
-                  placeholder="Your first name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="h-12 mt-1"
-                />
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="text-xs font-medium text-inkSoft">Email</label>
-                <Input
-                  type="email"
-                  placeholder="you@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-12 mt-1"
-                />
-              </div>
-
-              {/* Password */}
-              <div>
-                <label className="text-xs font-medium text-inkSoft">Password</label>
-                <Input
-                  type="password"
-                  placeholder="Create password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  className="h-12 mt-1"
-                />
-              </div>
-
-              {errorMsg && (
-                <div className="rounded-[16px] border border-deep/20 bg-blush/20 p-2.5 text-xs text-deep text-center">
-                  {errorMsg}
+                {/* Stage Selection */}
+                <div>
+                  <label className="text-xs font-medium text-inkSoft block mb-1.5">
+                    Our Season
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(["courting", "engaged", "married"] as const).map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setStage(s)}
+                        className={cn(
+                          "py-2 rounded-full text-[11px] font-medium capitalize border transition-all",
+                          stage === s
+                            ? "border-primary bg-primary text-white"
+                            : "border-border bg-white text-ink hover:border-blush"
+                        )}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              )}
 
-              <div className="pt-2">
-                <Button
-                  type="submit"
-                  variant="primary"
-                  disabled={actionLoading || !name || !email || !password}
-                  className="w-full h-14 rounded-full text-base font-medium"
-                >
-                  {actionLoading ? "Joining..." : "Join Their Space"}
-                </Button>
-              </div>
-            </form>
+                {/* Name */}
+                <div>
+                  <label className="text-xs font-medium text-inkSoft">First Name</label>
+                  <Input
+                    type="text"
+                    placeholder="Your first name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    className="h-12 mt-1"
+                  />
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label className="text-xs font-medium text-inkSoft">Email</label>
+                  <Input
+                    type="email"
+                    placeholder="you@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="h-12 mt-1"
+                  />
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label className="text-xs font-medium text-inkSoft">Password</label>
+                  <Input
+                    type="password"
+                    placeholder="Create password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    className="h-12 mt-1"
+                  />
+                </div>
+
+                {errorMsg && (
+                  <div className="rounded-[16px] border border-deep/20 bg-blush/20 p-2.5 text-xs text-deep text-center">
+                    {errorMsg}
+                  </div>
+                )}
+
+                <div className="pt-2">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={actionLoading || !name || !email || !password}
+                    className="w-full h-14 rounded-full text-base font-medium shadow-[0_8px_32px_rgba(255,90,126,0.18)]"
+                  >
+                    {actionLoading ? "Creating Account & Joining..." : "Create Account & Join Space"}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleLoginAndJoin} className="space-y-4">
+                {/* Email */}
+                <div>
+                  <label className="text-xs font-medium text-inkSoft">Email</label>
+                  <Input
+                    type="email"
+                    placeholder="you@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="h-12 mt-1"
+                    autoComplete="email"
+                  />
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label className="text-xs font-medium text-inkSoft">Password</label>
+                  <Input
+                    type="password"
+                    placeholder="Your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="h-12 mt-1"
+                    autoComplete="current-password"
+                  />
+                </div>
+
+                {errorMsg && (
+                  <div className="rounded-[16px] border border-deep/20 bg-blush/20 p-2.5 text-xs text-deep text-center">
+                    {errorMsg}
+                  </div>
+                )}
+
+                <div className="pt-2">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={actionLoading || !email || !password}
+                    className="w-full h-14 rounded-full text-base font-medium shadow-[0_8px_32px_rgba(255,90,126,0.18)]"
+                  >
+                    {actionLoading ? "Signing In & Joining..." : "Sign In & Join Space"}
+                  </Button>
+                </div>
+              </form>
+            )}
           </Card>
         )}
       </main>
