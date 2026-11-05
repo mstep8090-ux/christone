@@ -306,7 +306,7 @@ export default function PrayPage() {
           .maybeSingle();
 
         if (data) {
-          const ageSecs = (Date.now() - new Date(data.created_at).getTime()) / 1000;
+          const ageSecs = (Date.now() - new Date(data.created_at || "").getTime()) / 1000;
           if (ageSecs < 60) {
             setPartnerCalling(true);
           } else {

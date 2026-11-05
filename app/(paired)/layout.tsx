@@ -373,7 +373,7 @@ export default function PairedLayout({
           .maybeSingle();
 
         if (data) {
-          const ageSecs = (Date.now() - new Date(data.created_at).getTime()) / 1000;
+          const ageSecs = (Date.now() - new Date(data.created_at || "").getTime()) / 1000;
           if (ageSecs < 60) {
             const caller = data.caller_name || partnerName || "Partner";
             triggerIncoming(caller, data.caller_id);
@@ -542,7 +542,7 @@ export default function PairedLayout({
                   width={32}
                   height={32}
                   className="w-full h-full object-cover"
-                  unoptimized={currentUserAvatar.startsWith("data:")}
+                  unoptimized
                 />
               ) : (
                 userInitial
@@ -556,7 +556,7 @@ export default function PairedLayout({
                   width={32}
                   height={32}
                   className="w-full h-full object-cover"
-                  unoptimized={partnerAvatar.startsWith("data:")}
+                  unoptimized
                 />
               ) : (
                 partnerInitial

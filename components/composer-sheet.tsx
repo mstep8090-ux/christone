@@ -4,6 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import { Image as ImageIcon, Mic, Square, Send, Loader2, X, Play, Pause } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
+import { uploadImageSafe, uploadAudioSafe } from "@/lib/media-upload";
 import { cn } from "@/lib/utils";
 
 interface ComposerSheetProps {
@@ -168,45 +169,18 @@ export function ComposerSheet({
       // Upload Photo if present
       if (selectedFile) {
         momentType = "photo";
-        const fileExt = selectedFile.name.split(".").pop() || "jpg";
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
-        const filePath = `photos/${fileName}`;
-
-        const { error: uploadErr } = await supabase.storage
-          .from("moments")
-          .upload(filePath, selectedFile, { contentType: selectedFile.type });
-
-        if (uploadErr) {
-          console.warn("Storage upload fallback:", uploadErr);
-        }
-
-        const { data: urlData } = supabase.storage
-          .from("moments")
-          .getPublicUrl(filePath);
+        const { url: finalImageUrl } = await uploadImageSafe(selectedFile, "moments", "photos");
 
         finalContent = JSON.stringify({
-          imageUrl: urlData?.publicUrl || previewUrl,
+          imageUrl: finalImageUrl,
           caption: content.trim(),
         });
       } else if (audioBlob) {
         momentType = "voice";
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.webm`;
-        const filePath = `voice/${fileName}`;
-
-        const { error: uploadErr } = await supabase.storage
-          .from("moments")
-          .upload(filePath, audioBlob, { contentType: "audio/webm" });
-
-        if (uploadErr) {
-          console.warn("Storage voice upload fallback:", uploadErr);
-        }
-
-        const { data: urlData } = supabase.storage
-          .from("moments")
-          .getPublicUrl(filePath);
+        const { url: finalAudioUrl } = await uploadAudioSafe(audioBlob, "moments", "voice");
 
         finalContent = JSON.stringify({
-          audioUrl: urlData?.publicUrl || audioUrl,
+          audioUrl: finalAudioUrl,
           durationSeconds: recordSeconds || 5,
           caption: content.trim(),
         });

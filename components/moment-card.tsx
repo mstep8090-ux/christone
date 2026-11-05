@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { Sparkles, Heart } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Sparkles, Heart, X, Maximize2 } from "lucide-react";
 import { Pill } from "@/components/ui/pill";
 import { cn } from "@/lib/utils";
 
@@ -90,6 +90,9 @@ function MinimalVoicePlayer({ audioUrl }: { audioUrl: string }) {
 }
 
 export function MomentCard({ moment }: { moment: MomentItem }) {
+  const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
+  const [imgError, setImgError] = React.useState(false);
+
   let parsed: any = null;
   if (typeof moment.content === "string" && moment.content.startsWith("{")) {
     try {
@@ -218,22 +221,86 @@ export function MomentCard({ moment }: { moment: MomentItem }) {
         </div>
       )}
 
-      {/* Photo (16px radius inside) */}
+      {/* Photo (16px radius inside with click to preview) */}
       {moment.type === "photo" && (
         <div className="space-y-2">
-          <div className="relative h-60 w-full rounded-[16px] overflow-hidden border border-border bg-canvas">
-            <Image
-              src={parsed?.imageUrl || moment.content}
-              alt="Moment photo"
-              fill
-              className="object-cover"
-            />
+          <div
+            onClick={() => !imgError && setIsPreviewOpen(true)}
+            className={cn(
+              "group relative h-64 w-full rounded-[16px] overflow-hidden border border-border bg-canvas select-none",
+              !imgError && "cursor-pointer"
+            )}
+          >
+            {imgError ? (
+              <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center bg-[#FFF5F7]">
+                <Sparkles size={24} className="text-primary mb-1 opacity-70" />
+                <p className="text-xs font-medium text-ink">Photo moment</p>
+                <p className="text-[11px] text-inkSoft">Image preview unavailable</p>
+              </div>
+            ) : (
+              <>
+                <Image
+                  src={parsed?.imageUrl || moment.content}
+                  alt={parsed?.caption || "Moment photo"}
+                  fill
+                  unoptimized
+                  decoding="async"
+                  onError={() => setImgError(true)}
+                  className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                />
+                <div className="absolute top-2.5 right-2.5 opacity-0 group-hover:opacity-100 transition-opacity bg-ink/60 text-white p-1.5 rounded-full backdrop-blur-xs">
+                  <Maximize2 size={14} />
+                </div>
+              </>
+            )}
           </div>
           {parsed?.caption && (
             <p className="text-[15px] leading-[1.5] text-ink font-body">
               {parsed.caption}
             </p>
           )}
+
+          {/* Fullscreen Photo Lightbox Modal */}
+          <AnimatePresence>
+            {isPreviewOpen && (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsPreviewOpen(false)}
+                  className="fixed inset-0 bg-ink/80 backdrop-blur-md"
+                />
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="relative z-10 max-w-[90vw] max-h-[85vh] flex flex-col items-center"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setIsPreviewOpen(false)}
+                    aria-label="Close image preview"
+                    className="absolute -top-12 right-0 w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors shadow-md"
+                  >
+                    <X size={18} strokeWidth={2} />
+                  </button>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={parsed?.imageUrl || moment.content}
+                    alt={parsed?.caption || "Full preview"}
+                    className="max-w-full max-h-[80vh] rounded-[20px] object-contain shadow-2xl border border-white/20 bg-black/40"
+                  />
+                  {parsed?.caption && (
+                    <p className="text-white text-sm mt-3 px-4 py-1.5 rounded-full bg-black/50 backdrop-blur-sm text-center max-w-md">
+                      {parsed.caption}
+                    </p>
+                  )}
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>
         </div>
       )}
 

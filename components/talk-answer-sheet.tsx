@@ -3,6 +3,7 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Lock, Heart, Check, Sparkles } from "lucide-react";
+import { TalkPromptChat } from "@/components/talk-prompt-chat";
 import { cn } from "@/lib/utils";
 
 export interface TalkPromptItem {
@@ -26,6 +27,7 @@ interface TalkAnswerSheetProps {
   onClose: () => void;
   prompt: TalkPromptItem | null;
   deckTitle: string;
+  coupleId?: string;
   currentUserId: string;
   currentUserName: string;
   partnerId?: string;
@@ -43,6 +45,7 @@ export function TalkAnswerSheet({
   onClose,
   prompt,
   deckTitle,
+  coupleId,
   currentUserId,
   currentUserName,
   partnerId,
@@ -213,6 +216,18 @@ export function TalkAnswerSheet({
                 </div>
               </div>
 
+              {/* Prompt Deepening Live Chat & Reaction Thread */}
+              <TalkPromptChat
+                promptId={prompt.id}
+                coupleId={coupleId || "demo-couple"}
+                currentUserId={currentUserId}
+                currentUserName={currentUserName}
+                partnerId={partnerId}
+                partnerName={partnerName}
+                myAnswerText={myAnswer?.answer}
+                partnerAnswerText={partnerAnswer?.answer}
+              />
+
               {/* Action Button: Intimacy Private View vs Regular Space Save */}
               {isIntimacyDeck ? (
                 <div className="space-y-2 pt-1 text-center">
@@ -225,7 +240,7 @@ export function TalkAnswerSheet({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="w-full h-12 rounded-full bg-primary hover:bg-deep text-white font-medium text-sm transition-all shadow-xs active:scale-[0.99]"
+                    className="w-full h-11 rounded-full bg-primary hover:bg-deep text-white font-medium text-xs transition-all shadow-xs active:scale-[0.99]"
                   >
                     Done (Keep Private)
                   </button>
@@ -236,23 +251,23 @@ export function TalkAnswerSheet({
                   onClick={handleSaveToSpace}
                   disabled={isSaving || savedLocal}
                   className={cn(
-                    "w-full h-12 rounded-full font-medium text-sm transition-all flex items-center justify-center space-x-2 shadow-[0_8px_32px_rgba(255,90,126,0.12)] active:scale-[0.99]",
+                    "w-full h-11 rounded-full font-medium text-xs transition-all flex items-center justify-center space-x-2 shadow-[0_8px_32px_rgba(255,90,126,0.12)] active:scale-[0.99]",
                     savedLocal
                       ? "bg-[#DDF2E6] text-[#2C6E49] border border-[#BCE7CE] cursor-default"
-                      : "bg-primary hover:bg-deep text-white"
+                      : "bg-canvas hover:bg-blush/30 text-ink border border-border"
                   )}
                 >
                   {savedLocal ? (
                     <>
-                      <Check size={16} strokeWidth={1.5} />
+                      <Check size={14} strokeWidth={1.5} />
                       <span>Saved to Our Space</span>
                     </>
                   ) : isSaving ? (
                     <span>Saving...</span>
                   ) : (
                     <>
-                      <Sparkles size={16} strokeWidth={1.5} />
-                      <span>Save to Our Space</span>
+                      <Sparkles size={14} strokeWidth={1.5} className="text-primary" />
+                      <span>Save Prompt to Our Space</span>
                     </>
                   )}
                 </button>

@@ -258,11 +258,33 @@ export default function SettingsPage() {
         {/* Avatars Overlapping */}
         <div className="flex items-center justify-center">
           <div className="flex items-center -space-x-4">
-            <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-white flex items-center justify-center text-primary font-heading text-2xl shadow-sm z-10">
-              {userInitial}
+            <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-white flex items-center justify-center text-primary font-heading text-2xl shadow-sm z-10 overflow-hidden">
+              {avatarUrl ? (
+                <Image
+                  src={avatarUrl}
+                  alt={displayName || "You"}
+                  width={64}
+                  height={64}
+                  unoptimized
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                userInitial
+              )}
             </div>
-            <div className="w-16 h-16 rounded-full bg-[#FFC2CE] border-2 border-white flex items-center justify-center text-deep font-heading text-2xl shadow-sm z-0">
-              {partnerInitial}
+            <div className="w-16 h-16 rounded-full bg-[#FFC2CE] border-2 border-white flex items-center justify-center text-deep font-heading text-2xl shadow-sm z-0 overflow-hidden">
+              {partnerAvatar ? (
+                <Image
+                  src={partnerAvatar}
+                  alt={partnerName || "Partner"}
+                  width={64}
+                  height={64}
+                  unoptimized
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                partnerInitial
+              )}
             </div>
           </div>
         </div>

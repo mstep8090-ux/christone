@@ -724,6 +724,7 @@ function TalkDeckDetailContent() {
         onClose={() => setIsSheetOpen(false)}
         prompt={activePrompt}
         deckTitle={deck?.title || "Talk Prompt"}
+        coupleId={coupleId}
         currentUserId={currentUserId}
         currentUserName={currentUserName}
         partnerId={partnerId}
