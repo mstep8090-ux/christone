@@ -28,39 +28,43 @@
       <stop offset="0%" stop-color="#FFFFFF" />
       <stop offset="100%" stop-color="#EEDDE0" />
     </linearGradient>
-
-    <filter id="dt-drop" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#FF5A7E" flood-opacity="0.2" />
-    </filter>
   </defs>
 
   <style>
     .dt-couple-sway {
       transform-origin: 100px 110px;
       animation: dt-lean 4s ease-in-out infinite alternate;
+      will-change: transform;
     }
     .dt-steam-1 {
       animation: dt-steam-rise 2.8s ease-in-out infinite;
+      will-change: transform, opacity;
     }
     .dt-steam-2 {
       animation: dt-steam-rise 2.8s ease-in-out infinite 1.2s;
+      will-change: transform, opacity;
     }
     .dt-bubble-float {
       transform-origin: 100px 48px;
       animation: dt-bubble-bounce 3.5s ease-in-out infinite;
+      will-change: transform;
     }
     .dt-typing-dot-1 {
       animation: dt-dot 1.4s ease-in-out infinite 0s;
+      will-change: transform, opacity;
     }
     .dt-typing-dot-2 {
       animation: dt-dot 1.4s ease-in-out infinite 0.22s;
+      will-change: transform, opacity;
     }
     .dt-typing-dot-3 {
       animation: dt-dot 1.4s ease-in-out infinite 0.44s;
+      will-change: transform, opacity;
     }
     .dt-heart-center {
       transform-origin: 100px 88px;
       animation: dt-heartbeat 1.8s ease-in-out infinite;
+      will-change: transform;
     }
 
     @keyframes dt-lean {
@@ -82,10 +86,10 @@
       60% { transform: translateY(0px); opacity: 0.6; }
     }
     @keyframes dt-heartbeat {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,90,126,0.3)); }
-      20% { transform: scale(1.22); filter: drop-shadow(0 0 6px rgba(255,90,126,0.8)); }
+      0%, 100% { transform: scale(1); }
+      20% { transform: scale(1.22); }
       40% { transform: scale(1.05); }
-      60% { transform: scale(1.15); filter: drop-shadow(0 0 4px rgba(255,90,126,0.6)); }
+      60% { transform: scale(1.15); }
       80% { transform: scale(1); }
     }
   </style>
@@ -104,7 +108,7 @@
     <circle cx="65" cy="72" r="2" fill="#FF5A7E" fill-opacity="0.6" />
 
     <!-- Modest Rose Cardigan / Blouse -->
-    <path d="M48 136V114C48 94 56 84 66 82L69 92C61 98 58 110 58 136H48Z" fill="url(#dt-woman)" filter="url(#dt-drop)" />
+    <path d="M48 136V114C48 94 56 84 66 82L69 92C61 98 58 110 58 136H48Z" fill="url(#dt-woman)" />
     <!-- Arm Holding Pastel Mug -->
     <path d="M68 90L78 116" stroke="url(#dt-skin)" stroke-width="5" stroke-linecap="round" />
 
@@ -115,12 +119,12 @@
     <circle cx="135" cy="70" r="2" fill="#FF5A7E" fill-opacity="0.6" />
 
     <!-- Dark Knit Sweater -->
-    <path d="M152 136V114C152 92 144 82 134 80L131 90C139 96 142 110 142 136H152Z" fill="url(#dt-man)" filter="url(#dt-drop)" />
+    <path d="M152 136V114C152 92 144 82 134 80L131 90C139 96 142 110 142 136H152Z" fill="url(#dt-man)" />
     <path d="M132 88L122 116" stroke="url(#dt-skin)" stroke-width="5" stroke-linecap="round" />
   </g>
 
   <!-- Solid Wooden Cafe / Communion Table -->
-  <rect x="25" y="118" width="150" height="12" rx="4" fill="url(#dt-table)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#dt-drop)" />
+  <rect x="25" y="118" width="150" height="12" rx="4" fill="url(#dt-table)" stroke="#F5E6E8" stroke-width="1.2" />
 
   <!-- Conversation Cards Deck on Table -->
   <rect x="92" y="112" width="16" height="10" rx="2" fill="#FFFFFF" stroke="#FFC2CE" stroke-width="1" />
@@ -147,7 +151,7 @@
   </g>
 
   <!-- Animated Speech Bubble Overhead with Typing Dots -->
-  <g class="dt-bubble-float" filter="url(#dt-drop)">
+  <g class="dt-bubble-float">
     <!-- Speech Bubble Shape with Pointer -->
     <path d="M80 44H120C126 44 130 48 130 54C130 60 126 64 120 64H104L98 70V64H80C74 64 70 60 70 54C70 48 74 44 80 44Z" 
           fill="#FFFFFF" stroke="#F5E6E8" stroke-width="1.2" />

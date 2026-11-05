@@ -49,20 +49,18 @@
       <stop offset="60%" stop-color="#4CA46F" />
       <stop offset="100%" stop-color="#2D6B45" />
     </linearGradient>
-
-    <filter id="mny-drop" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#FF5A7E" flood-opacity="0.25" />
-    </filter>
   </defs>
 
   <style>
     .mny-sun-pulse {
       transform-origin: 120px 50px;
       animation: mny-glow-pulse 4s ease-in-out infinite alternate;
+      will-change: transform, opacity;
     }
     .mny-sprout-group {
       transform-origin: 120px 80px;
       animation: mny-sprout-dance 3.2s ease-in-out infinite;
+      will-change: transform;
     }
     .mny-sprout-blink {
       animation: mny-blink 4s infinite;
@@ -71,26 +69,31 @@
     .mny-coin-float-1 {
       transform-origin: 65px 65px;
       animation: mny-coin-bob-1 3.5s ease-in-out infinite;
+      will-change: transform;
     }
     .mny-coin-float-2 {
       transform-origin: 175px 60px;
       animation: mny-coin-bob-2 4s ease-in-out infinite 0.6s;
+      will-change: transform;
     }
     .mny-coin-shimmer {
       animation: mny-sheen 2.5s ease-in-out infinite alternate;
+      will-change: opacity;
     }
     .mny-star-1 {
       transform-origin: 40px 25px;
       animation: mny-twinkle 2.6s ease-in-out infinite;
+      will-change: transform, opacity;
     }
     .mny-star-2 {
       transform-origin: 200px 30px;
       animation: mny-twinkle 3s ease-in-out infinite 0.8s;
+      will-change: transform, opacity;
     }
 
     @keyframes mny-glow-pulse {
-      0% { transform: scale(0.95); opacity: 0.7; }
-      100% { transform: scale(1.1); opacity: 1; }
+      0% { transform: scale(0.96); opacity: 0.75; }
+      100% { transform: scale(1.06); opacity: 1; }
     }
     @keyframes mny-sprout-dance {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -102,20 +105,20 @@
       96% { transform: scaleY(0.1); }
     }
     @keyframes mny-coin-bob-1 {
-      0%, 100% { transform: translateY(0px) rotate(-6deg); }
-      50% { transform: translateY(-5px) rotate(4deg); }
+      0%, 100% { transform: translateY(0px) rotate(-5deg); }
+      50% { transform: translateY(-5px) rotate(3deg); }
     }
     @keyframes mny-coin-bob-2 {
-      0%, 100% { transform: translateY(0px) rotate(6deg); }
-      50% { transform: translateY(-6px) rotate(-4deg); }
+      0%, 100% { transform: translateY(0px) rotate(5deg); }
+      50% { transform: translateY(-5px) rotate(-3deg); }
     }
     @keyframes mny-sheen {
-      0% { opacity: 0.6; filter: drop-shadow(0 0 2px rgba(255,215,0,0.4)); }
-      100% { opacity: 1; filter: drop-shadow(0 0 7px rgba(255,215,0,0.9)); }
+      0% { opacity: 0.85; }
+      100% { opacity: 1; }
     }
     @keyframes mny-twinkle {
-      0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
-      50% { opacity: 1; transform: scale(1.25) rotate(45deg); }
+      0%, 100% { opacity: 0.3; transform: scale(0.7); }
+      50% { opacity: 1; transform: scale(1.2); }
     }
   </style>
 
@@ -125,22 +128,23 @@
   <!-- Heavenly Golden Sun Halo -->
   <circle class="mny-sun-pulse" cx="120" cy="50" r="75" fill="url(#mny-sun-glow)" />
 
-  <!-- Background Pastel Rolling Hills of Grace -->
+  <!-- Background Pastel Rolling Hills -->
   <path d="M-20 110C30 95 90 98 140 112C180 102 220 105 260 115V140H-20V110Z" fill="url(#mny-hill-back)" opacity="0.6" />
   <path d="M-10 120C40 110 100 114 160 125C200 118 230 122 250 126V140H-10V120Z" fill="url(#mny-hill-front)" />
 
   <!-- Floating Golden Kingdom Coin Left -->
-  <g class="mny-coin-float-1" filter="url(#mny-drop)">
+  <g class="mny-coin-float-1">
+    <ellipse cx="65" cy="72" rx="12" ry="3" fill="#D9C3C7" fill-opacity="0.3" />
     <circle cx="65" cy="65" r="14" fill="url(#mny-gold-coin)" />
     <circle cx="65" cy="65" r="11" stroke="#FFFFFF" stroke-width="1.2" fill="none" stroke-opacity="0.8" />
     <path d="M65 58V72M60 63H70" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
     <circle cx="65" cy="63" r="1" fill="#FFD700" />
-    <!-- Shiny glint -->
     <polygon points="56,58 58,62 55,60" fill="#FFFFFF" />
   </g>
 
   <!-- Floating Golden Kingdom Coin Right -->
-  <g class="mny-coin-float-2" filter="url(#mny-drop)">
+  <g class="mny-coin-float-2">
+    <ellipse cx="175" cy="68" rx="12" ry="3" fill="#D9C3C7" fill-opacity="0.3" />
     <circle cx="175" cy="60" r="15" fill="url(#mny-gold-coin)" />
     <circle cx="175" cy="60" r="12" stroke="#FFFFFF" stroke-width="1.2" fill="none" stroke-opacity="0.8" />
     <path d="M175 52V68M169 58H181" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" />
@@ -148,10 +152,12 @@
     <polygon points="183,53 185,57 181,55" fill="#FFFFFF" />
   </g>
 
+  <!-- Ambient Chest Shadow -->
+  <ellipse cx="120" cy="128" rx="48" ry="7" fill="#D9C3C7" fill-opacity="0.5" />
+
   <!-- Solid 3D Kingdom Treasure Coffer / Chest -->
   <!-- Chest Base Tub -->
-  <path d="M72 88H168L160 126C160 129 157 131 153 131H87C83 131 80 129 80 126L72 88Z" 
-        fill="url(#mny-chest-wood)" filter="url(#mny-drop)" />
+  <path d="M72 88H168L160 126C160 129 157 131 153 131H87C83 131 80 129 80 126L72 88Z" fill="url(#mny-chest-wood)" />
 
   <!-- Polished Rose Gold Straps & Studs -->
   <path d="M96 88L98 131M144 88L142 131" stroke="#FFD700" stroke-width="3" />
@@ -170,9 +176,7 @@
 
   <!-- Overflowing Gold Coins Mountain Inside Chest -->
   <g class="mny-coin-shimmer">
-    <!-- Coin Pile Base -->
     <ellipse cx="120" cy="88" rx="42" ry="14" fill="url(#mny-gold-coin)" />
-    <!-- Individual Overlapping Coins -->
     <ellipse cx="94" cy="86" rx="9" ry="5.5" fill="#FFD700" stroke="#FFF" stroke-width="0.8" />
     <ellipse cx="146" cy="86" rx="9" ry="5.5" fill="#FFD700" stroke="#FFF" stroke-width="0.8" />
     <ellipse cx="108" cy="84" rx="10" ry="6" fill="#FFE082" stroke="#FFF" stroke-width="0.8" />
@@ -182,8 +186,7 @@
   </g>
 
   <!-- Heart Padlock on Front of Coffer -->
-  <path d="M120 98C120 98 114 92 114 89C114 87 115.5 85.5 117.5 85.5C118.5 85.5 119.5 86.2 120 87C120.5 86.2 121.5 85.5 122.5 85.5C124.5 85.5 126 87 126 89C126 92 120 98 120 98Z" 
-        fill="#FF5A7E" filter="url(#mny-drop)" />
+  <path d="M120 98C120 98 114 92 114 89C114 87 115.5 85.5 117.5 85.5C118.5 85.5 119.5 86.2 120 87C120.5 86.2 121.5 85.5 122.5 85.5C124.5 85.5 126 87 126 89C126 92 120 98 120 98Z" fill="#FF5A7E" />
   <circle cx="120" cy="89" r="1" fill="#FFFFFF" />
 
   <!-- Animated Living Cartoon Sprout of Generosity -->
@@ -192,14 +195,11 @@
     <path d="M120 84C120 74 119 58 120 48" stroke="url(#mny-sprout-leaf)" stroke-width="4.5" stroke-linecap="round" />
 
     <!-- Left Heart-Shaped Emerald Leaf -->
-    <path d="M120 60C110 52 102 58 104 68C112 68 118 64 120 60Z" 
-          fill="url(#mny-sprout-leaf)" filter="url(#mny-drop)" />
-    <!-- Leaf Vein Highlight -->
+    <path d="M120 60C110 52 102 58 104 68C112 68 118 64 120 60Z" fill="url(#mny-sprout-leaf)" />
     <path d="M106 66C112 65 116 63 119 61" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" stroke-opacity="0.7" />
 
     <!-- Right Heart-Shaped Emerald Leaf -->
-    <path d="M120 54C130 46 138 52 136 62C128 62 122 58 120 54Z" 
-          fill="url(#mny-sprout-leaf)" filter="url(#mny-drop)" />
+    <path d="M120 54C130 46 138 52 136 62C128 62 122 58 120 54Z" fill="url(#mny-sprout-leaf)" />
     <path d="M134 60C128 59 124 57 121 55" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" stroke-opacity="0.7" />
 
     <!-- Top Sprout Bud Head with Dewdrop Cap -->
@@ -208,10 +208,8 @@
 
     <!-- Cute Smiling Cartoon Sprout Face -->
     <g class="mny-sprout-blink">
-      <!-- Left Eye -->
       <ellipse cx="118" cy="46" rx="1.2" ry="1.8" fill="#1A1A1E" />
       <circle cx="117.5" cy="45.5" r="0.6" fill="#FFFFFF" />
-      <!-- Right Eye -->
       <ellipse cx="122" cy="46" rx="1.2" ry="1.8" fill="#1A1A1E" />
       <circle cx="121.5" cy="45.5" r="0.6" fill="#FFFFFF" />
     </g>

@@ -27,7 +27,7 @@
       <stop offset="60%" stop-color="#1A1A1E" />
       <stop offset="100%" stop-color="#121214" />
     </linearGradient>
-    <linearGradient id="rom-skin" x1="0%" y1="0%" x2="0%" y2="100%">
+    <linearGradient id="rom-skin" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FEE8E8" />
       <stop offset="100%" stop-color="#F6B8C2" />
     </linearGradient>
@@ -37,50 +37,55 @@
       <stop offset="0%" stop-color="#73CD95" />
       <stop offset="100%" stop-color="#2D6B45" />
     </linearGradient>
-
-    <filter id="rom-drop" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#FF5A7E" flood-opacity="0.25" />
-    </filter>
   </defs>
 
   <style>
     .rom-glow-pulse {
       transform-origin: 120px 55px;
       animation: rom-sun-breathe 4s ease-in-out infinite alternate;
+      will-change: transform, opacity;
     }
     .rom-couple-anim {
       transform-origin: 120px 105px;
       animation: rom-couple-lean 3.6s ease-in-out infinite alternate;
+      will-change: transform;
     }
     .rom-vine-anim {
       transform-origin: 120px 10px;
       animation: rom-vine-sway 4s ease-in-out infinite alternate;
+      will-change: transform;
     }
     .rom-petal-1 {
       animation: rom-petal-float 4.5s ease-in-out infinite;
+      will-change: transform, opacity;
     }
     .rom-petal-2 {
       animation: rom-petal-float 5.2s ease-in-out infinite 1.4s;
+      will-change: transform, opacity;
     }
     .rom-petal-3 {
       animation: rom-petal-float 4s ease-in-out infinite 2.6s;
+      will-change: transform, opacity;
     }
     .rom-heart-float {
       transform-origin: 120px 62px;
       animation: rom-heartbeat 1.8s ease-in-out infinite;
+      will-change: transform;
     }
     .rom-star-1 {
       transform-origin: 35px 25px;
       animation: rom-twinkle 2.5s ease-in-out infinite;
+      will-change: transform, opacity;
     }
     .rom-star-2 {
       transform-origin: 205px 25px;
       animation: rom-twinkle 3s ease-in-out infinite 0.7s;
+      will-change: transform, opacity;
     }
 
     @keyframes rom-sun-breathe {
-      0% { transform: scale(0.96); opacity: 0.7; }
-      100% { transform: scale(1.08); opacity: 1; }
+      0% { transform: scale(0.96); opacity: 0.75; }
+      100% { transform: scale(1.06); opacity: 1; }
     }
     @keyframes rom-couple-lean {
       0% { transform: scale(1) translateY(0px); }
@@ -88,7 +93,7 @@
     }
     @keyframes rom-vine-sway {
       0% { transform: rotate(-1deg); }
-      100% { transform: rotate(1.2deg); }
+      100% { transform: rotate(1deg); }
     }
     @keyframes rom-petal-float {
       0% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
@@ -97,15 +102,14 @@
       100% { opacity: 0; transform: translate(25px, 35px) rotate(110deg); }
     }
     @keyframes rom-heartbeat {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,90,126,0.3)); }
-      20% { transform: scale(1.2); filter: drop-shadow(0 0 8px rgba(255,90,126,0.9)); }
-      40% { transform: scale(1.06); }
-      60% { transform: scale(1.15); filter: drop-shadow(0 0 5px rgba(255,90,126,0.7)); }
-      80% { transform: scale(1); }
+      0%, 100% { transform: scale(1); }
+      20% { transform: scale(1.18); }
+      40% { transform: scale(1.05); }
+      60% { transform: scale(1.12); }
     }
     @keyframes rom-twinkle {
-      0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
-      50% { opacity: 1; transform: scale(1.25) rotate(45deg); }
+      0%, 100% { opacity: 0.3; transform: scale(0.7); }
+      50% { opacity: 1; transform: scale(1.2); }
     }
   </style>
 
@@ -115,17 +119,14 @@
   <!-- Sunset Atmosphere Halo -->
   <circle class="rom-glow-pulse" cx="120" cy="55" r="75" fill="url(#rom-sunset-glow)" />
 
-  <!-- Blooming Rose Garden Arbor Arch in Background -->
+  <!-- Blooming Rose Garden Arbor Arch -->
   <g class="rom-vine-anim">
-    <!-- Trellis Wooden Arch Outline -->
     <path d="M42 140V50C42 22 75 14 120 14C165 14 198 22 198 50V140" stroke="#F5E6E8" stroke-width="4" stroke-linecap="round" fill="none" />
     <path d="M52 140V54C52 30 80 24 120 24C160 24 188 30 188 54V140" stroke="#FFD6DF" stroke-width="2" stroke-linecap="round" fill="none" />
 
-    <!-- Twisting Green Vines with Leaves -->
     <path d="M42 130C46 110 38 90 46 70C54 50 68 32 90 24C112 16 128 16 150 24C172 32 186 50 194 70C202 90 194 110 198 130" 
           stroke="url(#rom-vine)" stroke-width="3.5" stroke-linecap="round" fill="none" />
 
-    <!-- Lush Vine Leaves -->
     <circle cx="56" cy="60" r="4.5" fill="#73CD95" />
     <circle cx="80" cy="32" r="5" fill="#4CA46F" />
     <circle cx="106" cy="18" r="5.5" fill="#73CD95" />
@@ -133,72 +134,57 @@
     <circle cx="160" cy="32" r="5" fill="#4CA46F" />
     <circle cx="184" cy="60" r="4.5" fill="#73CD95" />
 
-    <!-- Blooming Pink Roses on Arbor -->
-    <!-- Rose Top Center -->
-    <circle cx="120" cy="14" r="7" fill="#FF5A7E" filter="url(#rom-drop)" />
+    <!-- Blooming Roses -->
+    <circle cx="120" cy="14" r="7" fill="#FF5A7E" />
     <circle cx="120" cy="14" r="4.5" fill="#FF85A0" />
     <circle cx="120" cy="14" r="2.2" fill="#FFFFFF" />
 
-    <!-- Rose Left Shoulder -->
-    <circle cx="86" cy="24" r="6" fill="#E84367" filter="url(#rom-drop)" />
+    <circle cx="86" cy="24" r="6" fill="#E84367" />
     <circle cx="86" cy="24" r="3.8" fill="#FF85A0" />
 
-    <!-- Rose Right Shoulder -->
-    <circle cx="154" cy="24" r="6" fill="#E84367" filter="url(#rom-drop)" />
+    <circle cx="154" cy="24" r="6" fill="#E84367" />
     <circle cx="154" cy="24" r="3.8" fill="#FF85A0" />
 
-    <!-- Rose Mid Left & Right -->
     <circle cx="48" cy="74" r="5" fill="#FF5A7E" />
     <circle cx="192" cy="74" r="5" fill="#FF5A7E" />
   </g>
 
-  <!-- Garden Stone Path Ground -->
+  <!-- Ground Path -->
   <path d="M-10 126C50 118 100 116 150 122C190 118 220 120 250 124V140H-10V126Z" fill="#FFF0F3" />
   <ellipse cx="120" cy="128" rx="55" ry="9" fill="#FCECEF" />
 
-  <!-- Animated Cartoon Couple in Love Leaning In -->
+  <!-- Animated Cartoon Couple -->
   <g class="rom-couple-anim">
-    <!-- Partner Left (Woman in Flowing Rose Dress) -->
-    <!-- Head & Chignon Hair -->
+    <!-- Partner Left (Woman) -->
     <circle cx="98" cy="72" r="4.5" fill="#1A1A1E" />
     <circle cx="104" cy="78" r="9" fill="url(#rom-skin)" />
-    <!-- Hair Front & Flower -->
     <path d="M96 77C95 70 100 66 107 66C112 66 114 70 113 76C110 73 106 72 101 73Z" fill="#1A1A1E" />
     <circle cx="98" cy="72" r="2.2" fill="#FF5A7E" />
-    <!-- Rosy Cheek Blush -->
     <circle cx="106" cy="80" r="2" fill="#FF5A7E" fill-opacity="0.6" />
 
-    <!-- Flowing Maxi Dress Torso & Skirt -->
-    <path d="M104 87C98 90 94 99 94 115C94 126 91 135 91 135H113C113 126 111 115 111 99C111 90 108 87 104 87Z" 
-          fill="url(#rom-woman-dress)" filter="url(#rom-drop)" />
-    <!-- Arm Extending to Hold Hands -->
+    <path d="M104 87C98 90 94 99 94 115C94 126 91 135 91 135H113C113 126 111 115 111 99C111 90 108 87 104 87Z" fill="url(#rom-woman-dress)" />
     <path d="M107 98C111 104 114 108 118 111" stroke="url(#rom-skin)" stroke-width="4.5" stroke-linecap="round" />
 
-    <!-- Partner Right (Man in Ink Suit) -->
-    <!-- Head & Hair -->
+    <!-- Partner Right (Man) -->
     <circle cx="136" cy="76" r="9" fill="url(#rom-skin)" />
     <path d="M128 76C128 69 132 66 138 66C144 66 146 69 146 76C143 73 140 72 136 72C132 72 130 74 128 76Z" fill="url(#rom-man-suit)" />
     <circle cx="134" cy="78" r="2" fill="#FF5A7E" fill-opacity="0.6" />
 
-    <!-- Tailored Suit Blazer & Trousers -->
-    <path d="M136 85C142 88 147 96 147 112C147 125 145 135 145 135H127V112C127 96 130 88 136 85Z" 
-          fill="url(#rom-man-suit)" filter="url(#rom-drop)" />
-    <!-- Arm Extending to Hold Hands -->
+    <path d="M136 85C142 88 147 96 147 112C147 125 145 135 145 135H127V112C127 96 130 88 136 85Z" fill="url(#rom-man-suit)" />
     <path d="M133 97C129 103 126 108 122 111" stroke="url(#rom-skin)" stroke-width="4.5" stroke-linecap="round" />
 
-    <!-- Clasped Hands with Glowing Spark -->
+    <!-- Clasped Hands -->
     <circle cx="120" cy="111" r="5" fill="#FF5A7E" />
     <circle cx="120" cy="111" r="2.5" fill="#FFFFFF" />
   </g>
 
-  <!-- Glowing Covenant Heart between them -->
+  <!-- Glowing Covenant Heart -->
   <g class="rom-heart-float">
-    <path d="M120 62C120 62 112 55 112 50.5C112 47.5 114.5 45 117.5 45C119 45 120 45.8 120 46.8C120 45.8 121 45 122.5 45C125.5 45 128 47.5 128 50.5C128 55 120 62 120 62Z" 
-          fill="#FF5A7E" filter="url(#rom-drop)" />
+    <path d="M120 62C120 62 112 55 112 50.5C112 47.5 114.5 45 117.5 45C119 45 120 45.8 120 46.8C120 45.8 121 45 122.5 45C125.5 45 128 47.5 128 50.5C128 55 120 62 120 62Z" fill="#FF5A7E" />
     <circle cx="117" cy="49" r="1.2" fill="#FFFFFF" />
   </g>
 
-  <!-- Drifting Rose Petals in the Air -->
+  <!-- Drifting Rose Petals -->
   <g class="rom-petal-1" style="transform-origin: 65px 40px;">
     <path d="M65 40C67 36 71 38 70 42C68 45 64 43 65 40Z" fill="#FF85A0" />
   </g>

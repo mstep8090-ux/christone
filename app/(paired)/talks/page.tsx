@@ -46,85 +46,84 @@ const DECK_CARTOON_ILLUSTRATIONS: Record<string, string> = {
   "Married Intimacy": "/illustrations/talks/intimacy-card.svg",
 };
 
+const DEFAULT_DECKS: Deck[] = [
+  { id: "d1000000-0000-0000-0000-000000000001", title: "Foundation", category: "Spiritual", stage: "all", description: null, icon_name: "message-circle", is_intimacy: false },
+  { id: "d1000000-0000-0000-0000-000000000002", title: "Money", category: "Finances", stage: "all", description: null, icon_name: "wallet", is_intimacy: false },
+  { id: "d1000000-0000-0000-0000-000000000003", title: "Family", category: "Heritage", stage: "all", description: null, icon_name: "home", is_intimacy: false },
+  { id: "d1000000-0000-0000-0000-000000000004", title: "Conflict", category: "Peace", stage: "all", description: null, icon_name: "heart-handshake", is_intimacy: false },
+  { id: "d1000000-0000-0000-0000-000000000005", title: "Fun & Gist", category: "Laughter", stage: "all", description: null, icon_name: "smile", is_intimacy: false },
+  { id: "d1000000-0000-0000-0000-000000000006", title: "Kingdom Purpose", category: "Mission", stage: "all", description: null, icon_name: "compass", is_intimacy: false },
+  { id: "d1000000-0000-0000-0000-000000000007", title: "Romance & Affection", category: "Cherishing Hearts", stage: "all", description: null, icon_name: "heart", is_intimacy: false },
+  { id: "d1000000-0000-0000-0000-000000000008", title: "Married Intimacy", category: "Sacred Oneness", stage: "married", description: null, icon_name: "sparkles", is_intimacy: true },
+];
+
 export default function TalksPage() {
   const router = useRouter();
-  const [decks, setDecks] = React.useState<Deck[]>([]);
+  // Initialize with DEFAULT_DECKS for instantaneous 0ms display with zero flicker or lag
+  const [decks, setDecks] = React.useState<Deck[]>(DEFAULT_DECKS);
   const [userStage, setUserStage] = React.useState<string>("courting");
   const [isMarriedConfirmed, setIsMarriedConfirmed] = React.useState<boolean>(false);
   const [dailyPrompt, setDailyPrompt] = React.useState<DailyPromptData | null>(null);
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
   // Gate 1 Modal state
   const [isMarriedOnlyModalOpen, setIsMarriedOnlyModalOpen] = React.useState(false);
 
   const loadData = React.useCallback(async () => {
-    setLoading(true);
     setError(null);
 
-    // 1. Check local storage fallback
+    // 1. Check local storage fallback for instant stage detection
     if (typeof window !== "undefined") {
       const localStage = localStorage.getItem("stage");
       if (localStage) setUserStage(localStage);
     }
 
     try {
-      // 2. Fetch user profile & couple for daily prompt
-      const { data: authData } = await supabase.auth.getUser();
-      if (authData?.user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("stage, is_married_confirmed")
-          .eq("id", authData.user.id)
-          .maybeSingle();
+      // 2. Parallel fetch auth & decks from database to avoid sequential waterfall delays
+      const [authRes, decksRes] = await Promise.all([
+        supabase.auth.getUser(),
+        supabase.from("talk_decks").select("*").order("id"),
+      ]);
 
-        if (profile) {
-          if (profile.stage) setUserStage(profile.stage);
-          setIsMarriedConfirmed(!!profile.is_married_confirmed);
-        }
-
-        // Fetch paired couple
-        const { data: couple } = await supabase
-          .from("couples")
-          .select("id")
-          .or(`partner_a.eq.${authData.user.id},partner_b.eq.${authData.user.id}`)
-          .eq("status", "paired")
-          .maybeSingle();
-
-        if (couple) {
-          const daily = await getDailyPrompt(couple.id);
-          if (daily) setDailyPrompt(daily);
-        }
+      if (decksRes.data && decksRes.data.length > 0) {
+        setDecks(decksRes.data);
       }
 
-      // 3. Fetch decks from database
-      const { data: decksList, error: decksErr } = await supabase
-        .from("talk_decks")
-        .select("*")
-        .order("id");
-
-      if (decksErr) throw decksErr;
-
-      if (decksList && decksList.length > 0) {
-        setDecks(decksList);
-      } else {
-        // Fallback static list of 8 decks
-        setDecks([
-          { id: "d1000000-0000-0000-0000-000000000001", title: "Foundation", category: "Spiritual", stage: "all", description: null, icon_name: "message-circle", is_intimacy: false },
-          { id: "d1000000-0000-0000-0000-000000000002", title: "Money", category: "Finances", stage: "all", description: null, icon_name: "wallet", is_intimacy: false },
-          { id: "d1000000-0000-0000-0000-000000000003", title: "Family", category: "Heritage", stage: "all", description: null, icon_name: "home", is_intimacy: false },
-          { id: "d1000000-0000-0000-0000-000000000004", title: "Conflict", category: "Peace", stage: "all", description: null, icon_name: "heart-handshake", is_intimacy: false },
-          { id: "d1000000-0000-0000-0000-000000000005", title: "Fun & Gist", category: "Laughter", stage: "all", description: null, icon_name: "smile", is_intimacy: false },
-          { id: "d1000000-0000-0000-0000-000000000006", title: "Kingdom Purpose", category: "Mission", stage: "all", description: null, icon_name: "compass", is_intimacy: false },
-          { id: "d1000000-0000-0000-0000-000000000007", title: "Romance & Affection", category: "Cherishing Hearts", stage: "all", description: null, icon_name: "heart", is_intimacy: false },
-          { id: "d1000000-0000-0000-0000-000000000008", title: "Married Intimacy", category: "Sacred Oneness", stage: "married", description: null, icon_name: "sparkles", is_intimacy: true },
+      const user = authRes.data?.user;
+      if (user) {
+        // Parallel fetch profile & couple
+        const [profileRes, coupleRes] = await Promise.all([
+          supabase
+            .from("profiles")
+            .select("stage, is_married_confirmed")
+            .eq("id", user.id)
+            .maybeSingle(),
+          supabase
+            .from("couples")
+            .select("id")
+            .or(`partner_a.eq.${user.id},partner_b.eq.${user.id}`)
+            .eq("status", "paired")
+            .maybeSingle(),
         ]);
+
+        if (profileRes.data) {
+          if (profileRes.data.stage) setUserStage(profileRes.data.stage);
+          setIsMarriedConfirmed(!!profileRes.data.is_married_confirmed);
+        }
+
+        if (coupleRes.data?.id) {
+          getDailyPrompt(coupleRes.data.id)
+            .then((daily) => {
+              if (daily) setDailyPrompt(daily);
+            })
+            .catch(() => {
+              // Silently ignore daily prompt failure to keep talk decks responsive
+            });
+        }
       }
     } catch (err) {
       console.error("Failed to load talk decks:", err);
-      setError("Something soft broke. Try again.");
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -160,6 +159,8 @@ export default function TalksPage() {
               alt="Today's Talk"
               width={200}
               height={160}
+              unoptimized
+              decoding="async"
               className="w-full h-full object-contain"
             />
           </div>
@@ -256,17 +257,13 @@ export default function TalksPage() {
                   alt={deck.title}
                   width={240}
                   height={140}
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  unoptimized
+                  decoding="async"
+                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                   priority={idx < 4}
                 />
                 {/* Bottom subtle gradient fade onto white card surface */}
                 <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-white to-transparent pointer-events-none" />
-
-                {/* Top Badge: Category Pill */}
-                <div className="absolute top-2.5 left-2.5 z-10 flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-xs border border-border/80 shadow-xs">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  <span className="text-[10px] font-semibold text-inkSoft uppercase tracking-wider">{deck.category || "Deck"}</span>
-                </div>
 
                 {/* Top Right: Sparkles for Intimacy */}
                 {isIntimacyDeck && (
