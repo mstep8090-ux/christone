@@ -1,23 +1,163 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
-  <!-- Minimal Line Praying Hands Together -->
-  <g stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <!-- Left Hand & Fingers -->
-    <path d="M100 45 C98 52 92 68 88 82 C85 92 84 98 84 106 C84 116 88 126 92 135 L75 160 C70 152 64 138 68 122 C70 114 74 104 77 92 C80 80 88 62 94 48 Z" />
-    <path d="M88 82 C82 92 78 106 78 118" />
-    <path d="M94 48 C97 42 100 40 100 40 C100 40 103 42 106 48" />
-    
-    <!-- Right Hand & Fingers -->
-    <path d="M100 45 C102 52 108 68 112 82 C115 92 116 98 116 106 C116 116 112 126 108 135 L125 160 C130 152 136 138 132 122 C130 114 126 104 123 92 C120 80 112 62 106 48 Z" />
-    <path d="M112 82 C118 92 122 106 122 118" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <defs>
+    <linearGradient id="ph-aura" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.28"/>
+      <stop offset="60%" stop-color="#FFC2CE" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="ph-hand-l" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="50%" stop-color="#FFF2F4"/>
+      <stop offset="100%" stop-color="#FFC2CE"/>
+    </linearGradient>
+    <linearGradient id="ph-hand-r" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="45%" stop-color="#FFE6EB"/>
+      <stop offset="100%" stop-color="#FFAEBE"/>
+    </linearGradient>
+    <linearGradient id="ph-cuff" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF5A7E"/>
+      <stop offset="100%" stop-color="#E84367"/>
+    </linearGradient>
+    <linearGradient id="ph-cuff-subtle" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A1A1E"/>
+      <stop offset="100%" stop-color="#6B5B5F"/>
+    </linearGradient>
+    <radialGradient id="ph-core-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.6"/>
+      <stop offset="40%" stop-color="#FFC2CE" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="ph-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#FF5A7E" flood-opacity="0.18"/>
+    </filter>
+    <filter id="ph-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
 
-    <!-- Clothed Sleeves -->
-    <path d="M52 148 L75 160 L68 178 L42 162 Z" />
-    <path d="M148 148 L125 160 L132 178 L158 162 Z" />
+  <style>
+    @keyframes ph-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-7px); }
+    }
+    @keyframes ph-breathe {
+      0%, 100% { transform: scale(1); opacity: 0.85; }
+      50% { transform: scale(1.08); opacity: 1; }
+    }
+    @keyframes ph-twinkle-1 {
+      0%, 100% { transform: scale(0.6) rotate(0deg); opacity: 0.3; }
+      50% { transform: scale(1.15) rotate(45deg); opacity: 1; }
+    }
+    @keyframes ph-twinkle-2 {
+      0%, 100% { transform: scale(1.1) rotate(45deg); opacity: 0.9; }
+      50% { transform: scale(0.5) rotate(90deg); opacity: 0.2; }
+    }
+    @keyframes ph-ray {
+      0%, 100% { opacity: 0.35; stroke-dashoffset: 0; }
+      50% { opacity: 0.85; stroke-dashoffset: 6; }
+    }
+    .ph-floating-group {
+      animation: ph-float 4.5s ease-in-out infinite;
+      transform-origin: 120px 140px;
+    }
+    .ph-aura-pulse {
+      animation: ph-breathe 3.8s ease-in-out infinite;
+      transform-origin: 120px 115px;
+    }
+    .ph-star-1 {
+      animation: ph-twinkle-1 2.8s ease-in-out infinite;
+      transform-origin: 120px 32px;
+    }
+    .ph-star-2 {
+      animation: ph-twinkle-2 3.2s ease-in-out infinite;
+      transform-origin: 52px 76px;
+    }
+    .ph-star-3 {
+      animation: ph-twinkle-1 3.5s ease-in-out infinite 0.7s;
+      transform-origin: 188px 76px;
+    }
+    .ph-ray-line {
+      stroke-dasharray: 4 3;
+      animation: ph-ray 3s ease-in-out infinite;
+    }
+  </style>
 
-    <!-- Center prayer contact line -->
-    <line x1="100" y1="46" x2="100" y2="128" stroke-dasharray="2 3" opacity="0.4" />
-    <!-- Soft blessing sparkle top -->
-    <path d="M100 24 L100 32" stroke="#FF5A7E" stroke-width="1.5" />
-    <path d="M96 28 L104 28" stroke="#FF5A7E" stroke-width="1.5" />
+  <!-- Living Holy Glow Background -->
+  <circle class="ph-aura-pulse" cx="120" cy="115" r="88" fill="url(#ph-aura)"/>
+  <circle class="ph-aura-pulse" cx="120" cy="115" r="54" fill="url(#ph-core-glow)"/>
+
+  <!-- Holy Light Rays -->
+  <g stroke="#FF5A7E" stroke-width="1.2" opacity="0.6">
+    <line class="ph-ray-line" x1="120" y1="20" x2="120" y2="40"/>
+    <line class="ph-ray-line" x1="175" y1="45" x2="162" y2="60"/>
+    <line class="ph-ray-line" x1="65" y1="45" x2="78" y2="60"/>
+    <line class="ph-ray-line" x1="195" y1="95" x2="178" y2="102"/>
+    <line class="ph-ray-line" x1="45" y1="95" x2="62" y2="102"/>
   </g>
+
+  <!-- Main Floating Hands -->
+  <g class="ph-floating-group" filter="url(#ph-shadow)">
+    <!-- Ambient Shadow Under Hands -->
+    <ellipse cx="120" cy="188" rx="42" ry="7" fill="#1A1A1E" opacity="0.08"/>
+
+    <!-- Left Hand Base -->
+    <path d="M120 54 C116 66 104 94 98 114 C93 130 92 142 94 162 L74 162 C70 148 68 132 74 116 C78 104 88 84 104 64 Z" fill="url(#ph-hand-l)"/>
+    
+    <!-- Left Hand Main Profile & Fingers -->
+    <path d="M120 54 C118 64 110 88 106 104 C102 120 102 134 104 154 L119 154 L119 54 Z" fill="#FFFFFF"/>
+    <path d="M104 64 C100 78 94 98 92 114 C90 128 92 142 96 154" stroke="#F5E6E8" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M96 82 C92 96 88 112 88 126" stroke="#F5E6E8" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Right Hand Base -->
+    <path d="M120 54 C124 66 136 94 142 114 C147 130 148 142 146 162 L166 162 C170 148 172 132 166 116 C162 104 152 84 136 64 Z" fill="url(#ph-hand-r)"/>
+    
+    <!-- Right Hand Main Profile & Fingers -->
+    <path d="M120 54 C122 64 130 88 134 104 C138 120 138 134 136 154 L121 154 L121 54 Z" fill="#FFEBF0"/>
+    <path d="M136 64 C140 78 146 98 148 114 C150 128 148 142 144 154" stroke="#FFAEBE" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M144 82 C148 96 152 112 152 126" stroke="#FFAEBE" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Contact Seam (Covenant Touch) with glowing rose outline -->
+    <path d="M120 54 L120 156" stroke="#FF5A7E" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Thumb Left Details -->
+    <path d="M110 112 C108 122 108 134 112 144" stroke="#E84367" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+    <!-- Thumb Right Details -->
+    <path d="M130 112 C132 122 132 134 128 144" stroke="#E84367" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+
+    <!-- Sleeves / Cuffs with Solid Curved Elegance -->
+    <!-- Partner A Sleeve (Soft Rose) -->
+    <path d="M68 162 C68 158 74 156 80 156 L112 156 C114 156 116 158 116 162 L114 186 C114 188 110 190 106 190 L76 190 C70 190 68 188 68 186 Z" fill="url(#ph-cuff)"/>
+    <rect x="74" y="156" width="38" height="3" rx="1.5" fill="#FFFFFF" opacity="0.6"/>
+
+    <!-- Partner B Sleeve (Warm Ink / Rose Contrast) -->
+    <path d="M124 162 C124 158 126 156 128 156 L160 156 C166 156 172 158 172 162 L172 186 C172 188 170 190 164 190 L134 190 C130 190 126 188 126 186 Z" fill="url(#ph-cuff-subtle)"/>
+    <rect x="128" y="156" width="38" height="3" rx="1.5" fill="#FFC2CE" opacity="0.6"/>
+  </g>
+
+  <!-- Celestial Twinkling Stars -->
+  <!-- Center Crown Star -->
+  <g class="ph-star-1" filter="url(#ph-glow)">
+    <path d="M120 20 L122.5 28.5 L131 31 L122.5 33.5 L120 42 L117.5 33.5 L109 31 L117.5 28.5 Z" fill="#FF5A7E"/>
+    <circle cx="120" cy="31" r="2.5" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Left Star -->
+  <g class="ph-star-2">
+    <path d="M52 70 L53.5 74.5 L58 76 L53.5 77.5 L52 82 L50.5 77.5 L46 76 L50.5 74.5 Z" fill="#FFAEBE"/>
+    <circle cx="52" cy="76" r="1.5" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Right Star -->
+  <g class="ph-star-3">
+    <path d="M188 70 L189.5 74.5 L194 76 L189.5 77.5 L188 82 L186.5 77.5 L182 76 L186.5 74.5 Z" fill="#FF5A7E"/>
+    <circle cx="188" cy="76" r="1.5" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Subtle Micro Dust Particles -->
+  <circle cx="95" cy="40" r="1.5" fill="#FFC2CE" opacity="0.7"/>
+  <circle cx="145" cy="40" r="1.5" fill="#FF5A7E" opacity="0.7"/>
+  <circle cx="70" cy="110" r="1.2" fill="#FFAEBE" opacity="0.5"/>
+  <circle cx="170" cy="110" r="1.2" fill="#FFAEBE" opacity="0.5"/>
 </svg>

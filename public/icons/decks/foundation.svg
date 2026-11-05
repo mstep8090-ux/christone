@@ -1,6 +1,140 @@
 <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="60" cy="60" r="54" fill="#FFC2CE" fill-opacity="0.8"/>
-  <g stroke="#1A1A1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M48 76L36 80L40 68C37 63 35 57 35 51C35 37.1929 46.1929 26 60 26C73.8071 26 85 37.1929 85 51C85 64.8071 73.8071 76 60 76C55.8 76 51.7 74.8 48 72.8V76Z"/>
+  <defs>
+    <!-- Halo Glow -->
+    <radialGradient id="fnd-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.35" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="fnd-disc" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF0F3" />
+      <stop offset="85%" stop-color="#FFD6DF" />
+      <stop offset="100%" stop-color="#FFC2CE" />
+    </radialGradient>
+
+    <!-- Stone Altar Gradient -->
+    <linearGradient id="fnd-stone" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="30%" stop-color="#FCECEF" />
+      <stop offset="80%" stop-color="#EAD6DA" />
+      <stop offset="100%" stop-color="#D4BEC3" />
+    </linearGradient>
+
+    <!-- Flame Gradients -->
+    <linearGradient id="fnd-flame-outer" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#E84367" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#FFA245" />
+    </linearGradient>
+    <linearGradient id="fnd-flame-inner" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#FF9E40" />
+      <stop offset="60%" stop-color="#FFD700" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+
+    <filter id="fnd-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .fnd-aura {
+      transform-origin: 60px 60px;
+      animation: fnd-pulse 3.5s ease-in-out infinite;
+    }
+    .fnd-flame-group {
+      transform-origin: 60px 60px;
+      animation: fnd-flicker 1.8s ease-in-out infinite alternate;
+    }
+    .fnd-altar-group {
+      transform-origin: 60px 75px;
+      animation: fnd-breathe 4s ease-in-out infinite;
+    }
+    .fnd-ember-1 {
+      animation: fnd-rise 2.4s ease-in-out infinite;
+    }
+    .fnd-ember-2 {
+      animation: fnd-rise 2.8s ease-in-out infinite 1s;
+    }
+    .fnd-star {
+      transform-origin: 95px 26px;
+      animation: fnd-twinkle 2.8s ease-in-out infinite;
+    }
+
+    @keyframes fnd-pulse {
+      0%, 100% { opacity: 0.6; transform: scale(0.97); }
+      50% { opacity: 1; transform: scale(1.04); }
+    }
+    @keyframes fnd-breathe {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-1.5px); }
+    }
+    @keyframes fnd-flicker {
+      0% { transform: scale(0.96) rotate(-1deg); }
+      50% { transform: scale(1.05, 1.02) rotate(1deg); filter: drop-shadow(0 0 6px rgba(255,90,126,0.8)); }
+      100% { transform: scale(0.98, 1.04) rotate(-0.5deg); }
+    }
+    @keyframes fnd-rise {
+      0% { opacity: 0; transform: translateY(0px) scale(0.7); }
+      40% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-18px) scale(1.2); }
+    }
+    @keyframes fnd-twinkle {
+      0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.25) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Light Pulse -->
+  <circle class="fnd-aura" cx="60" cy="60" r="56" fill="url(#fnd-glow)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="60" cy="60" r="52" fill="url(#fnd-disc)" stroke="#F5E6E8" stroke-width="2" filter="url(#fnd-shadow)" />
+  <circle cx="60" cy="60" r="47" stroke="#FF5A7E" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="3 4" fill="none" />
+
+  <!-- Animated Living Altar & Flame -->
+  <g class="fnd-altar-group">
+    <!-- Base Foundation Stone Block -->
+    <path d="M26 84C26 82 28 80 30 80H90C92 80 94 82 94 84V92C94 94 92 96 90 96H30C28 96 26 94 26 92V84Z" 
+          fill="url(#fnd-stone)" stroke="#F5E6E8" stroke-width="1.5" filter="url(#fnd-shadow)" />
+    <!-- Bevel highlight on base -->
+    <line x1="28" y1="81.5" x2="92" y2="81.5" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" />
+
+    <!-- Mid Cornerstone Altar Block -->
+    <path d="M34 68C34 66 36 64 38 64H82C84 64 86 66 86 68V80H34V68Z" 
+          fill="url(#fnd-stone)" stroke="#F5E6E8" stroke-width="1.5" />
+    <line x1="36" y1="65.5" x2="84" y2="65.5" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" />
+
+    <!-- Inscribed Holy Cross on Altar Face -->
+    <path d="M60 70V76M57 72.5H63" stroke="#FF5A7E" stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="60" cy="72.5" r="1" fill="#FFFFFF" />
+
+    <!-- Top Altar Hearth Slab -->
+    <rect x="42" y="58" width="36" height="6" rx="2.5" fill="#FFFFFF" stroke="#EAD6DA" stroke-width="1.2" />
+
+    <!-- Living Eternal Covenant Flame -->
+    <g class="fnd-flame-group">
+      <!-- Outer Flame -->
+      <path d="M60 26C60 26 50 38 50 48C50 54 54.5 59 60 59C65.5 59 70 54 70 48C70 38 60 26 60 26Z" 
+            fill="url(#fnd-flame-outer)" filter="url(#fnd-shadow)" />
+
+      <!-- Inner Core Golden Flame -->
+      <path d="M60 35C60 35 54 43 54 49C54 53 56.7 56 60 56C63.3 56 66 53 66 49C66 43 60 35 60 35Z" 
+            fill="url(#fnd-flame-inner)" />
+
+      <!-- Center White Light Spark -->
+      <ellipse cx="60" cy="50" rx="2.5" ry="4" fill="#FFFFFF" />
+    </g>
+
+    <!-- Rising Embers -->
+    <circle class="fnd-ember-1" cx="54" cy="38" r="1.5" fill="#FFD700" />
+    <circle class="fnd-ember-2" cx="66" cy="32" r="1.3" fill="#FFA245" />
   </g>
+
+  <!-- Celestial Guide Twinkle Star -->
+  <path class="fnd-star" d="M95 21V29M91 25H99" stroke="#FF5A7E" stroke-width="1.6" stroke-linecap="round" />
+  <circle cx="95" cy="25" r="1.2" fill="#FFFFFF" />
 </svg>

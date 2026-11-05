@@ -1,9 +1,110 @@
 <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M40,16 C34,16 31,21 31,28 C31,35 35,40 40,40 C45,40 49,35 49,28 C49,21 46,16 40,16 Z" />
-    <path d="M32,23 C35,19 45,19 48,23" />
-    <path d="M36,40 C34,44 30,47 28,50 C22,54 15,59 13,70" />
-    <path d="M44,40 C46,44 50,47 52,50 C58,54 65,59 67,70" />
-    <path d="M28,50 L33,54 L40,51 L47,54 L52,50" />
+  <defs>
+    <!-- Halo Radial Background -->
+    <radialGradient id="ms-bg" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF0F3" />
+      <stop offset="85%" stop-color="#FFD6DF" />
+      <stop offset="100%" stop-color="#FFC2CE" />
+    </radialGradient>
+
+    <!-- Divine Halo Ring Gradient -->
+    <linearGradient id="ms-halo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.6" />
+      <stop offset="50%" stop-color="#FFC2CE" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#FF5A7E" stop-opacity="0.7" />
+    </linearGradient>
+
+    <!-- Hair Solid Gradient -->
+    <linearGradient id="ms-hair" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2D292F" />
+      <stop offset="60%" stop-color="#1A1A1E" />
+      <stop offset="100%" stop-color="#121214" />
+    </linearGradient>
+
+    <!-- Skin/Face Solid Warm Tones -->
+    <linearGradient id="ms-skin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEE8E8" />
+      <stop offset="70%" stop-color="#FCD2D8" />
+      <stop offset="100%" stop-color="#F6B8C2" />
+    </linearGradient>
+
+    <!-- Coat / Attire Solid Ink -->
+    <linearGradient id="ms-attire" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2A282D" />
+      <stop offset="60%" stop-color="#1A1A1E" />
+      <stop offset="100%" stop-color="#131215" />
+    </linearGradient>
+
+    <filter id="ms-drop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#FF5A7E" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <style>
+    .ms-halo-pulse {
+      transform-origin: 40px 40px;
+      animation: ms-halo 3.5s ease-in-out infinite;
+    }
+    .ms-character {
+      transform-origin: 40px 55px;
+      animation: ms-breathe 4s ease-in-out infinite;
+    }
+    .ms-star {
+      transform-origin: 58px 18px;
+      animation: ms-twinkle 2.8s ease-in-out infinite;
+    }
+
+    @keyframes ms-breathe {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-1.5px) scale(1.015); }
+    }
+    @keyframes ms-halo {
+      0%, 100% { opacity: 0.5; transform: scale(0.97); }
+      50% { opacity: 0.9; transform: scale(1.03); }
+    }
+    @keyframes ms-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Backdrop Circle with border -->
+  <circle cx="40" cy="40" r="37" fill="url(#ms-bg)" stroke="#F5E6E8" stroke-width="1.5" filter="url(#ms-drop)" />
+  <circle class="ms-halo-pulse" cx="40" cy="40" r="34" stroke="url(#ms-halo-grad)" stroke-width="1.2" stroke-dasharray="3 4" fill="none" />
+
+  <g class="ms-character">
+    <!-- Suit Shoulders & Torso -->
+    <path d="M17 73C18 62 26 55 35 53L40 56L45 53C54 55 62 62 63 73C63 74 62 75 60 75H20C18 75 17 74 17 73Z" 
+          fill="url(#ms-attire)" />
+    
+    <!-- White Covenant Shirt Collar -->
+    <path d="M35 53L40 60L45 53L43 50L40 52L37 50Z" fill="#FFFFFF" />
+    <!-- Rose Silk Tie / Covenant Lapel Accent -->
+    <path d="M39 57L41 57L41.5 67L40 69L38.5 67Z" fill="#FF5A7E" />
+
+    <!-- Neck -->
+    <path d="M36 44H44V54H36V44Z" fill="url(#ms-skin)" />
+    <!-- Neck shadow under chin -->
+    <path d="M36 44C38 46 42 46 44 44V47C42 49 38 49 36 47V44Z" fill="#E8A8B4" fill-opacity="0.4" />
+
+    <!-- Ears -->
+    <circle cx="30" cy="33" r="3" fill="url(#ms-skin)" />
+    <circle cx="50" cy="33" r="3" fill="url(#ms-skin)" />
+
+    <!-- Head / Face -->
+    <ellipse cx="40" cy="32" rx="10" ry="12" fill="url(#ms-skin)" />
+
+    <!-- Sculpted Hair -->
+    <path d="M30 30C29 25 32 18 40 18C48 18 51 25 50 30C49 26 47 22 40 22C33 22 31 26 30 30Z" 
+          fill="url(#ms-hair)" />
+    <!-- Modern Side Part & Wave -->
+    <path d="M32 23C35 20 44 20 48 24C46 22 41 21.5 36 22C34 22.2 33 22.6 32 23Z" fill="#3D373F" />
+
+    <!-- Cross Lapel Pin on Left Chest -->
+    <path d="M26 63V67M24.5 64.5H27.5" stroke="#FFFFFF" stroke-width="0.9" stroke-linecap="round" />
   </g>
+
+  <!-- Celestial Twinkle Star -->
+  <path class="ms-star" d="M58 15V21M55 18H61" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
 </svg>

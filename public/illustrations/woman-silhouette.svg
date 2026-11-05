@@ -1,9 +1,112 @@
 <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M40,16 C34,16 30,21 30,28 C30,35 34,40 40,40 C46,40 50,35 50,28 C50,21 46,16 40,16 Z" />
-    <path d="M48,22 C52,22 55,25 55,28 C55,31 52,33 48,33" />
-    <path d="M36,40 C34,44 32,48 30,52 C24,56 16,61 14,70" />
-    <path d="M44,40 C46,44 48,48 50,52 C56,56 64,61 66,70" />
-    <path d="M30,52 C35,55 45,55 50,52" />
+  <defs>
+    <!-- Halo Radial Background -->
+    <radialGradient id="ws-bg" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF0F3" />
+      <stop offset="85%" stop-color="#FFD6DF" />
+      <stop offset="100%" stop-color="#FFC2CE" />
+    </radialGradient>
+
+    <!-- Divine Halo Ring Gradient -->
+    <linearGradient id="ws-halo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.6" />
+      <stop offset="50%" stop-color="#FFC2CE" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#FF5A7E" stop-opacity="0.7" />
+    </linearGradient>
+
+    <!-- Hair Solid Gradient -->
+    <linearGradient id="ws-hair" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#382A2E" />
+      <stop offset="60%" stop-color="#1A1A1E" />
+      <stop offset="100%" stop-color="#121214" />
+    </linearGradient>
+
+    <!-- Skin/Face Solid Warm Tones -->
+    <linearGradient id="ws-skin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEE8E8" />
+      <stop offset="70%" stop-color="#FCD2D8" />
+      <stop offset="100%" stop-color="#F6B8C2" />
+    </linearGradient>
+
+    <!-- Dress Solid Rose -->
+    <linearGradient id="ws-dress" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF85A0" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </linearGradient>
+
+    <filter id="ws-drop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#FF5A7E" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <style>
+    .ws-halo-pulse {
+      transform-origin: 40px 40px;
+      animation: ws-halo 3.5s ease-in-out infinite;
+    }
+    .ws-character {
+      transform-origin: 40px 55px;
+      animation: ws-breathe 4s ease-in-out infinite;
+    }
+    .ws-star {
+      transform-origin: 22px 18px;
+      animation: ws-twinkle 2.8s ease-in-out infinite;
+    }
+
+    @keyframes ws-breathe {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-1.5px) scale(1.015); }
+    }
+    @keyframes ws-halo {
+      0%, 100% { opacity: 0.5; transform: scale(0.97); }
+      50% { opacity: 0.9; transform: scale(1.03); }
+    }
+    @keyframes ws-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Backdrop Circle with border -->
+  <circle cx="40" cy="40" r="37" fill="url(#ws-bg)" stroke="#F5E6E8" stroke-width="1.5" filter="url(#ws-drop)" />
+  <circle class="ws-halo-pulse" cx="40" cy="40" r="34" stroke="url(#ws-halo-grad)" stroke-width="1.2" stroke-dasharray="3 4" fill="none" />
+
+  <g class="ws-character">
+    <!-- Flowing Hair behind neck & shoulders -->
+    <path d="M28 32C26 40 26 50 28 58C31 54 33 46 33 40C33 34 32 30 28 32Z" fill="url(#ws-hair)" />
+    <path d="M52 32C54 40 54 50 52 58C49 54 47 46 47 40C47 34 48 30 52 32Z" fill="url(#ws-hair)" />
+    <!-- Hair Updo / Bun Top Accent -->
+    <circle cx="40" cy="18" r="7" fill="url(#ws-hair)" />
+
+    <!-- Modest Rose Gown Shoulders & Torso -->
+    <path d="M19 74C20 63 28 57 35 55L40 58L45 55C52 57 60 63 61 74C61 75 60 75 58 75H22C20 75 19 75 19 74Z" 
+          fill="url(#ws-dress)" />
+
+    <!-- Neck -->
+    <path d="M37 43H43V54H37V43Z" fill="url(#ws-skin)" />
+    <!-- Neck shadow under chin -->
+    <path d="M37 43C39 45 41 45 43 43V46C41 48 39 48 37 46V43Z" fill="#E8A8B4" fill-opacity="0.4" />
+
+    <!-- Delicate Cross / Pearl Necklace -->
+    <path d="M35 52C38 55 42 55 45 52" stroke="#FFFFFF" stroke-width="0.9" fill="none" />
+    <circle cx="40" cy="54" r="1.3" fill="#FFFFFF" />
+
+    <!-- Head / Face -->
+    <ellipse cx="40" cy="32" rx="9" ry="11.5" fill="url(#ws-skin)" />
+
+    <!-- Sculpted Elegant Hair Front -->
+    <path d="M31 30C30 23 33 19 40 19C47 19 50 23 49 30C46 25 43 23 40 23C37 23 34 25 31 30Z" 
+          fill="url(#ws-hair)" />
+    <!-- Delicate Side Swept Tress -->
+    <path d="M33 26C36 24 39 24 42 27C38 26 35 27 33 28Z" fill="#4A3B40" />
+
+    <!-- Delicate Rose Flower Hair Accessory -->
+    <circle cx="46" cy="22" r="3" fill="#FF5A7E" />
+    <circle cx="46" cy="22" r="1.5" fill="#FFFFFF" />
   </g>
+
+  <!-- Celestial Twinkle Star -->
+  <path class="ws-star" d="M22 15V21M19 18H25" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
 </svg>

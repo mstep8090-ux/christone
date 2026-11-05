@@ -146,8 +146,19 @@ export function MomentCard({ moment }: { moment: MomentItem }) {
       {/* Top Header: Author Avatar 24px + Name + Time ago + Subtle Rose Dot */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2.5">
-          <div className="w-6 h-6 rounded-full bg-blush/60 border border-white flex items-center justify-center text-[11px] font-heading font-medium text-ink shadow-xs">
-            {authorInitial}
+          <div className="w-6 h-6 rounded-full bg-blush/60 border border-white flex items-center justify-center text-[11px] font-heading font-medium text-ink shadow-xs overflow-hidden shrink-0">
+            {moment.author_avatar ? (
+              <Image
+                src={moment.author_avatar}
+                alt={authorName}
+                width={24}
+                height={24}
+                className="w-full h-full object-cover"
+                unoptimized={moment.author_avatar.startsWith("data:")}
+              />
+            ) : (
+              authorInitial
+            )}
           </div>
           <div className="flex items-center space-x-1.5 text-[12px] text-inkSoft">
             <span className="font-medium text-ink">{authorName}</span>

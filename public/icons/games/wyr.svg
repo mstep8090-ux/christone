@@ -1,13 +1,110 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Blush circle #FFC2CE -->
-  <circle cx="24" cy="24" r="22" fill="#FFC2CE"/>
-  <!-- Diverging paths / fork in the road -->
-  <path d="M24 35V25" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <path d="M24 25L16 17" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <path d="M24 25L32 17" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <!-- Arrow heads / crowns -->
-  <path d="M14 21V15H20" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M34 21V15H28" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Small center crown/cross accent -->
-  <circle cx="24" cy="25" r="2" fill="#FF5A7E"/>
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="wyr-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.32" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="wyr-disc" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFD6DF" />
+    </radialGradient>
+
+    <!-- Scale Pillar Gradient -->
+    <linearGradient id="wyr-pillar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FF85A0" />
+    </linearGradient>
+
+    <!-- Gold Accent -->
+    <linearGradient id="wyr-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF4D0" />
+      <stop offset="40%" stop-color="#FFD700" />
+      <stop offset="100%" stop-color="#FFA245" />
+    </linearGradient>
+
+    <filter id="wyr-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .wyr-aura {
+      transform-origin: 24px 24px;
+      animation: wyr-pulse 3.2s ease-in-out infinite;
+    }
+    .wyr-scale-beam {
+      transform-origin: 24px 19px;
+      animation: wyr-balance 3.6s ease-in-out infinite alternate;
+    }
+    .wyr-heart-pulse {
+      transform-origin: 15px 23px;
+      animation: wyr-heart-anim 1.8s ease-in-out infinite;
+    }
+    .wyr-star {
+      transform-origin: 39px 10px;
+      animation: wyr-twinkle 2.6s ease-in-out infinite;
+    }
+
+    @keyframes wyr-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.05); }
+    }
+    @keyframes wyr-balance {
+      0% { transform: rotate(-5deg); }
+      100% { transform: rotate(5deg); }
+    }
+    @keyframes wyr-heart-anim {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); filter: drop-shadow(0 0 3px rgba(255,90,126,0.8)); }
+    }
+    @keyframes wyr-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Glow -->
+  <circle class="wyr-aura" cx="24" cy="24" r="23" fill="url(#wyr-bg)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="24" cy="24" r="21" fill="url(#wyr-disc)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#wyr-shadow)" />
+
+  <!-- Solid Center Pillar Base -->
+  <path d="M19 37H29V39C29 39.5 28.5 40 28 40H20C19.5 40 19 39.5 19 39V37Z" fill="url(#wyr-pillar)" />
+  <rect x="22.5" y="19" width="3" height="18" rx="1.5" fill="url(#wyr-pillar)" />
+  <circle cx="24" cy="19" r="3" fill="#FF5A7E" stroke="#FFFFFF" stroke-width="1" />
+
+  <!-- Animated Balancing Crossbeam & Scale Pans -->
+  <g class="wyr-scale-beam">
+    <!-- Main Crossbeam -->
+    <path d="M12 19H36" stroke="#FF5A7E" stroke-width="2.5" stroke-linecap="round" />
+    <circle cx="15" cy="19" r="1.5" fill="#FFFFFF" />
+    <circle cx="33" cy="19" r="1.5" fill="#FFFFFF" />
+
+    <!-- Left Pan Strings & Pan -->
+    <path d="M15 19L11 27M15 19L19 27" stroke="#FF85A0" stroke-width="1" />
+    <path d="M10 27C10 29.5 12.2 31 15 31C17.8 31 20 29.5 20 27H10Z" fill="url(#wyr-gold)" filter="url(#wyr-shadow)" />
+
+    <!-- Choice A: Glowing Heart in Left Pan -->
+    <g class="wyr-heart-pulse">
+      <path d="M15 25C15 25 13 23.5 13 22.5C13 21.8 13.5 21.3 14.2 21.3C14.6 21.3 14.8 21.5 15 21.7C15.2 21.5 15.4 21.3 15.8 21.3C16.5 21.3 17 21.8 17 22.5C17 23.5 15 25 15 25Z" fill="#FF5A7E" />
+    </g>
+
+    <!-- Right Pan Strings & Pan -->
+    <path d="M33 19L29 27M33 19L37 27" stroke="#FF85A0" stroke-width="1" />
+    <path d="M28 27C28 29.5 30.2 31 33 31C35.8 31 38 29.5 38 27H28Z" fill="url(#wyr-gold)" filter="url(#wyr-shadow)" />
+
+    <!-- Choice B: Golden Sparkle Gem in Right Pan -->
+    <polygon points="33,21 34.5,24 33,26 31.5,24" fill="#FFFFFF" />
+    <circle cx="33" cy="23.5" r="1.5" fill="#FFD700" />
+  </g>
+
+  <!-- Twinkling Celestial Star -->
+  <path class="wyr-star" d="M39 7V13M36 10H42" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
 </svg>

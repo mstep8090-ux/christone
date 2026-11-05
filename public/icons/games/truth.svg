@@ -1,9 +1,108 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Blush circle #FFC2CE -->
-  <circle cx="24" cy="24" r="22" fill="#FFC2CE"/>
-  <!-- Minimal Heart -->
-  <path d="M24 18C22.5 15.5 18 15 15.5 17.5C13 20 13 23.5 16 26.5L24 34L32 26.5C35 23.5 35 20 32.5 17.5C30 15 25.5 15.5 24 18Z" stroke="#1A1A1E" stroke-width="1.5" stroke-linejoin="round"/>
-  <!-- Keyhole in heart of honesty -->
-  <circle cx="24" cy="22" r="2" fill="#1A1A1E"/>
-  <path d="M23 23H25L25.5 27H22.5L23 23Z" fill="#1A1A1E"/>
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="tru-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.32" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="tru-disc" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFD6DF" />
+    </radialGradient>
+
+    <!-- Solid Heart Gradient -->
+    <radialGradient id="tru-heart" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="30%" stop-color="#FF85A0" />
+      <stop offset="70%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </radialGradient>
+
+    <!-- Golden Key Gradient -->
+    <linearGradient id="tru-key" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF5D6" />
+      <stop offset="40%" stop-color="#FFD700" />
+      <stop offset="100%" stop-color="#FFA245" />
+    </linearGradient>
+
+    <filter id="tru-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .tru-aura {
+      transform-origin: 24px 24px;
+      animation: tru-pulse 3.2s ease-in-out infinite;
+    }
+    .tru-heart-group {
+      transform-origin: 24px 24px;
+      animation: tru-heartbeat 1.8s ease-in-out infinite;
+    }
+    .tru-key-float {
+      transform-origin: 24px 24px;
+      animation: tru-key-glow 2.5s ease-in-out infinite;
+    }
+    .tru-star {
+      transform-origin: 39px 10px;
+      animation: tru-twinkle 2.6s ease-in-out infinite;
+    }
+
+    @keyframes tru-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.05); }
+    }
+    @keyframes tru-heartbeat {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,90,126,0.3)); }
+      20% { transform: scale(1.15); filter: drop-shadow(0 0 6px rgba(255,90,126,0.8)); }
+      40% { transform: scale(1.05); }
+      60% { transform: scale(1.12); filter: drop-shadow(0 0 4px rgba(255,90,126,0.6)); }
+      80% { transform: scale(1); }
+    }
+    @keyframes tru-key-glow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-1.5px) rotate(3deg); filter: drop-shadow(0 0 4px rgba(255,215,0,0.8)); }
+    }
+    @keyframes tru-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Glow -->
+  <circle class="tru-aura" cx="24" cy="24" r="23" fill="url(#tru-bg)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="24" cy="24" r="21" fill="url(#tru-disc)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#tru-shadow)" />
+
+  <!-- Animated Heart of Honesty -->
+  <g class="tru-heart-group">
+    <!-- Solid 3D Heart -->
+    <path d="M24 37C24 37 11 28 11 19C11 14.5 14.5 11 18.5 11C21 11 23 12.5 24 14.5C25 12.5 27 11 29.5 11C33.5 11 37 14.5 37 19C37 28 24 37 24 37Z" 
+          fill="url(#tru-heart)" filter="url(#tru-shadow)" />
+
+    <!-- Specular Highlight Curve on Left Lobe -->
+    <path d="M14 18C14 15 16 13 18.5 13" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.8" />
+  </g>
+
+  <!-- Animated Golden Key Unlocking the Truth -->
+  <g class="tru-key-float">
+    <!-- Center Keyhole Chamber -->
+    <circle cx="24" cy="22" r="3.2" fill="#FFFFFF" />
+    <path d="M22.5 23.5H25.5L26 28H22L22.5 23.5Z" fill="#FFFFFF" />
+
+    <!-- Radiant Golden Key -->
+    <!-- Key Bow / Handle -->
+    <circle cx="24" cy="20" r="3.5" stroke="url(#tru-key)" stroke-width="1.8" fill="none" />
+    <!-- Key Blade & Teeth -->
+    <path d="M24 23.5V30M24 27H26.5M24 29H26" stroke="url(#tru-key)" stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="24" cy="20" r="1.2" fill="#FFD700" />
+  </g>
+
+  <!-- Twinkling Celestial Star -->
+  <path class="tru-star" d="M39 7V13M36 10H42" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
 </svg>

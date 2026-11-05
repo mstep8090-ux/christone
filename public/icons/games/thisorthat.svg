@@ -1,16 +1,112 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Blush circle #FFC2CE -->
-  <circle cx="24" cy="24" r="22" fill="#FFC2CE"/>
-  <!-- Minimal line scale / comparison -->
-  <line x1="24" y1="13" x2="24" y2="35" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="15" y1="18" x2="33" y2="18" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <!-- Left pan -->
-  <path d="M11 25C11 28 14 30 18 30C22 30 25 28 25 25H11Z" stroke="#1A1A1E" stroke-width="1.5" stroke-linejoin="round"/>
-  <line x1="15" y1="18" x2="13" y2="25" stroke="#1A1A1E" stroke-width="1.5"/>
-  <line x1="15" y1="18" x2="23" y2="25" stroke="#1A1A1E" stroke-width="1.5"/>
-  <!-- Right pan -->
-  <path d="M25 21C25 24 28 26 32 26C36 26 39 24 39 21H25Z" stroke="#1A1A1E" stroke-width="1.5" stroke-linejoin="round"/>
-  <line x1="33" y1="18" x2="27" y2="21" stroke="#1A1A1E" stroke-width="1.5"/>
-  <line x1="33" y1="18" x2="37" y2="21" stroke="#1A1A1E" stroke-width="1.5"/>
-  <line x1="19" y1="35" x2="29" y2="35" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="tot-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.32" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="tot-disc" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFD6DF" />
+    </radialGradient>
+
+    <!-- Heart "This" (Rose) -->
+    <radialGradient id="tot-heart-l" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="30%" stop-color="#FF85A0" />
+      <stop offset="70%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </radialGradient>
+
+    <!-- Heart "That" (Gold-Blush) -->
+    <radialGradient id="tot-heart-r" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="30%" stop-color="#FFE082" />
+      <stop offset="70%" stop-color="#FFA245" />
+      <stop offset="100%" stop-color="#FF5A7E" />
+    </radialGradient>
+
+    <filter id="tot-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .tot-aura {
+      transform-origin: 24px 24px;
+      animation: tot-pulse 3.2s ease-in-out infinite;
+    }
+    .tot-heart-left {
+      transform-origin: 19px 24px;
+      animation: tot-left-bounce 2s ease-in-out infinite;
+    }
+    .tot-heart-right {
+      transform-origin: 29px 24px;
+      animation: tot-right-bounce 2s ease-in-out infinite 1s;
+    }
+    .tot-spark-flash {
+      transform-origin: 24px 24px;
+      animation: tot-spark 1s ease-in-out infinite alternate;
+    }
+    .tot-star {
+      transform-origin: 39px 10px;
+      animation: tot-twinkle 2.6s ease-in-out infinite;
+    }
+
+    @keyframes tot-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.05); }
+    }
+    @keyframes tot-left-bounce {
+      0%, 100% { transform: scale(1) rotate(-8deg); }
+      50% { transform: scale(1.15) rotate(-5deg); filter: drop-shadow(0 0 5px rgba(255,90,126,0.8)); }
+    }
+    @keyframes tot-right-bounce {
+      0%, 100% { transform: scale(1) rotate(8deg); }
+      50% { transform: scale(1.15) rotate(5deg); filter: drop-shadow(0 0 5px rgba(255,162,69,0.8)); }
+    }
+    @keyframes tot-spark {
+      0% { opacity: 0.3; transform: scale(0.7); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+    @keyframes tot-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Glow -->
+  <circle class="tot-aura" cx="24" cy="24" r="23" fill="url(#tot-bg)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="24" cy="24" r="21" fill="url(#tot-disc)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#tot-shadow)" />
+
+  <!-- Intersecting "This" Heart (Left) -->
+  <g class="tot-heart-left">
+    <path d="M19 32C19 32 10 25.5 10 19C10 15.5 12.5 13 15.5 13C17.5 13 18.8 14 19 15.2C19.2 14 20.5 13 22.5 13C25.5 13 28 15.5 28 19C28 25.5 19 32 19 32Z" 
+          fill="url(#tot-heart-l)" filter="url(#tot-shadow)" />
+    <!-- Specular Ridge -->
+    <path d="M12 18C12 15.5 13.5 14.5 15.5 14.5" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" stroke-opacity="0.8" />
+  </g>
+
+  <!-- Intersecting "That" Heart (Right) -->
+  <g class="tot-heart-right">
+    <path d="M29 32C29 32 20 25.5 20 19C20 15.5 22.5 13 25.5 13C27.5 13 28.8 14 29 15.2C29.2 14 30.5 13 32.5 13C35.5 13 38 15.5 38 19C38 25.5 29 32 29 32Z" 
+          fill="url(#tot-heart-r)" filter="url(#tot-shadow)" />
+    <!-- Specular Ridge -->
+    <path d="M22 18C22 15.5 23.5 14.5 25.5 14.5" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" stroke-opacity="0.8" />
+  </g>
+
+  <!-- Energetic Linking Spark at Connection Point -->
+  <g class="tot-spark-flash">
+    <polygon points="24,20 25.5,23.5 29,24 25.5,24.5 24,28 22.5,24.5 19,24 22.5,23.5" fill="#FFFFFF" />
+    <circle cx="24" cy="24" r="1.5" fill="#FFD700" />
+  </g>
+
+  <!-- Twinkling Celestial Star -->
+  <path class="tot-star" d="M39 7V13M36 10H42" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
 </svg>

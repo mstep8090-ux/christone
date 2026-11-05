@@ -1,11 +1,121 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
-  <circle cx="32" cy="32" r="30" fill="#FFC2CE"/>
-  <!-- Cozy House Cottage Minimal Line -->
-  <path d="M18 31L32 19L46 31" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="22" y="31" width="20" height="16" rx="1.5" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
-  <path d="M40 21V26" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <rect x="29" y="38" width="6" height="9" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFBFC"/>
-  <rect x="24" y="34" width="4" height="4" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
-  <rect x="36" y="34" width="4" height="4" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
-  <circle cx="33.5" cy="42.5" r="0.75" fill="#1A1A1E"/>
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="hs-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.32" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="hs-disc" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFD6DF" />
+    </radialGradient>
+
+    <!-- Roof Gradient -->
+    <linearGradient id="hs-roof" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF85A0" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </linearGradient>
+
+    <!-- Wall Gradient -->
+    <linearGradient id="hs-wall" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF5F7" />
+      <stop offset="100%" stop-color="#FFDCE3" />
+    </linearGradient>
+
+    <!-- Golden Door Hearth Glow -->
+    <radialGradient id="hs-door-glow" cx="50%" cy="70%" r="70%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#FFE082" />
+      <stop offset="80%" stop-color="#FFA726" />
+      <stop offset="100%" stop-color="#FF5A7E" />
+    </radialGradient>
+
+    <filter id="hs-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .hs-aura {
+      transform-origin: 32px 32px;
+      animation: hs-pulse 3.2s ease-in-out infinite;
+    }
+    .hs-house-group {
+      transform-origin: 32px 38px;
+      animation: hs-float 3.6s ease-in-out infinite;
+    }
+    .hs-smoke {
+      animation: hs-puff 2.8s ease-in-out infinite;
+    }
+    .hs-door-pulse {
+      animation: hs-glow 2s ease-in-out infinite alternate;
+    }
+    .hs-star {
+      transform-origin: 50px 14px;
+      animation: hs-twinkle 2.6s ease-in-out infinite;
+    }
+
+    @keyframes hs-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.05); }
+    }
+    @keyframes hs-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2px); }
+    }
+    @keyframes hs-puff {
+      0% { opacity: 0; transform: translateY(0px) scale(0.6); }
+      40% { opacity: 0.9; }
+      100% { opacity: 0; transform: translateY(-10px) scale(1.2); }
+    }
+    @keyframes hs-glow {
+      0% { opacity: 0.8; }
+      100% { opacity: 1; filter: drop-shadow(0 0 5px rgba(255,167,38,0.9)); }
+    }
+    @keyframes hs-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Glow -->
+  <circle class="hs-aura" cx="32" cy="32" r="30" fill="url(#hs-bg)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="32" cy="32" r="28" fill="url(#hs-disc)" stroke="#F5E6E8" stroke-width="1.5" filter="url(#hs-shadow)" />
+
+  <!-- Animated Cottage Group -->
+  <g class="hs-house-group">
+    <!-- Chimney -->
+    <rect x="38" y="20" width="5" height="10" rx="1" fill="#E84367" />
+    <circle class="hs-smoke" cx="40.5" cy="16" r="2" fill="#FFC2CE" />
+
+    <!-- Solid House Walls -->
+    <rect x="20" y="32" width="24" height="18" rx="2" fill="url(#hs-wall)" stroke="#F5E6E8" stroke-width="1" filter="url(#hs-shadow)" />
+
+    <!-- Solid Gabled Roof -->
+    <path d="M16 33L32 18L48 33H43L32 23L21 33H16Z" fill="url(#hs-roof)" filter="url(#hs-shadow)" />
+
+    <!-- Luminous Front Door -->
+    <g class="hs-door-pulse">
+      <path d="M28 50V40C28 37.8 29.8 36 32 36C34.2 36 36 37.8 36 40V50H28Z" fill="url(#hs-door-glow)" />
+      <circle cx="34.5" cy="44" r="0.8" fill="#FFFFFF" />
+    </g>
+
+    <!-- Cottage Windows -->
+    <rect x="22" y="36" width="4" height="4" rx="1" fill="#FFFFFF" stroke="#FFC2CE" stroke-width="0.8" />
+    <rect x="38" y="36" width="4" height="4" rx="1" fill="#FFFFFF" stroke="#FFC2CE" stroke-width="0.8" />
+
+    <!-- Attic Rose Heart -->
+    <path d="M32 29C32 29 30 27.5 30 26.8C30 26.2 30.4 25.8 31 25.8C31.3 25.8 31.6 25.9 31.7 26.1C31.8 25.9 32.1 25.8 32.4 25.8C33 25.8 33.4 26.2 33.4 26.8C33.4 27.5 32 29 32 29Z" fill="#FF5A7E" />
+  </g>
+
+  <!-- Twinkling Star -->
+  <path class="hs-star" d="M50 10V18M46 14H54" stroke="#FF5A7E" stroke-width="1.4" stroke-linecap="round" />
 </svg>

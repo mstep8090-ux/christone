@@ -1,15 +1,126 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
-  <circle cx="32" cy="32" r="30" fill="#FFC2CE"/>
-  <!-- Stove & Pot Minimal Line -->
-  <rect x="18" y="30" width="28" height="18" rx="3" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
-  <line x1="18" y1="36" x2="46" y2="36" stroke="#1A1A1E" stroke-width="1.5"/>
-  <circle cx="24" cy="33" r="1.5" fill="#1A1A1E"/>
-  <circle cx="32" cy="33" r="1.5" fill="#1A1A1E"/>
-  <circle cx="40" cy="33" r="1.5" fill="#1A1A1E"/>
-  <rect x="23" y="39" width="18" height="6" rx="1.5" stroke="#1A1A1E" stroke-width="1.5" fill="none"/>
-  <!-- Cooking pot -->
-  <path d="M26 24H38V30H26V24Z" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
-  <path d="M29 21C29 21 30 20 32 20C34 20 35 21 35 21" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="23" y1="26" x2="26" y2="26" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="38" y1="26" x2="41" y2="26" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="kt-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.32" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="kt-disc" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFD6DF" />
+    </radialGradient>
+
+    <!-- Pot Solid Gradient -->
+    <linearGradient id="kt-pot" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#FFF5F7" />
+      <stop offset="100%" stop-color="#FFC2CE" />
+    </linearGradient>
+
+    <!-- Stove Gradient -->
+    <linearGradient id="kt-stove" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFDCE3" />
+    </linearGradient>
+
+    <filter id="kt-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .kt-aura {
+      transform-origin: 32px 32px;
+      animation: kt-pulse 3.2s ease-in-out infinite;
+    }
+    .kt-pot-group {
+      transform-origin: 32px 34px;
+      animation: kt-float 3.6s ease-in-out infinite;
+    }
+    .kt-steam-1 {
+      animation: kt-steam-rise 2.6s ease-in-out infinite;
+    }
+    .kt-steam-2 {
+      animation: kt-steam-rise 2.6s ease-in-out infinite 1s;
+    }
+    .kt-burner-flicker {
+      animation: kt-flicker 1.8s ease-in-out infinite alternate;
+    }
+    .kt-star {
+      transform-origin: 50px 14px;
+      animation: kt-twinkle 2.6s ease-in-out infinite;
+    }
+
+    @keyframes kt-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.05); }
+    }
+    @keyframes kt-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2px); }
+    }
+    @keyframes kt-steam-rise {
+      0% { opacity: 0; transform: translateY(0px) scale(0.7); }
+      40% { opacity: 0.9; }
+      100% { opacity: 0; transform: translateY(-10px) scale(1.2); }
+    }
+    @keyframes kt-flicker {
+      0% { opacity: 0.7; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 3px rgba(255,162,69,0.8)); }
+    }
+    @keyframes kt-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Glow -->
+  <circle class="kt-aura" cx="32" cy="32" r="30" fill="url(#kt-bg)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="32" cy="32" r="28" fill="url(#kt-disc)" stroke="#F5E6E8" stroke-width="1.5" filter="url(#kt-shadow)" />
+
+  <!-- Solid Kitchen Countertop / Stove Base -->
+  <rect x="15" y="38" width="34" height="15" rx="3.5" fill="url(#kt-stove)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#kt-shadow)" />
+  <line x1="15" y1="43" x2="49" y2="43" stroke="#FFC2CE" stroke-width="1" />
+  <!-- Stove Knobs -->
+  <circle cx="22" cy="48" r="2" fill="#FF5A7E" />
+  <circle cx="32" cy="48" r="2" fill="#E84367" />
+  <circle cx="42" cy="48" r="2" fill="#FF5A7E" />
+
+  <!-- Stove Burner Warm Flame Rings -->
+  <ellipse class="kt-burner-flicker" cx="32" cy="38" rx="8" ry="1.8" fill="#FFA245" />
+
+  <!-- Animated Cooking Pot with Steam -->
+  <g class="kt-pot-group">
+    <!-- Solid Cooking Pot Body -->
+    <path d="M22 28H42V35C42 37.5 39.5 39 36 39H28C24.5 39 22 37.5 22 35V28Z" 
+          fill="url(#kt-pot)" stroke="#FFC2CE" stroke-width="1.2" filter="url(#kt-shadow)" />
+
+    <!-- Pot Rim -->
+    <ellipse cx="32" cy="28" rx="10" ry="2.5" fill="#FFFFFF" stroke="#FFC2CE" stroke-width="1.2" />
+
+    <!-- Pot Handles -->
+    <path d="M20 29C18 29 18 32 20 33" stroke="#E84367" stroke-width="1.8" stroke-linecap="round" fill="none" />
+    <path d="M44 29C46 29 46 32 44 33" stroke="#E84367" stroke-width="1.8" stroke-linecap="round" fill="none" />
+
+    <!-- Heart Emblem on Front of Pot -->
+    <path d="M32 35C32 35 29 33 29 32C29 31.2 29.5 30.7 30.2 30.7C30.6 30.7 30.9 30.9 31 31C31.1 30.9 31.4 30.7 31.8 30.7C32.5 30.7 33 31.2 33 32C33 33 32 35 32 35Z" fill="#FF5A7E" />
+
+    <!-- Animated Steam Curls -->
+    <g class="kt-steam-1">
+      <path d="M28 24C26 21 29 18 27 15" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round" fill="none" />
+    </g>
+    <g class="kt-steam-2">
+      <path d="M36 24C38 21 35 18 37 15" stroke="#FF85A0" stroke-width="1.5" stroke-linecap="round" fill="none" />
+    </g>
+  </g>
+
+  <!-- Twinkling Star -->
+  <path class="kt-star" d="M50 10V18M46 14H54" stroke="#FF5A7E" stroke-width="1.4" stroke-linecap="round" />
 </svg>

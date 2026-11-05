@@ -123,12 +123,14 @@ export default function SpacePage() {
           const userIds = [couple.partner_a, couple.partner_b].filter(Boolean) as string[];
           const { data: profilesList } = await supabase
             .from("profiles")
-            .select("id, display_name")
+            .select("id, display_name, avatar_url")
             .in("id", userIds);
 
           const nameMap: Record<string, string> = {};
+          const avatarMap: Record<string, string> = {};
           profilesList?.forEach((p) => {
             nameMap[p.id] = p.display_name || "Partner";
+            if (p.avatar_url) avatarMap[p.id] = p.avatar_url;
           });
           setPartnerNames(nameMap);
           if (pId && nameMap[pId]) {
@@ -145,6 +147,7 @@ export default function SpacePage() {
             const formatted: MomentItem[] = momentsList.map((m) => ({
               ...m,
               author_name: nameMap[m.author_id] || (m.author_id === user.id ? myProfile?.display_name || "You" : "Partner"),
+              author_avatar: avatarMap[m.author_id],
             }));
             setMoments(formatted);
           }

@@ -1,8 +1,122 @@
 <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="60" cy="60" r="54" fill="#FFC2CE" fill-opacity="0.8"/>
-  <g stroke="#1A1A1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M40 50L52 62C54 64 58 64 60 62L70 52C72 50 72 46 70 44C68 42 64 42 62 44L56 50L50 44C48 42 44 42 42 44C40 46 40 50 42 52L48 58"/>
-    <path d="M34 56L44 66C46 68 50 68 52 66L62 56"/>
-    <path d="M60 76C60 76 74 65 74 53C74 46 69 41 62 41C57 41 53 44 51 47"/>
+  <defs>
+    <!-- Halo Glow -->
+    <radialGradient id="cnf-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.32" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="cnf-disc" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF0F3" />
+      <stop offset="85%" stop-color="#FFD6DF" />
+      <stop offset="100%" stop-color="#FFC2CE" />
+    </radialGradient>
+
+    <!-- Dove Solid Feather Gradient -->
+    <linearGradient id="cnf-dove" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="65%" stop-color="#FFF5F7" />
+      <stop offset="100%" stop-color="#FFDCE3" />
+    </linearGradient>
+
+    <!-- Olive Leaves Green Gradient -->
+    <linearGradient id="cnf-olive" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8ADCA9" />
+      <stop offset="60%" stop-color="#4CA46F" />
+      <stop offset="100%" stop-color="#2D6B45" />
+    </linearGradient>
+
+    <filter id="cnf-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .cnf-aura {
+      transform-origin: 60px 60px;
+      animation: cnf-pulse 3.5s ease-in-out infinite;
+    }
+    .cnf-dove-group {
+      transform-origin: 60px 58px;
+      animation: cnf-fly 3.6s ease-in-out infinite;
+    }
+    .cnf-branch {
+      transform-origin: 52px 64px;
+      animation: cnf-branch-sway 2.4s ease-in-out infinite alternate;
+    }
+    .cnf-star {
+      transform-origin: 94px 26px;
+      animation: cnf-twinkle 2.8s ease-in-out infinite;
+    }
+
+    @keyframes cnf-pulse {
+      0%, 100% { opacity: 0.6; transform: scale(0.97); }
+      50% { opacity: 1; transform: scale(1.04); }
+    }
+    @keyframes cnf-fly {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(-1.5deg); }
+    }
+    @keyframes cnf-branch-sway {
+      0% { transform: rotate(-2deg); }
+      100% { transform: rotate(3deg); }
+    }
+    @keyframes cnf-twinkle {
+      0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.25) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Halo -->
+  <circle class="cnf-aura" cx="60" cy="60" r="56" fill="url(#cnf-glow)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="60" cy="60" r="52" fill="url(#cnf-disc)" stroke="#F5E6E8" stroke-width="2" filter="url(#cnf-shadow)" />
+  <circle cx="60" cy="60" r="47" stroke="#FF5A7E" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="3 4" fill="none" />
+
+  <!-- Animated Flying Peace Dove with Olive Branch -->
+  <g class="cnf-dove-group">
+    <!-- Back Wing -->
+    <path d="M58 52C58 52 50 34 38 32C32 30 30 36 34 42C38 48 48 56 58 58V52Z" 
+          fill="#FFE8EE" />
+
+    <!-- Dove Body and Tail -->
+    <path d="M42 66C32 72 26 76 28 80C34 80 44 72 52 66L68 66C76 66 84 60 88 52C90 48 88 44 82 44C76 44 70 48 66 54L54 58C48 60 44 64 42 66Z" 
+          fill="url(#cnf-dove)" filter="url(#cnf-shadow)" />
+
+    <!-- Front Wing -->
+    <path d="M56 56C56 56 60 36 72 32C78 30 80 34 76 42C70 52 62 62 56 64V56Z" 
+          fill="url(#cnf-dove)" />
+
+    <!-- Dove Eye and Golden Beak -->
+    <circle cx="84" cy="48" r="1.5" fill="#1A1A1E" />
+    <polygon points="88,48 94,50 88,52" fill="#FFA500" />
+
+    <!-- Swaying Emerald Olive Branch of Reconciliation -->
+    <g class="cnf-branch">
+      <!-- Curved Branch Stem -->
+      <path d="M88 52C82 56 70 66 56 68" stroke="#3B8659" stroke-width="2" stroke-linecap="round" fill="none" />
+
+      <!-- Olive Leaves -->
+      <path d="M82 54C80 50 84 46 88 47C88 52 85 54 82 54Z" fill="url(#cnf-olive)" />
+      <path d="M74 58C70 55 72 50 76 51C77 56 75 58 74 58Z" fill="url(#cnf-olive)" />
+      <path d="M68 62C65 66 69 70 72 68C72 63 69 62 68 62Z" fill="url(#cnf-olive)" />
+      <path d="M60 65C56 63 58 58 62 59C63 64 61 65 60 65Z" fill="url(#cnf-olive)" />
+
+      <!-- Golden Olive Fruit of Peace -->
+      <circle cx="78" cy="56" r="2.2" fill="#FFD700" />
+    </g>
+
+    <!-- Little Heart of Forgiveness Floating Gently -->
+    <path d="M64 42C63 39 59 39 58 41C56 44 64 49 64 49C64 49 72 44 70 41C69 39 65 39 64 42Z" fill="#FF5A7E" />
+  </g>
+
+  <!-- Twinkling Celestial Star -->
+  <g class="cnf-star">
+    <path d="M94 20V30M89 25H99" stroke="#FF5A7E" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="94" cy="25" r="1.2" fill="#FFFFFF" />
   </g>
 </svg>

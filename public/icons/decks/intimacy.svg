@@ -1,7 +1,116 @@
 <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="60" cy="60" r="54" fill="#FFC2CE" fill-opacity="0.8"/>
-  <g stroke="#1A1A1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M60 32C60 45 73 58 86 58C73 58 60 71 60 84C60 71 47 58 34 58C47 58 60 45 60 32Z" fill="#1A1A1E" fill-opacity="0.1"/>
-    <path d="M42 36C42 41 46 45 51 45C46 45 42 49 42 54C42 49 38 45 33 45C38 45 42 41 42 36Z"/>
+  <defs>
+    <!-- Halo Glow -->
+    <radialGradient id="int-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.38" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="int-disc" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF0F3" />
+      <stop offset="85%" stop-color="#FFD6DF" />
+      <stop offset="100%" stop-color="#FFC2CE" />
+    </radialGradient>
+
+    <!-- Flame Left (Rose Deep) -->
+    <linearGradient id="int-flame-l" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E84367" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#FFB3C2" />
+    </linearGradient>
+
+    <!-- Flame Right (Gold Warmth) -->
+    <linearGradient id="int-flame-r" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#FF5A7E" />
+      <stop offset="50%" stop-color="#FFA245" />
+      <stop offset="100%" stop-color="#FFE8A3" />
+    </linearGradient>
+
+    <!-- Unified Core Heart -->
+    <radialGradient id="int-core-heart" cx="45%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF0F3" />
+      <stop offset="80%" stop-color="#FF85A0" />
+      <stop offset="100%" stop-color="#FF5A7E" />
+    </radialGradient>
+
+    <filter id="int-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#FF5A7E" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <style>
+    .int-aura {
+      transform-origin: 60px 60px;
+      animation: int-pulse 3.5s ease-in-out infinite;
+    }
+    .int-flame-group {
+      transform-origin: 60px 65px;
+      animation: int-sway 3.2s ease-in-out infinite alternate;
+    }
+    .int-heart-core {
+      transform-origin: 60px 62px;
+      animation: int-heartbeat 1.8s ease-in-out infinite;
+    }
+    .int-star {
+      transform-origin: 94px 26px;
+      animation: int-twinkle 2.6s ease-in-out infinite;
+    }
+
+    @keyframes int-pulse {
+      0%, 100% { opacity: 0.6; transform: scale(0.97); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    @keyframes int-sway {
+      0% { transform: translateY(0px) rotate(-1.5deg) scale(0.98); }
+      100% { transform: translateY(-2px) rotate(1.5deg) scale(1.02); }
+    }
+    @keyframes int-heartbeat {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,90,126,0.3)); }
+      20% { transform: scale(1.15); filter: drop-shadow(0 0 8px rgba(255,90,126,0.9)); }
+      40% { transform: scale(1.05); filter: drop-shadow(0 0 3px rgba(255,90,126,0.4)); }
+      60% { transform: scale(1.12); filter: drop-shadow(0 0 6px rgba(255,90,126,0.7)); }
+      80% { transform: scale(1); }
+    }
+    @keyframes int-twinkle {
+      0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.25) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Halo -->
+  <circle class="int-aura" cx="60" cy="60" r="56" fill="url(#int-glow)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="60" cy="60" r="52" fill="url(#int-disc)" stroke="#F5E6E8" stroke-width="2" filter="url(#int-shadow)" />
+  <circle cx="60" cy="60" r="47" stroke="#FF5A7E" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="3 4" fill="none" />
+
+  <!-- Animated Living Twin Flames Intertwined -->
+  <g class="int-flame-group">
+    <!-- Left Sacred Flame -->
+    <path d="M60 28C60 28 42 42 42 58C42 70 50 78 60 84C52 74 50 64 52 54C54 44 60 36 60 28Z" 
+          fill="url(#int-flame-l)" filter="url(#int-shadow)" />
+
+    <!-- Right Sacred Flame -->
+    <path d="M60 28C60 28 78 42 78 58C78 70 70 78 60 84C68 74 70 64 68 54C66 44 60 36 60 28Z" 
+          fill="url(#int-flame-r)" filter="url(#int-shadow)" />
+
+    <!-- Intertwined Heart Union at the Core -->
+    <g class="int-heart-core">
+      <path d="M60 74C60 74 46 62 46 52C46 46 50.5 42 55.5 42C58.2 42 60 43.5 60 44.5C60 43.5 61.8 42 64.5 42C69.5 42 74 46 74 52C74 62 60 74 60 74Z" 
+            fill="url(#int-core-heart)" filter="url(#int-shadow)" />
+      <!-- Specular Heart Gleam -->
+      <circle cx="53" cy="48" r="2" fill="#FFFFFF" fill-opacity="0.85" />
+      <circle cx="60" cy="56" r="1.5" fill="#FFFFFF" />
+    </g>
+  </g>
+
+  <!-- Twinkling Celestial Sparkle -->
+  <g class="int-star">
+    <path d="M94 20V30M89 25H99" stroke="#FF5A7E" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="94" cy="25" r="1.2" fill="#FFFFFF" />
   </g>
 </svg>

@@ -1,3 +1,111 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M15.8 38.2L8 40L9.8 32.2C8 29.2 7 25.7 7 22C7 13.1634 14.6112 6 24 6C33.3888 6 41 13.1634 41 22C41 30.8366 33.3888 38 24 38C21.1 38 18.3 37.2 15.8 35.8V38.2Z" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="mc-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.3" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="mc-disc" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFD6DF" />
+    </radialGradient>
+
+    <!-- Bubble Solid 3D Gradient -->
+    <linearGradient id="mc-bubble" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF5F7" />
+      <stop offset="100%" stop-color="#FFDCE3" />
+    </linearGradient>
+
+    <filter id="mc-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .mc-aura {
+      transform-origin: 24px 24px;
+      animation: mc-glow 3.2s ease-in-out infinite;
+    }
+    .mc-bubble-group {
+      transform-origin: 24px 24px;
+      animation: mc-float 3.5s ease-in-out infinite;
+    }
+    .mc-dot-1 {
+      animation: mc-bounce 1.4s ease-in-out infinite 0s;
+    }
+    .mc-dot-2 {
+      animation: mc-bounce 1.4s ease-in-out infinite 0.22s;
+    }
+    .mc-dot-3 {
+      animation: mc-bounce 1.4s ease-in-out infinite 0.44s;
+    }
+    .mc-heart-badge {
+      transform-origin: 32px 14px;
+      animation: mc-heart-pulse 1.8s ease-in-out infinite;
+    }
+    .mc-star {
+      transform-origin: 10px 10px;
+      animation: mc-twinkle 2.8s ease-in-out infinite;
+    }
+
+    @keyframes mc-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2px); }
+    }
+    @keyframes mc-glow {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.05); }
+    }
+    @keyframes mc-bounce {
+      0%, 100% { transform: translateY(0px); opacity: 0.5; }
+      40% { transform: translateY(-3.5px); opacity: 1; }
+      60% { transform: translateY(0px); opacity: 0.7; }
+    }
+    @keyframes mc-heart-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.22); filter: drop-shadow(0 0 2px rgba(255,90,126,0.9)); }
+    }
+    @keyframes mc-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Glow -->
+  <circle class="mc-aura" cx="24" cy="24" r="23" fill="url(#mc-bg)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="24" cy="24" r="21" fill="url(#mc-disc)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#mc-shadow)" />
+
+  <!-- Animated Chat Bubble -->
+  <g class="mc-bubble-group">
+    <!-- Solid Speech Bubble with Tail -->
+    <path d="M16 35L11 38L12.5 32C9.5 29.5 8 26 8 22C8 14.5 15 9 24 9C33 9 40 14.5 40 22C40 29.5 33 35 24 35C21.2 35 18.5 34.2 16 33V35Z" 
+          fill="url(#mc-bubble)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#mc-shadow)" />
+
+    <!-- Top Highlight Curve -->
+    <path d="M14 17C17 12 28 12 34 16" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" />
+
+    <!-- Animated Typing Rhythm Dots -->
+    <g transform="translate(0, 1)">
+      <circle class="mc-dot-1" cx="18" cy="22" r="2" fill="#FF5A7E" />
+      <circle class="mc-dot-2" cx="24" cy="22" r="2" fill="#FF5A7E" />
+      <circle class="mc-dot-3" cx="30" cy="22" r="2" fill="#FF5A7E" />
+    </g>
+
+    <!-- Tiny Glowing Rose Heart Badge on Top Right of Bubble -->
+    <g class="mc-heart-badge">
+      <circle cx="34" cy="14" r="4.5" fill="#FFFFFF" stroke="#FF5A7E" stroke-width="0.8" />
+      <path d="M34 15.5C34 15.5 32 14.2 32 13.2C32 12.5 32.5 12 33.1 12C33.4 12 33.7 12.2 34 12.4C34.3 12.2 34.6 12 34.9 12C35.5 12 36 12.5 36 13.2C36 14.2 34 15.5 34 15.5Z" 
+            fill="#FF5A7E" />
+    </g>
+  </g>
+
+  <!-- Twinkling Celestial Star -->
+  <path class="mc-star" d="M10 7V13M7 10H13" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
 </svg>

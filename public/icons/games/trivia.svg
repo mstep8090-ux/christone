@@ -1,9 +1,112 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Blush circle #FFC2CE -->
-  <circle cx="24" cy="24" r="22" fill="#FFC2CE"/>
-  <!-- Open Bible Pages -->
-  <path d="M24 19C21 17.5 17 17.5 14 19V32C17 30.5 21 30.5 24 32C27 30.5 31 30.5 34 32V19C31 17.5 27 17.5 24 19Z" stroke="#1A1A1E" stroke-width="1.5" stroke-linejoin="round"/>
-  <line x1="24" y1="19" x2="24" y2="32" stroke="#1A1A1E" stroke-width="1.5"/>
-  <!-- Cross over book -->
-  <path d="M24 13V17M22 15H26" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round"/>
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="trv-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.35" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="trv-disc" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFD6DF" />
+    </radialGradient>
+
+    <!-- Pages Gradient -->
+    <linearGradient id="trv-pages" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF5F7" />
+      <stop offset="100%" stop-color="#FFDCE3" />
+    </linearGradient>
+
+    <!-- Book Cover Gradient -->
+    <linearGradient id="trv-cover" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF85A0" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </linearGradient>
+
+    <filter id="trv-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .trv-aura {
+      transform-origin: 24px 24px;
+      animation: trv-pulse 3.2s ease-in-out infinite;
+    }
+    .trv-bible-group {
+      transform-origin: 24px 28px;
+      animation: trv-float 3.6s ease-in-out infinite;
+    }
+    .trv-cross-glow {
+      transform-origin: 24px 17px;
+      animation: trv-cross-shine 2.2s ease-in-out infinite;
+    }
+    .trv-star {
+      transform-origin: 39px 10px;
+      animation: trv-twinkle 2.6s ease-in-out infinite;
+    }
+
+    @keyframes trv-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.05); }
+    }
+    @keyframes trv-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2px); }
+    }
+    @keyframes trv-cross-shine {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,215,0,0.5)); }
+      50% { transform: scale(1.15); filter: drop-shadow(0 0 8px rgba(255,90,126,0.9)); }
+    }
+    @keyframes trv-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Glow -->
+  <circle class="trv-aura" cx="24" cy="24" r="23" fill="url(#trv-bg)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="24" cy="24" r="21" fill="url(#trv-disc)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#trv-shadow)" />
+
+  <!-- Animated Scripture Bible -->
+  <g class="trv-bible-group">
+    <!-- Bible Leather Cover Spine & Base -->
+    <path d="M10 32C15 30 20 31 24 33C28 31 33 30 38 32V35C33 33 28 34 24 36C20 34 15 33 10 35V32Z" 
+          fill="url(#trv-cover)" filter="url(#trv-shadow)" />
+
+    <!-- Open Pages (Left & Right Spreads) -->
+    <!-- Left Spread -->
+    <path d="M11 23C16 21 21 22 24 24V34C21 32 16 31 11 33V23Z" 
+          fill="url(#trv-pages)" stroke="#EAD6DA" stroke-width="0.8" />
+    <line x1="14" y1="25" x2="21" y2="25" stroke="#FF5A7E" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.6" />
+    <line x1="14" y1="28" x2="20" y2="28" stroke="#FF5A7E" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.6" />
+    <line x1="14" y1="31" x2="19" y2="31" stroke="#FF5A7E" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.6" />
+
+    <!-- Right Spread -->
+    <path d="M37 23C32 21 27 22 24 24V34C27 32 32 31 37 33V23Z" 
+          fill="url(#trv-pages)" stroke="#EAD6DA" stroke-width="0.8" />
+    <line x1="27" y1="25" x2="34" y2="25" stroke="#FF5A7E" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.6" />
+    <line x1="28" y1="28" x2="34" y2="28" stroke="#FF5A7E" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.6" />
+    <line x1="29" y1="31" x2="34" y2="31" stroke="#FF5A7E" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.6" />
+
+    <!-- Rose Silk Bookmark Ribbon hanging from bottom -->
+    <path d="M23 24V38L24 37L25 38V24H23Z" fill="#E84367" />
+
+    <!-- Radiant Holy Cross Rising above the Word -->
+    <g class="trv-cross-glow">
+      <path d="M24 10V22M20 14H28" stroke="#FFD700" stroke-width="2.5" stroke-linecap="round" />
+      <path d="M24 10V22M20 14H28" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" />
+      <circle cx="24" cy="14" r="1.2" fill="#FFFFFF" />
+    </g>
+  </g>
+
+  <!-- Twinkling Celestial Star -->
+  <path class="trv-star" d="M39 7V13M36 10H42" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
 </svg>

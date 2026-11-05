@@ -1,9 +1,93 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Blush circle #FFC2CE -->
-  <circle cx="24" cy="24" r="22" fill="#FFC2CE"/>
-  <!-- Magnifying glass circle -->
-  <circle cx="22" cy="22" r="8" stroke="#1A1A1E" stroke-width="1.5"/>
-  <line x1="28" y1="28" x2="35" y2="35" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <!-- Small heart inside lens -->
-  <path d="M22 19C21 17.5 19 17.5 18 18.5C17 19.5 22 23 22 23C22 23 27 19.5 26 18.5C25 17.5 23 17.5 22 19Z" fill="#FF5A7E"/>
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="qz-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.32" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="qz-disc" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFD6DF" />
+    </radialGradient>
+
+    <!-- Question Mark Gradient -->
+    <linearGradient id="qz-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF85A0" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </linearGradient>
+
+    <filter id="qz-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .qz-aura {
+      transform-origin: 24px 24px;
+      animation: qz-pulse 3.2s ease-in-out infinite;
+    }
+    .qz-main-group {
+      transform-origin: 24px 24px;
+      animation: qz-float 3.6s ease-in-out infinite;
+    }
+    .qz-heart-dot {
+      transform-origin: 24px 34px;
+      animation: qz-heartbeat 1.8s ease-in-out infinite;
+    }
+    .qz-star {
+      transform-origin: 39px 10px;
+      animation: qz-twinkle 2.6s ease-in-out infinite;
+    }
+
+    @keyframes qz-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.05); }
+    }
+    @keyframes qz-float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-2px) rotate(1.5deg); }
+    }
+    @keyframes qz-heartbeat {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,90,126,0.3)); }
+      20% { transform: scale(1.22); filter: drop-shadow(0 0 6px rgba(255,90,126,0.9)); }
+      40% { transform: scale(1.06); }
+      60% { transform: scale(1.16); filter: drop-shadow(0 0 4px rgba(255,90,126,0.7)); }
+      80% { transform: scale(1); }
+    }
+    @keyframes qz-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Glow -->
+  <circle class="qz-aura" cx="24" cy="24" r="23" fill="url(#qz-bg)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="24" cy="24" r="21" fill="url(#qz-disc)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#qz-shadow)" />
+
+  <!-- Animated Question Mark Group -->
+  <g class="qz-main-group">
+    <!-- Solid Sculpted Question Mark Hook Forming Heart Lobe -->
+    <path d="M19 18C19 14.5 21.5 12 25 12C28.5 12 31 14.5 31 17.5C31 20 29.5 22 27 24C25 25.5 24 27 24 29" 
+          stroke="url(#qz-grad)" stroke-width="4.5" stroke-linecap="round" fill="none" filter="url(#qz-shadow)" />
+
+    <!-- Specular Highlight Ridge on Hook -->
+    <path d="M20 16.5C21 13.8 23 13.2 25 13.2" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" stroke-opacity="0.8" />
+
+    <!-- Bottom Dot: Beating Heart Gemstone -->
+    <g class="qz-heart-dot">
+      <path d="M24 37C24 37 20 34 20 32.5C20 31.4 20.8 30.6 21.8 30.6C22.4 30.6 22.8 30.9 23 31.2C23.2 30.9 23.6 30.6 24.2 30.6C25.2 30.6 26 31.4 26 32.5C26 34 24 37 24 37Z" 
+            fill="#E84367" />
+      <circle cx="22" cy="31.8" r="0.6" fill="#FFFFFF" />
+    </g>
+  </g>
+
+  <!-- Twinkling Celestial Star -->
+  <path class="qz-star" d="M39 7V13M36 10H42" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
 </svg>

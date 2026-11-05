@@ -1,8 +1,148 @@
 <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="60" cy="60" r="54" fill="#FFC2CE" fill-opacity="0.8"/>
-  <g stroke="#1A1A1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M35 48V78C35 81.3137 37.6863 84 41 84H79C82.3137 84 85 81.3137 85 78V48C85 44.6863 82.3137 42 79 42H41C37.6863 42 35 44.6863 35 48Z"/>
-    <path d="M70 63H85V69H70C68.3431 69 67 67.6569 67 66C67 64.3431 68.3431 63 70 63Z"/>
-    <path d="M41 42V38C41 34.6863 43.6863 32 47 32H75"/>
+  <defs>
+    <!-- Halo Glow -->
+    <radialGradient id="mny-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.32" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="mny-disc" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF0F3" />
+      <stop offset="85%" stop-color="#FFD6DF" />
+      <stop offset="100%" stop-color="#FFC2CE" />
+    </radialGradient>
+
+    <!-- Chest Metallic Gradient -->
+    <linearGradient id="mny-chest" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#FFF0F3" />
+      <stop offset="80%" stop-color="#FFD6DF" />
+      <stop offset="100%" stop-color="#FF85A0" />
+    </linearGradient>
+
+    <!-- Gold Coins Gradient -->
+    <linearGradient id="mny-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF4D0" />
+      <stop offset="35%" stop-color="#FFD700" />
+      <stop offset="80%" stop-color="#FFA245" />
+      <stop offset="100%" stop-color="#E84367" />
+    </linearGradient>
+
+    <!-- Emerald Sprout Gradient -->
+    <linearGradient id="mny-sprout" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#3B8659" />
+      <stop offset="100%" stop-color="#8ADCA9" />
+    </linearGradient>
+
+    <filter id="mny-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .mny-aura {
+      transform-origin: 60px 60px;
+      animation: mny-pulse 3.5s ease-in-out infinite;
+    }
+    .mny-chest-group {
+      transform-origin: 60px 75px;
+      animation: mny-float 4s ease-in-out infinite;
+    }
+    .mny-coins-glow {
+      transform-origin: 60px 52px;
+      animation: mny-shimmer 2.2s ease-in-out infinite;
+    }
+    .mny-sprout-sway {
+      transform-origin: 60px 58px;
+      animation: mny-sway 3s ease-in-out infinite alternate;
+    }
+    .mny-star {
+      transform-origin: 94px 26px;
+      animation: mny-twinkle 2.8s ease-in-out infinite;
+    }
+
+    @keyframes mny-pulse {
+      0%, 100% { opacity: 0.6; transform: scale(0.97); }
+      50% { opacity: 1; transform: scale(1.04); }
+    }
+    @keyframes mny-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2px); }
+    }
+    @keyframes mny-shimmer {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,194,206,0.5)); }
+      50% { transform: scale(1.08); filter: drop-shadow(0 0 8px rgba(255,215,0,0.8)); }
+    }
+    @keyframes mny-sway {
+      0% { transform: rotate(-3deg); }
+      100% { transform: rotate(3deg); }
+    }
+    @keyframes mny-twinkle {
+      0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.25) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Halo -->
+  <circle class="mny-aura" cx="60" cy="60" r="56" fill="url(#mny-glow)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="60" cy="60" r="52" fill="url(#mny-disc)" stroke="#F5E6E8" stroke-width="2" filter="url(#mny-shadow)" />
+  <circle cx="60" cy="60" r="47" stroke="#FF5A7E" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="3 4" fill="none" />
+
+  <!-- Animated Treasure & Stewardship Group -->
+  <g class="mny-chest-group">
+    <!-- Solid 3D Kingdom Coffer Base -->
+    <path d="M30 65H90L85 88C85 91 82 93 79 93H41C38 93 35 91 35 88L30 65Z" 
+          fill="url(#mny-chest)" stroke="#F5E6E8" stroke-width="1.5" filter="url(#mny-shadow)" />
+
+    <!-- Rose Gold Metal Trim Straps -->
+    <path d="M44 65L45 93M76 65L75 93" stroke="#FF5A7E" stroke-width="2" />
+    <line x1="30" y1="65" x2="90" y2="65" stroke="#FFA500" stroke-width="2" />
+
+    <!-- Open Lid Arc Arching Back -->
+    <path d="M28 65C28 52 38 46 60 46C82 46 92 52 92 65H28Z" fill="#FFF0F3" stroke="#FFC2CE" stroke-width="1.5" />
+
+    <!-- Radiant Overflowing Gold Kingdom Coins -->
+    <g class="mny-coins-glow">
+      <!-- Coin 1 (Left) -->
+      <ellipse cx="44" cy="60" rx="9" ry="6" fill="url(#mny-gold)" filter="url(#mny-shadow)" />
+      <ellipse cx="44" cy="60" rx="6.5" ry="4" stroke="#FFF" stroke-width="0.8" fill="none" />
+      <path d="M44 58V62M42 60H46" stroke="#FFF" stroke-width="1" />
+
+      <!-- Coin 2 (Right) -->
+      <ellipse cx="76" cy="59" rx="9" ry="6" fill="url(#mny-gold)" filter="url(#mny-shadow)" />
+      <ellipse cx="76" cy="59" rx="6.5" ry="4" stroke="#FFF" stroke-width="0.8" fill="none" />
+      <path d="M76 57V61M74 59H78" stroke="#FFF" stroke-width="1" />
+
+      <!-- Center Large Radiant Coin -->
+      <ellipse cx="60" cy="55" rx="12" ry="8" fill="url(#mny-gold)" filter="url(#mny-shadow)" />
+      <ellipse cx="60" cy="55" rx="9" ry="5.5" stroke="#FFFFFF" stroke-width="1" fill="none" />
+      <path d="M60 52V58M57 55H63" stroke="#FFFFFF" stroke-width="1.4" stroke-linecap="round" />
+    </g>
+
+    <!-- Growing Emerald Sprout from Stewardship -->
+    <g class="mny-sprout-sway">
+      <path d="M60 56V34" stroke="url(#mny-sprout)" stroke-width="3" stroke-linecap="round" />
+      <!-- Left Leaf -->
+      <path d="M60 40C54 36 50 40 50 45C55 45 59 43 60 40Z" fill="url(#mny-sprout)" filter="url(#mny-shadow)" />
+      <!-- Right Leaf -->
+      <path d="M60 36C66 32 70 36 70 41C65 41 61 39 60 36Z" fill="url(#mny-sprout)" filter="url(#mny-shadow)" />
+      <!-- Top Tender Bud -->
+      <circle cx="60" cy="33" r="2.2" fill="#8ADCA9" />
+    </g>
+
+    <!-- Heart Jewel Keyhole on Coffer -->
+    <path d="M60 77C60 77 56 73 56 71C56 69.5 57 68.5 58.5 68.5C59.2 68.5 60 69 60 69C60 69 60.8 68.5 61.5 68.5C63 68.5 64 69.5 64 71C64 73 60 77 60 77Z" 
+          fill="#FF5A7E" />
+  </g>
+
+  <!-- Twinkling Celestial Star -->
+  <g class="mny-star">
+    <path d="M94 20V30M89 25H99" stroke="#FF5A7E" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="94" cy="25" r="1.2" fill="#FFFFFF" />
   </g>
 </svg>

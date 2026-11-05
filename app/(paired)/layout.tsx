@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Settings, Flame, Bell, PhoneCall, X, Sparkles } from "lucide-react";
 import { BottomNav } from "@/components/ui/bottom-nav";
@@ -201,12 +202,38 @@ export default function PairedLayout({
           }
         }
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "profiles",
+        },
+        (payload) => {
+          const row = (payload.new || payload.old) as any;
+          if (row) {
+            if (row.id === currentUserId) {
+              if (row.avatar_url !== undefined) setCurrentUserAvatar(row.avatar_url);
+              if (row.display_name) {
+                setCurrentUserName(row.display_name);
+                setUserInitial(row.display_name.charAt(0).toUpperCase());
+              }
+            } else if (row.id === partnerId) {
+              if (row.avatar_url !== undefined) setPartnerAvatar(row.avatar_url);
+              if (row.display_name) {
+                setPartnerName(row.display_name);
+                setPartnerInitial(row.display_name.charAt(0).toUpperCase());
+              }
+            }
+          }
+        }
+      )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [coupleId]);
+  }, [coupleId, currentUserId, partnerId]);
 
   // Global event listeners to start or pick prayer call from anywhere in app
   React.useEffect(() => {
@@ -501,15 +528,41 @@ export default function PairedLayout({
       <div className="relative z-10 mx-auto max-w-[480px] px-6 pt-6 pb-36">
         {/* Top Header */}
         <header className="flex items-center justify-between h-12 mb-6">
-          {/* Left: Overlapping Avatars 32px */}
-          <div className="flex items-center -space-x-2">
-            <div className="w-8 h-8 rounded-full border-2 border-white bg-blush/60 flex items-center justify-center text-xs font-heading font-medium text-ink shadow-sm">
-              {userInitial}
+          {/* Left: Overlapping Avatars 32px (Link to Settings to change profile icon) */}
+          <Link
+            href="/settings"
+            title="Edit Profile & Picture"
+            className="flex items-center -space-x-2 group cursor-pointer"
+          >
+            <div className="w-8 h-8 rounded-full border-2 border-white bg-blush/60 flex items-center justify-center text-xs font-heading font-medium text-ink shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
+              {currentUserAvatar ? (
+                <Image
+                  src={currentUserAvatar}
+                  alt={currentUserName}
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-cover"
+                  unoptimized={currentUserAvatar.startsWith("data:")}
+                />
+              ) : (
+                userInitial
+              )}
             </div>
-            <div className="w-8 h-8 rounded-full border-2 border-white bg-primary text-white flex items-center justify-center text-xs font-heading font-medium shadow-sm">
-              {partnerInitial}
+            <div className="w-8 h-8 rounded-full border-2 border-white bg-primary text-white flex items-center justify-center text-xs font-heading font-medium shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
+              {partnerAvatar ? (
+                <Image
+                  src={partnerAvatar}
+                  alt={partnerName}
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-cover"
+                  unoptimized={partnerAvatar.startsWith("data:")}
+                />
+              ) : (
+                partnerInitial
+              )}
             </div>
-          </div>
+          </Link>
 
           {/* Center: Flame streak + PRO badge */}
           <div className="flex items-center space-x-2">

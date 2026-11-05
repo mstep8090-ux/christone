@@ -1,4 +1,121 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M14 24H20M17 21V27M30 23H30.02M34 25H34.02" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M35 15H13C9.68629 15 7 17.6863 7 21V26C7 31.5228 11.4772 36 17 36C19.5 36 21 34 24 34C27 34 28.5 36 31 36C36.5228 36 41 31.5228 41 26V21C41 17.6863 38.3137 15 35 15Z" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="gp-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.3" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="gp-disc" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFD6DF" />
+    </radialGradient>
+
+    <!-- Controller Body Solid Gradient -->
+    <linearGradient id="gp-body" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#FFF5F7" />
+      <stop offset="100%" stop-color="#FFDCE3" />
+    </linearGradient>
+
+    <!-- D-pad & Accent -->
+    <linearGradient id="gp-dpad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF85A0" />
+      <stop offset="100%" stop-color="#E84367" />
+    </linearGradient>
+
+    <filter id="gp-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .gp-aura {
+      transform-origin: 24px 24px;
+      animation: gp-glow 3.2s ease-in-out infinite;
+    }
+    .gp-controller {
+      transform-origin: 24px 26px;
+      animation: gp-bounce 3.4s ease-in-out infinite;
+    }
+    .gp-heart-center {
+      transform-origin: 24px 23px;
+      animation: gp-heart-beat 1.8s ease-in-out infinite;
+    }
+    .gp-btn-glow {
+      animation: gp-btn-pulse 2.2s ease-in-out infinite;
+    }
+    .gp-star {
+      transform-origin: 39px 11px;
+      animation: gp-twinkle 2.8s ease-in-out infinite;
+    }
+
+    @keyframes gp-bounce {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-2.5px) rotate(1.2deg); }
+    }
+    @keyframes gp-glow {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.05); }
+    }
+    @keyframes gp-heart-beat {
+      0%, 100% { transform: scale(1); }
+      20% { transform: scale(1.2); filter: drop-shadow(0 0 2px rgba(255,90,126,0.8)); }
+      40% { transform: scale(1.05); }
+      60% { transform: scale(1.15); filter: drop-shadow(0 0 2px rgba(255,90,126,0.6)); }
+      80% { transform: scale(1); }
+    }
+    @keyframes gp-btn-pulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; filter: drop-shadow(0 0 2px rgba(255,90,126,0.6)); }
+    }
+    @keyframes gp-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Glow -->
+  <circle class="gp-aura" cx="24" cy="24" r="23" fill="url(#gp-bg)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="24" cy="24" r="21" fill="url(#gp-disc)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#gp-shadow)" />
+
+  <!-- Animated Controller -->
+  <g class="gp-controller">
+    <!-- Solid Controller Body with Ergonomic Hand Grips -->
+    <path d="M34 16H14C10.5 16 8 18.5 8 22V27C8 32.5 12 36.5 17 36.5C20 36.5 21.5 34.5 24 34.5C26.5 34.5 28 36.5 31 36.5C36 36.5 40 32.5 40 27V22C40 18.5 37.5 16 34 16Z" 
+          fill="url(#gp-body)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#gp-shadow)" />
+
+    <!-- Top Ergonomic Highlight Sheen -->
+    <path d="M14 17.5H34C36.5 17.5 38.5 19.5 38.5 22" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" />
+
+    <!-- Left D-Pad (Solid Rose Cross) -->
+    <path d="M16 22H18V20C18 19.4 18.4 19 19 19C19.6 19 20 19.4 20 20V22H22C22.6 22 23 22.4 23 23C23 23.6 22.6 24 22 24H20V26C20 26.6 19.6 27 19 27C18.4 27 18 26.6 18 26V24H16C15.4 24 15 23.6 15 23C15 22.4 15.4 22 16 22Z" 
+          fill="url(#gp-dpad)" />
+
+    <!-- Right Action Buttons (Jewels) -->
+    <g class="gp-btn-glow">
+      <circle cx="29" cy="23" r="1.8" fill="#FF5A7E" />
+      <circle cx="33" cy="20" r="1.8" fill="#E84367" />
+      <circle cx="33" cy="26" r="1.8" fill="#FF85A0" />
+      <circle cx="37" cy="23" r="1.8" fill="#DDF2E6" stroke="#22C55E" stroke-width="0.5" />
+    </g>
+
+    <!-- Center Covenant Heart Emblem -->
+    <g class="gp-heart-center">
+      <path d="M24 24.5C24 24.5 22 23 22 21.8C22 21 22.6 20.4 23.3 20.4C23.7 20.4 24 20.6 24 20.8C24 20.6 24.3 20.4 24.7 20.4C25.4 20.4 26 21 26 21.8C26 23 24 24.5 24 24.5Z" 
+            fill="#FF5A7E" />
+    </g>
+
+    <!-- Grip Inset Accents -->
+    <path d="M12 28C13 31 15 33 17 33" stroke="#FF5A7E" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.4" />
+    <path d="M36 28C35 31 33 33 31 33" stroke="#FF5A7E" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.4" />
+  </g>
+
+  <!-- Twinkling Star -->
+  <path class="gp-star" d="M39 8V14M36 11H42" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
 </svg>

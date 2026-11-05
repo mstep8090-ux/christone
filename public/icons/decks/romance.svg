@@ -1,6 +1,128 @@
 <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="60" cy="60" r="54" fill="#FFC2CE" fill-opacity="0.8"/>
-  <g stroke="#1A1A1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M60 78C60 78 40 65 40 51C40 44.5 45 40 51.5 40C55.5 40 58.5 42 60 45C61.5 42 64.5 40 68.5 40C75 40 80 44.5 80 51C80 65 60 78 60 78Z"/>
+  <defs>
+    <!-- Halo Glow -->
+    <radialGradient id="rom-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.35" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="rom-disc" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF0F3" />
+      <stop offset="85%" stop-color="#FFD6DF" />
+      <stop offset="100%" stop-color="#FFC2CE" />
+    </radialGradient>
+
+    <!-- Petal Gradients -->
+    <radialGradient id="rom-petal-center" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#FF85A0" />
+      <stop offset="75%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </radialGradient>
+
+    <linearGradient id="rom-petal-outer" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF85A0" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#C22045" />
+    </linearGradient>
+
+    <!-- Stem Green Gradient -->
+    <linearGradient id="rom-stem" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8ADCA9" />
+      <stop offset="100%" stop-color="#3B8659" />
+    </linearGradient>
+
+    <filter id="rom-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#FF5A7E" flood-opacity="0.28" />
+    </filter>
+  </defs>
+
+  <style>
+    .rom-aura {
+      transform-origin: 60px 60px;
+      animation: rom-pulse 3.5s ease-in-out infinite;
+    }
+    .rom-rose-group {
+      transform-origin: 60px 85px;
+      animation: rom-sway 4s ease-in-out infinite;
+    }
+    .rom-bloom {
+      transform-origin: 60px 52px;
+      animation: rom-breathe 2.4s ease-in-out infinite;
+    }
+    .rom-sparkle {
+      transform-origin: 94px 28px;
+      animation: rom-twinkle 2.8s ease-in-out infinite;
+    }
+
+    @keyframes rom-pulse {
+      0%, 100% { opacity: 0.6; transform: scale(0.97); }
+      50% { opacity: 1; transform: scale(1.04); }
+    }
+    @keyframes rom-sway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(2deg) translateY(-1px); }
+    }
+    @keyframes rom-breathe {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,90,126,0.3)); }
+      50% { transform: scale(1.06); filter: drop-shadow(0 0 7px rgba(255,90,126,0.8)); }
+    }
+    @keyframes rom-twinkle {
+      0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.25) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Halo -->
+  <circle class="rom-aura" cx="60" cy="60" r="56" fill="url(#rom-glow)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="60" cy="60" r="52" fill="url(#rom-disc)" stroke="#F5E6E8" stroke-width="2" filter="url(#rom-shadow)" />
+  <circle cx="60" cy="60" r="47" stroke="#FF5A7E" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="3 4" fill="none" />
+
+  <!-- Animated Rose Group -->
+  <g class="rom-rose-group">
+    <!-- Graceful Curved Stem -->
+    <path d="M60 70C60 76 61 84 63 92" stroke="url(#rom-stem)" stroke-width="4.5" stroke-linecap="round" />
+
+    <!-- Emerald Leaves -->
+    <path d="M62 76C68 74 74 77 75 83C69 84 64 82 62 76Z" fill="url(#rom-stem)" filter="url(#rom-shadow)" />
+    <path d="M60 82C53 82 48 86 47 91C53 91 58 88 60 82Z" fill="url(#rom-stem)" />
+
+    <!-- Living Blooming Rose Blossom -->
+    <g class="rom-bloom" filter="url(#rom-shadow)">
+      <!-- Outer Base Petals -->
+      <path d="M38 52C36 40 46 32 60 32C74 32 84 40 82 52C80 65 68 72 60 72C52 72 40 65 38 52Z" 
+            fill="url(#rom-petal-outer)" />
+
+      <!-- Left Embracing Petal -->
+      <path d="M42 48C40 38 50 34 56 36C60 38 60 48 54 56C48 62 44 58 42 48Z" 
+            fill="#FF85A0" />
+
+      <!-- Right Embracing Petal -->
+      <path d="M78 48C80 38 70 34 64 36C60 38 60 48 66 56C72 62 76 58 78 48Z" 
+            fill="url(#rom-petal-outer)" />
+
+      <!-- Inner Spiraling Petals Core -->
+      <path d="M50 44C50 38 56 36 60 36C64 36 70 38 70 44C70 52 64 56 60 56C56 56 50 52 50 44Z" 
+            fill="url(#rom-petal-center)" />
+
+      <!-- Central Tight Rosebud Spiral -->
+      <ellipse cx="60" cy="45" rx="5" ry="4" fill="#FFFFFF" fill-opacity="0.8" />
+      <path d="M58 44C58 42 62 42 62 44C62 46 60 47 58 46" stroke="#E84367" stroke-width="1.2" stroke-linecap="round" fill="none" />
+
+      <!-- Morning Dewdrop on Petal -->
+      <circle cx="48" cy="52" r="1.8" fill="#FFFFFF" fill-opacity="0.9" />
+      <circle cx="47.5" cy="51.5" r="0.6" fill="#FFFFFF" />
+    </g>
+  </g>
+
+  <!-- Twinkling Celestial Sparkle -->
+  <g class="rom-sparkle">
+    <path d="M94 22V32M89 27H99" stroke="#FF5A7E" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="94" cy="27" r="1.2" fill="#FFFFFF" />
   </g>
 </svg>

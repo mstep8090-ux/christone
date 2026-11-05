@@ -1,46 +1,173 @@
 <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Soft pink background #FFF5F7 -->
-  <rect width="200" height="200" rx="24" fill="#FFF5F7"/>
-  
-  <!-- Subtle background glow -->
-  <circle cx="100" cy="100" r="60" fill="#FFC2CE" fill-opacity="0.25"/>
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="rwrt-bg" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFDCE3" />
+    </radialGradient>
 
-  <!-- Table surface -->
-  <line x1="28" y1="148" x2="172" y2="148" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Warm Desk Halo -->
+    <radialGradient id="rwrt-glow" cx="50%" cy="65%" r="45%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.25" />
+      <stop offset="60%" stop-color="#FFC2CE" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
 
-  <!-- Love Letter / Note Left -->
-  <rect x="58" y="132" width="28" height="16" rx="2" fill="#FFFFFF" stroke="#1A1A1E" stroke-width="1.5" transform="rotate(-6 58 132)"/>
-  <line x1="62" y1="138" x2="80" y2="136" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="63" y1="142" x2="76" y2="140.5" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Table Gradient -->
+    <linearGradient id="rwrt-table" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#EFE2E4" />
+    </linearGradient>
 
-  <!-- Love Letter / Note Right -->
-  <rect x="114" y="130" width="28" height="16" rx="2" fill="#FFFFFF" stroke="#1A1A1E" stroke-width="1.5" transform="rotate(6 114 130)"/>
-  <line x1="120" y1="135" x2="138" y2="137" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="121" y1="139" x2="134" y2="140.5" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Parchment Gradient -->
+    <linearGradient id="rwrt-paper" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#FFF5F7" />
+    </linearGradient>
 
-  <!-- Little heart in middle of table -->
-  <path d="M100 134C98 130 93 130 91 133C88 137 100 144 100 144C100 144 112 137 109 133C107 130 102 130 100 134Z" fill="#FF5A7E"/>
+    <!-- Characters -->
+    <linearGradient id="rwrt-woman" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF85A0" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </linearGradient>
+    <linearGradient id="rwrt-man" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D292F" />
+      <stop offset="60%" stop-color="#1A1A1E" />
+      <stop offset="100%" stop-color="#121214" />
+    </linearGradient>
+    <linearGradient id="rwrt-skin" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FEE8E8" />
+      <stop offset="100%" stop-color="#F6B8C2" />
+    </linearGradient>
 
-  <!-- Partner Left (Woman writing) -->
-  <circle cx="70" cy="74" r="13" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
-  <!-- Hair bun -->
-  <circle cx="61" cy="71" r="6" fill="#1A1A1E"/>
-  <!-- Torso & shoulder -->
-  <path d="M70 87C62 90 56 100 54 122C54 134 56 148 56 148H80V128" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="#FFFFFF"/>
-  <!-- Arm writing with pen -->
-  <path d="M70 102L84 130" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <path d="M84 128L88 135" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round"/>
+    <filter id="rwrt-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#FF5A7E" flood-opacity="0.18" />
+    </filter>
+  </defs>
 
-  <!-- Partner Right (Man writing) -->
-  <circle cx="130" cy="70" r="13" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
-  <!-- Short hair -->
-  <path d="M119 70C119 62 124 58 132 58C140 58 143 63 143 70" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <!-- Torso & shoulder -->
-  <path d="M130 83C138 87 144 97 146 118C146 132 144 148 144 148H120V128" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="#FFFFFF"/>
-  <!-- Arm writing with pen -->
-  <path d="M130 98L116 128" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <path d="M116 126L112 133" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round"/>
+  <style>
+    .rwrt-couple {
+      transform-origin: 100px 140px;
+      animation: rwrt-lean 4s ease-in-out infinite;
+    }
+    .rwrt-pen-left {
+      transform-origin: 86px 136px;
+      animation: rwrt-quill 2s ease-in-out infinite;
+    }
+    .rwrt-pen-right {
+      transform-origin: 114px 134px;
+      animation: rwrt-quill 2s ease-in-out infinite 0.6s;
+    }
+    .rwrt-heart-mid {
+      transform-origin: 100px 135px;
+      animation: rwrt-pulse 1.8s ease-in-out infinite;
+    }
+    .rwrt-heart-top {
+      transform-origin: 100px 65px;
+      animation: rwrt-pulse 2.2s ease-in-out infinite 0.4s;
+    }
+    .rwrt-sparkle {
+      transform-origin: 100px 34px;
+      animation: rwrt-twinkle 2.8s ease-in-out infinite;
+    }
 
-  <!-- Top delicate hearts connecting them -->
-  <path d="M100 68C98 64 94 64 92 66.5C89.5 70 100 76.5 100 76.5C100 76.5 110.5 70 108 66.5C106 64 102 64 100 68Z" fill="#FFC2CE"/>
+    @keyframes rwrt-lean {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-1.5px) scale(1.01); }
+    }
+    @keyframes rwrt-quill {
+      0%, 100% { transform: rotate(0deg); }
+      30% { transform: rotate(-5deg) translateY(-1px); }
+      70% { transform: rotate(4deg) translateY(1px); }
+    }
+    @keyframes rwrt-pulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,90,126,0.3)); }
+      50% { transform: scale(1.22); filter: drop-shadow(0 0 6px rgba(255,90,126,0.8)); }
+    }
+    @keyframes rwrt-twinkle {
+      0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Card Background -->
+  <rect width="200" height="200" rx="28" fill="url(#rwrt-bg)" stroke="#F5E6E8" stroke-width="1.5" />
+  <circle cx="100" cy="120" r="65" fill="url(#rwrt-glow)" />
+
+  <!-- Animated Couple Group Leaning In -->
+  <g class="rwrt-couple">
+    <!-- Partner Left (Woman Writing) -->
+    <!-- Head & Hair -->
+    <circle cx="68" cy="64" r="5" fill="#1A1A1E" />
+    <circle cx="72" cy="74" r="11" fill="url(#rwrt-skin)" />
+    <path d="M62 72C61 63 67 60 75 60C81 60 83 64 82 72C78 68 74 67 69 68Z" fill="#1A1A1E" />
+    <circle cx="65" cy="68" r="3.2" fill="#FF5A7E" />
+
+    <!-- Modest Rose Attire Leaning Forward -->
+    <path d="M54 146V124C54 102 62 90 72 88L76 98C68 106 66 120 66 146H54Z" fill="url(#rwrt-woman)" />
+    <!-- Arm Writing -->
+    <path d="M74 96L84 126" stroke="url(#rwrt-skin)" stroke-width="6" stroke-linecap="round" />
+
+    <!-- Partner Right (Man Writing) -->
+    <!-- Head & Hair -->
+    <circle cx="128" cy="70" r="11" fill="url(#rwrt-skin)" />
+    <path d="M118 70C118 62 123 58 131 58C138 58 140 62 140 70C137 66 133 65 128 65C123 65 120 67 118 70Z" fill="url(#rwrt-man)" />
+
+    <!-- Dark Suit / Sweater Leaning Forward -->
+    <path d="M146 146V124C146 100 138 88 128 86L124 96C132 104 134 120 134 146H146Z" fill="url(#rwrt-man)" />
+    <!-- Arm Writing -->
+    <path d="M126 94L116 124" stroke="url(#rwrt-skin)" stroke-width="6" stroke-linecap="round" />
+  </g>
+
+  <!-- Solid Table Surface with drop shadow -->
+  <g filter="url(#rwrt-shadow)">
+    <rect x="22" y="142" width="156" height="12" rx="4" fill="url(#rwrt-table)" stroke="#F5E6E8" stroke-width="1.2" />
+  </g>
+
+  <!-- Parchment Love Letters on Table -->
+  <!-- Left Letter (Woman's) -->
+  <g filter="url(#rwrt-shadow)">
+    <rect x="56" y="128" width="30" height="18" rx="3" fill="url(#rwrt-paper)" stroke="#FFC2CE" stroke-width="1" transform="rotate(-6 56 128)" />
+    <line x1="61" y1="134" x2="80" y2="132" stroke="#FF5A7E" stroke-width="1.4" stroke-linecap="round" />
+    <line x1="62" y1="138" x2="76" y2="136.5" stroke="#FF85A0" stroke-width="1.2" stroke-linecap="round" />
+    <circle cx="81" cy="141" r="2.5" fill="#E84367" />
+  </g>
+
+  <!-- Right Letter (Man's) -->
+  <g filter="url(#rwrt-shadow)">
+    <rect x="114" y="126" width="30" height="18" rx="3" fill="url(#rwrt-paper)" stroke="#FFC2CE" stroke-width="1" transform="rotate(6 114 126)" />
+    <line x1="120" y1="131" x2="139" y2="133" stroke="#FF5A7E" stroke-width="1.4" stroke-linecap="round" />
+    <line x1="121" y1="135" x2="135" y2="136.5" stroke="#FF85A0" stroke-width="1.2" stroke-linecap="round" />
+    <circle cx="119" cy="140" r="2.5" fill="#E84367" />
+  </g>
+
+  <!-- Animated Pens / Quills in Hand -->
+  <g class="rwrt-pen-left">
+    <path d="M84 124L90 137" stroke="#FF5A7E" stroke-width="2.5" stroke-linecap="round" />
+    <circle cx="90" cy="137" r="1.2" fill="#E84367" />
+  </g>
+  <g class="rwrt-pen-right">
+    <path d="M116 122L110 135" stroke="#FF5A7E" stroke-width="2.5" stroke-linecap="round" />
+    <circle cx="110" cy="135" r="1.2" fill="#E84367" />
+  </g>
+
+  <!-- Glowing Covenant Heart on Desk between Letters -->
+  <g class="rwrt-heart-mid">
+    <path d="M100 133C98 129 93 129 91 132C88 136 100 143 100 143C100 143 112 136 109 132C107 129 102 129 100 133Z" fill="#FF5A7E" />
+    <circle cx="97" cy="132" r="0.9" fill="#FFFFFF" />
+  </g>
+
+  <!-- Hovering Covenant Heart connecting their thoughts -->
+  <g class="rwrt-heart-top">
+    <path d="M100 66C97.5 61 91 61 88.5 64.5C85 69 100 77 100 77C100 77 115 69 111.5 64.5C109 61 102.5 61 100 66Z" fill="#FF5A7E" />
+    <circle cx="96" cy="65" r="1.2" fill="#FFFFFF" />
+  </g>
+
+  <!-- Celestial Blessing Overhead -->
+  <g class="rwrt-sparkle">
+    <path d="M100 26V34M96 30H104" stroke="#FF5A7E" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="100" cy="30" r="1.2" fill="#FFFFFF" />
+  </g>
 </svg>

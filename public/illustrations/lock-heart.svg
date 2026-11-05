@@ -1,7 +1,162 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g stroke="#6B5B5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M22,26 V18 C22,12.4772 26.4772,8 32,8 C37.5228,8 42,12.4772 42,18 V26" />
-    <rect x="16" y="26" width="32" height="28" rx="8" />
-    <path d="M32,45 C32,45 27,41 27,37.5 C27,35.5 28.5,34 30.5,34 C31.5,34 32,34.5 32,35 C32,34.5 32.5,34 33.5,34 C35.5,34 37,35.5 37,37.5 C37,41 32,45 32,45 Z" fill="#6B5B5F" fill-opacity="0.15" />
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="lh-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.3" />
+      <stop offset="60%" stop-color="#FFC2CE" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Shackle Metallic Gradient -->
+    <linearGradient id="lh-shackle" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E84367" />
+      <stop offset="25%" stop-color="#FF5A7E" />
+      <stop offset="50%" stop-color="#FFF5F7" />
+      <stop offset="75%" stop-color="#FFC2CE" />
+      <stop offset="100%" stop-color="#6B5B5F" />
+    </linearGradient>
+
+    <!-- Padlock Body Solid Gradient -->
+    <linearGradient id="lh-body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="20%" stop-color="#FFF0F3" />
+      <stop offset="60%" stop-color="#FFD6DF" />
+      <stop offset="100%" stop-color="#FFC2CE" />
+    </linearGradient>
+
+    <!-- Metallic Edge Highlight -->
+    <linearGradient id="lh-rim" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#FF5A7E" stop-opacity="0.4" />
+    </linearGradient>
+
+    <!-- Keyhole Heart Gem Gradient -->
+    <radialGradient id="lh-heart-gem" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FF85A0" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="90%" stop-color="#E84367" />
+      <stop offset="100%" stop-color="#80102A" />
+    </radialGradient>
+
+    <!-- Shimmer Sheen -->
+    <linearGradient id="lh-sheen-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+
+    <filter id="lh-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .lh-ambient-glow {
+      transform-origin: 32px 32px;
+      animation: lh-pulse-glow 3.2s ease-in-out infinite;
+    }
+    .lh-lock-group {
+      transform-origin: 32px 34px;
+      animation: lh-float 4s ease-in-out infinite;
+    }
+    .lh-heart-core {
+      transform-origin: 32px 40px;
+      animation: lh-heartbeat 1.8s ease-in-out infinite;
+    }
+    .lh-sheen-bar {
+      animation: lh-sweep 4s ease-in-out infinite;
+    }
+    .lh-sparkle-1 {
+      transform-origin: 14px 18px;
+      animation: lh-twinkle 2.4s ease-in-out infinite;
+    }
+    .lh-sparkle-2 {
+      transform-origin: 50px 22px;
+      animation: lh-twinkle 2.9s ease-in-out infinite 0.7s;
+    }
+    .lh-sparkle-3 {
+      transform-origin: 46px 48px;
+      animation: lh-twinkle 3.2s ease-in-out infinite 1.4s;
+    }
+
+    @keyframes lh-float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(0.8deg); }
+    }
+    @keyframes lh-pulse-glow {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.9; transform: scale(1.06); }
+    }
+    @keyframes lh-heartbeat {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,90,126,0.4)); }
+      20% { transform: scale(1.16); filter: drop-shadow(0 0 6px rgba(255,90,126,0.9)); }
+      40% { transform: scale(1.05); filter: drop-shadow(0 0 3px rgba(255,90,126,0.5)); }
+      60% { transform: scale(1.12); filter: drop-shadow(0 0 5px rgba(255,90,126,0.8)); }
+      80% { transform: scale(1); }
+    }
+    @keyframes lh-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+    @keyframes lh-sweep {
+      0%, 30% { transform: translateX(-40px); opacity: 0; }
+      40% { opacity: 0.7; }
+      60% { transform: translateX(40px); opacity: 0; }
+      100% { transform: translateX(40px); opacity: 0; }
+    }
+  </style>
+
+  <!-- Ambient Light Halo -->
+  <circle class="lh-ambient-glow" cx="32" cy="32" r="28" fill="url(#lh-glow)" />
+
+  <g class="lh-lock-group">
+    <!-- Solid 3D Padlock Shackle -->
+    <path d="M22 25V17C22 11.477 26.477 7 32 7C37.523 7 42 11.477 42 17V25" 
+          stroke="url(#lh-shackle)" stroke-width="5" stroke-linecap="round" fill="none" />
+    <!-- Inner shackle rim highlight -->
+    <path d="M24 23V17C24 12.58 27.58 9 32 9C36.42 9 40 12.58 40 17V23" 
+          stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" stroke-opacity="0.8" fill="none" />
+
+    <!-- Padlock Body Base Drop Shadow and Solid Shape -->
+    <g filter="url(#lh-shadow)">
+      <rect x="15" y="24" width="34" height="30" rx="10" fill="url(#lh-body)" stroke="url(#lh-rim)" stroke-width="1.5" />
+    </g>
+
+    <!-- Inner Chamfer Inset for 3D depth -->
+    <rect x="17.5" y="26.5" width="29" height="25" rx="7.5" fill="#FFFFFF" fill-opacity="0.5" stroke="#F5E6E8" stroke-width="0.8" />
+
+    <!-- Shimmer reflection clip -->
+    <g clip-path="url(#lh-clip-body)">
+      <clipPath id="lh-clip-body">
+        <rect x="15" y="24" width="34" height="30" rx="10" />
+      </clipPath>
+      <rect class="lh-sheen-bar" x="10" y="20" width="12" height="40" fill="url(#lh-sheen-grad)" transform="skewX(-25)" />
+    </g>
+
+    <!-- Covenant Holy Cross Inscribed Subtly at Bottom -->
+    <path d="M32 47.5V51.5M30.5 49H33.5" stroke="#FF5A7E" stroke-width="1" stroke-linecap="round" stroke-opacity="0.5" />
+
+    <!-- Heart-shaped Gemstone Keyhole -->
+    <g class="lh-heart-core">
+      <!-- Gemstone Outer Bezel -->
+      <path d="M32 42.5C32 42.5 25.5 38 25.5 34C25.5 31.8 27.2 30 29.5 30C30.8 30 31.6 30.6 32 31.2C32.4 30.6 33.2 30 34.5 30C36.8 30 38.5 31.8 38.5 34C38.5 38 32 42.5 32 42.5Z" 
+            fill="url(#lh-heart-gem)" />
+      <!-- Heart Facet Highlight -->
+      <path d="M28 32C27 33 27 34.5 27.5 35.5" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" stroke-opacity="0.8" />
+      <!-- Golden Keyway Slit inside Heart -->
+      <path d="M32 34V37M31.2 37.5H32.8" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" />
+    </g>
   </g>
+
+  <!-- Twinkling Celestial Sparkles -->
+  <!-- Sparkle 1 -->
+  <path class="lh-sparkle-1" d="M14 15V21M11 18H17" stroke="#FF5A7E" stroke-width="1.4" stroke-linecap="round" />
+  <circle cx="14" cy="18" r="0.8" fill="#FFF" />
+
+  <!-- Sparkle 2 -->
+  <path class="lh-sparkle-2" d="M50 19V25M47 22H53" stroke="#FF85A0" stroke-width="1.3" stroke-linecap="round" />
+  <circle cx="50" cy="22" r="0.8" fill="#FFF" />
+
+  <!-- Sparkle 3 -->
+  <path class="lh-sparkle-3" d="M48 48L46 50L48 52L50 50Z" fill="#FF5A7E" />
 </svg>

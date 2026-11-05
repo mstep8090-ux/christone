@@ -1,15 +1,121 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="24" cy="24" r="22" fill="#FFC2CE" fill-opacity="0.85" />
-  <g transform="translate(10, 11)" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <!-- Base band -->
-    <path d="M4 21H24" />
-    <path d="M5 24H23" />
-    <!-- Crown peaks -->
-    <path d="M4 21L2 9L9 14L14 4L19 14L26 9L24 21" />
-    <!-- Cross on top of center peak -->
-    <path d="M14 1V4" />
-    <path d="M12.5 2.5H15.5" />
-    <!-- Heart in center of crown -->
-    <path d="M14 17.5C14 17.5 11 15 11 13.5C11 12.3 12 11.5 13 11.5C13.6 11.5 14 12 14 12C14 12 14.4 11.5 15 11.5C16 11.5 17 12.3 17 13.5C17 15 14 17.5 14 17.5Z" fill="#FF5A7E" stroke="#FF5A7E" stroke-width="1" />
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="pb-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.35" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Badge Disc Gradient -->
+    <radialGradient id="pb-disc" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF0F3" />
+      <stop offset="85%" stop-color="#FFD6DF" />
+      <stop offset="100%" stop-color="#FFC2CE" />
+    </radialGradient>
+
+    <!-- Gold Metallic Crown Gradient -->
+    <linearGradient id="pb-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF4D0" />
+      <stop offset="30%" stop-color="#FFD700" />
+      <stop offset="70%" stop-color="#FF9E40" />
+      <stop offset="100%" stop-color="#FF5A7E" />
+    </linearGradient>
+
+    <!-- Heart Gem Gradient -->
+    <radialGradient id="pb-gem" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="30%" stop-color="#FF85A0" />
+      <stop offset="70%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#D62B54" />
+    </radialGradient>
+
+    <filter id="pb-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#FF5A7E" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <style>
+    .pb-disc-pulse {
+      transform-origin: 24px 24px;
+      animation: pb-glow 3s ease-in-out infinite;
+    }
+    .pb-crown-group {
+      transform-origin: 24px 25px;
+      animation: pb-float 3.6s ease-in-out infinite;
+    }
+    .pb-gem-heart {
+      transform-origin: 24px 28.5px;
+      animation: pb-heartbeat 1.8s ease-in-out infinite;
+    }
+    .pb-star {
+      transform-origin: 39px 11px;
+      animation: pb-twinkle 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pb-float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-2px) rotate(1deg); }
+    }
+    @keyframes pb-glow {
+      0%, 100% { opacity: 0.6; transform: scale(0.97); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    @keyframes pb-heartbeat {
+      0%, 100% { transform: scale(1); }
+      20% { transform: scale(1.2); filter: drop-shadow(0 0 3px rgba(255,90,126,0.9)); }
+      40% { transform: scale(1.08); }
+      60% { transform: scale(1.15); filter: drop-shadow(0 0 2px rgba(255,90,126,0.7)); }
+      80% { transform: scale(1); }
+    }
+    @keyframes pb-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.5) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.3) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Light Pulse -->
+  <circle class="pb-disc-pulse" cx="24" cy="24" r="23" fill="url(#pb-bg)" />
+
+  <!-- Solid Badge Disc with Shadow and Border -->
+  <circle cx="24" cy="24" r="21" fill="url(#pb-disc)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#pb-shadow)" />
+  <circle cx="24" cy="24" r="19" stroke="#FF5A7E" stroke-width="0.8" stroke-opacity="0.3" stroke-dasharray="2 3" fill="none" />
+
+  <!-- Animated Imperial Crown -->
+  <g class="pb-crown-group">
+    <!-- Solid Faceted Crown Base & Peaks -->
+    <path d="M12 31L10 19L17 23L24 13L31 23L38 19L36 31H12Z" 
+          fill="url(#pb-gold)" filter="url(#pb-shadow)" />
+
+    <!-- Crown Facet Insets for 3D Chisel Effect -->
+    <path d="M12 31L17 23L24 31H12Z" fill="#FFA500" fill-opacity="0.35" />
+    <path d="M36 31L31 23L24 31H36Z" fill="#FFA500" fill-opacity="0.35" />
+    <path d="M17 23L24 13L24 31L17 23Z" fill="#FFFFFF" fill-opacity="0.25" />
+    <path d="M31 23L24 13L24 31L31 23Z" fill="#E84367" fill-opacity="0.2" />
+
+    <!-- Crown Base Band with Gemstones -->
+    <rect x="11.5" y="30" width="25" height="3.5" rx="1.7" fill="#FFFFFF" stroke="#FFA500" stroke-width="0.6" />
+    <circle cx="15" cy="31.8" r="1" fill="#FF5A7E" />
+    <circle cx="24" cy="31.8" r="1" fill="#FF85A0" />
+    <circle cx="33" cy="31.8" r="1" fill="#FF5A7E" />
+
+    <!-- Pearl Jewels atop Crown Peaks -->
+    <circle cx="10" cy="18.5" r="1.6" fill="#FFFFFF" stroke="#FFA500" stroke-width="0.6" />
+    <circle cx="38" cy="18.5" r="1.6" fill="#FFFFFF" stroke="#FFA500" stroke-width="0.6" />
+
+    <!-- Center Cross on Top of Imperial Peak -->
+    <path d="M24 8V13M22 10.5H26" stroke="#FFD700" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="24" cy="10.5" r="0.9" fill="#FFFFFF" />
+
+    <!-- Beating Brilliant-Cut Heart Gem in Center of Crown -->
+    <g class="pb-gem-heart">
+      <path d="M24 28.5C24 28.5 20 25.5 20 23.5C20 22 21.2 21 22.5 21C23.3 21 23.8 21.4 24 21.8C24.2 21.4 24.7 21 25.5 21C26.8 21 28 22 28 23.5C28 25.5 24 28.5 24 28.5Z" 
+            fill="url(#pb-gem)" />
+      <circle cx="22.5" cy="22.5" r="0.6" fill="#FFFFFF" />
+    </g>
   </g>
+
+  <!-- Twinkling Celestial Sparkle -->
+  <path class="pb-star" d="M39 8V14M36 11H42" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
 </svg>

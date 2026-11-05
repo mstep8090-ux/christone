@@ -1,8 +1,125 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Blush circle #FFC2CE -->
-  <circle cx="24" cy="24" r="22" fill="#FFC2CE"/>
-  <!-- Minimal holy flame / challenge spark -->
-  <path d="M24 13C24 13 28 17 28 22C28 24.2 27.2 26 26 27C27 26 27.5 24 27.5 24C27.5 24 31 27 31 31C31 34.9 27.9 37 24 37C20.1 37 17 33.9 17 30C17 25 21 21 21 21C21 21 20 23.5 21 25.5C21.8 24.5 22.8 23 23 20C23.2 17 24 13 24 13Z" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Little heart ember in flame -->
-  <path d="M24 30C23 28.5 21 28.5 20.5 29.5C20 30.5 24 33 24 33C24 33 28 30.5 27.5 29.5C27 28.5 25 28.5 24 30Z" fill="#FF5A7E"/>
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="dare-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.35" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="dare-disc" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFD6DF" />
+    </radialGradient>
+
+    <!-- Torch Handle Gradient -->
+    <linearGradient id="dare-handle" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF0F3" />
+      <stop offset="50%" stop-color="#FF85A0" />
+      <stop offset="100%" stop-color="#E84367" />
+    </linearGradient>
+
+    <!-- Flame Gradient Outer & Inner -->
+    <linearGradient id="dare-flame-out" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#E84367" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#FFA245" />
+    </linearGradient>
+    <linearGradient id="dare-flame-in" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#FFA245" />
+      <stop offset="60%" stop-color="#FFD700" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+
+    <filter id="dare-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .dare-aura {
+      transform-origin: 24px 24px;
+      animation: dare-pulse 3.2s ease-in-out infinite;
+    }
+    .dare-torch-group {
+      transform-origin: 24px 34px;
+      animation: dare-tilt 3.5s ease-in-out infinite;
+    }
+    .dare-flame-anim {
+      transform-origin: 24px 18px;
+      animation: dare-flicker 1.6s ease-in-out infinite alternate;
+    }
+    .dare-spark-1 {
+      animation: dare-rise 2s ease-in-out infinite;
+    }
+    .dare-spark-2 {
+      animation: dare-rise 2.4s ease-in-out infinite 0.7s;
+    }
+    .dare-star {
+      transform-origin: 39px 10px;
+      animation: dare-twinkle 2.6s ease-in-out infinite;
+    }
+
+    @keyframes dare-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.05); }
+    }
+    @keyframes dare-tilt {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(2deg) translateY(-1px); }
+    }
+    @keyframes dare-flicker {
+      0% { transform: scale(0.95) rotate(-2deg); }
+      100% { transform: scale(1.08, 1.04) rotate(2deg); filter: drop-shadow(0 0 6px rgba(255,90,126,0.9)); }
+    }
+    @keyframes dare-rise {
+      0% { opacity: 0; transform: translateY(0px) scale(0.6); }
+      40% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-12px) scale(1.2); }
+    }
+    @keyframes dare-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Glow -->
+  <circle class="dare-aura" cx="24" cy="24" r="23" fill="url(#dare-bg)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="24" cy="24" r="21" fill="url(#dare-disc)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#dare-shadow)" />
+
+  <!-- Animated Torch of Adventure -->
+  <g class="dare-torch-group">
+    <!-- Solid Torch Handle -->
+    <path d="M21 24H27L25 38C25 39 24.5 39.5 24 39.5C23.5 39.5 23 39 23 38L21 24Z" 
+          fill="url(#dare-handle)" filter="url(#dare-shadow)" />
+    <!-- Handle Ring Grips -->
+    <line x1="21.5" y1="28" x2="26.5" y2="28" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="22.5" y1="33" x2="25.5" y2="33" stroke="#FFFFFF" stroke-width="1" />
+
+    <!-- Torch Bowl Sconce -->
+    <path d="M18 21H30L27 25H21L18 21Z" fill="#FFA245" stroke="#E84367" stroke-width="1" />
+
+    <!-- Living Animated Flame of Faith -->
+    <g class="dare-flame-anim">
+      <!-- Outer Flame -->
+      <path d="M24 8C24 8 18 15 18 20C18 23.3 20.7 26 24 26C27.3 26 30 23.3 30 20C30 15 24 8 24 8Z" 
+            fill="url(#dare-flame-out)" filter="url(#dare-shadow)" />
+      <!-- Inner Flame Core -->
+      <path d="M24 13C24 13 21 17 21 20C21 21.7 22.3 23 24 23C25.7 23 27 21.7 27 20C27 17 24 13 24 13Z" 
+            fill="url(#dare-flame-in)" />
+      <!-- White Hot Core -->
+      <ellipse cx="24" cy="21" rx="1.5" ry="2" fill="#FFFFFF" />
+    </g>
+
+    <!-- Rising Courage Sparks -->
+    <circle class="dare-spark-1" cx="20" cy="14" r="1" fill="#FFD700" />
+    <circle class="dare-spark-2" cx="28" cy="12" r="1.2" fill="#FFA245" />
+  </g>
+
+  <!-- Twinkling Celestial Star -->
+  <path class="dare-star" d="M39 7V13M36 10H42" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
 </svg>

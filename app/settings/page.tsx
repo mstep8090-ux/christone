@@ -23,6 +23,7 @@ import { Pill } from "@/components/ui/pill";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase/client";
 import { getCoupleSubscription, type SubscriptionStatus } from "@/lib/subscription";
+import { AvatarUploader } from "@/components/profile/avatar-uploader";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -36,8 +37,10 @@ export default function SettingsPage() {
   const [userId, setUserId] = React.useState<string>("");
   const [coupleId, setCoupleId] = React.useState<string>("");
   const [displayName, setDisplayName] = React.useState<string>("");
+  const [avatarUrl, setAvatarUrl] = React.useState<string | null>(null);
   const [partnerId, setPartnerId] = React.useState<string>("");
   const [partnerName, setPartnerName] = React.useState<string>("");
+  const [partnerAvatar, setPartnerAvatar] = React.useState<string | null>(null);
   const [coupleName, setCoupleName] = React.useState<string>("");
   const [stage, setStage] = React.useState<string>("courting");
   const [vision, setVision] = React.useState<string>("");
@@ -74,6 +77,7 @@ export default function SettingsPage() {
 
         if (profile) {
           setDisplayName(profile.display_name || "");
+          if (profile.avatar_url) setAvatarUrl(profile.avatar_url);
           if (profile.stage) setStage(profile.stage);
           setIsMarriedConfirmed(Boolean(profile.is_married_confirmed));
         }
@@ -99,12 +103,17 @@ export default function SettingsPage() {
             setPartnerId(pId);
             const { data: partnerProfile } = await supabase
               .from("profiles")
-              .select("display_name")
+              .select("display_name, avatar_url")
               .eq("id", pId)
               .maybeSingle();
 
-            if (partnerProfile?.display_name) {
-              setPartnerName(partnerProfile.display_name);
+            if (partnerProfile) {
+              if (partnerProfile.display_name) {
+                setPartnerName(partnerProfile.display_name);
+              }
+              if (partnerProfile.avatar_url) {
+                setPartnerAvatar(partnerProfile.avatar_url);
+              }
             }
           }
 
@@ -271,10 +280,23 @@ export default function SettingsPage() {
       {/* FORM: COUPLE & PROFILE SETTINGS */}
       <form onSubmit={handleSaveSettings} className="space-y-6">
         {/* 2. NAMES & IDENTITY */}
-        <Card className="rounded-[24px] bg-white border border-border p-5 shadow-[0_8px_32px_rgba(255,90,126,0.06)] space-y-4">
+        <Card className="rounded-[24px] bg-white border border-border p-5 shadow-[0_8px_32px_rgba(255,90,126,0.06)] space-y-5">
           <span className="text-[11px] font-semibold text-primary uppercase tracking-wider block">
             Names & Identity
           </span>
+
+          {/* Profile Picture Uploader (Upload Photo, Take Picture, or Pick Preset Icon) */}
+          <div className="space-y-2 pb-4 border-b border-border/60">
+            <label className="text-xs font-semibold text-ink font-body block">
+              Your Profile Picture
+            </label>
+            <AvatarUploader
+              userId={userId}
+              currentAvatarUrl={avatarUrl}
+              displayName={displayName}
+              onAvatarUpdated={(url) => setAvatarUrl(url)}
+            />
+          </div>
 
           {/* Couple Name Edit */}
           <div className="space-y-1.5">
@@ -304,20 +326,35 @@ export default function SettingsPage() {
             />
           </div>
 
-          {/* Partner Display Name (Read-only note or info) */}
-          <div className="space-y-1.5">
+          {/* Partner Display Name & Photo (Read-only for other partner) */}
+          <div className="space-y-1.5 pt-1 border-t border-border/60">
             <label className="text-xs font-semibold text-ink font-body block">
-              Partner’s Name
+              Partner’s Name & Photo
             </label>
-            <input
-              type="text"
-              value={partnerName}
-              disabled
-              className="w-full p-3.5 rounded-[16px] border border-border/60 bg-canvas/60 text-xs text-inkSoft font-body cursor-not-allowed"
-            />
-            <p className="text-[11px] text-inkSoft">
-              Partner sets their display name on their device.
-            </p>
+            <div className="flex items-center space-x-3 p-3 rounded-[16px] border border-border/60 bg-canvas/60">
+              <div className="w-11 h-11 rounded-full border border-border overflow-hidden bg-primary text-white flex items-center justify-center font-heading text-sm font-medium shadow-xs shrink-0">
+                {partnerAvatar ? (
+                  <Image
+                    src={partnerAvatar}
+                    alt={partnerName || "Partner"}
+                    width={44}
+                    height={44}
+                    className="w-full h-full object-cover"
+                    unoptimized={partnerAvatar.startsWith("data:")}
+                  />
+                ) : (
+                  <span>{partnerName ? partnerName.charAt(0).toUpperCase() : "P"}</span>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="text-xs font-semibold text-ink block truncate">
+                  {partnerName || "Partner"}
+                </span>
+                <span className="text-[11px] text-inkSoft block truncate">
+                  Partner sets their photo and name on their device.
+                </span>
+              </div>
+            </div>
           </div>
         </Card>
 

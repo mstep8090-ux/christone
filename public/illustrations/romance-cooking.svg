@@ -1,42 +1,167 @@
 <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Soft pink background #FFF5F7 -->
-  <rect width="200" height="200" rx="24" fill="#FFF5F7"/>
-  
-  <!-- Subtle background glow -->
-  <circle cx="100" cy="100" r="60" fill="#FFC2CE" fill-opacity="0.25"/>
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="rc-bg" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="65%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFDCE3" />
+    </radialGradient>
 
-  <!-- Countertop line -->
-  <line x1="30" y1="152" x2="170" y2="152" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  
-  <!-- Cooking bowl -->
-  <path d="M80 126C80 142 90 148 100 148C110 148 120 142 120 126H80Z" fill="#FFFFFF" stroke="#1A1A1E" stroke-width="1.5"/>
-  <ellipse cx="100" cy="126" rx="20" ry="4" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
-  <path d="M106 112L96 136" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Warm Kitchen Glow -->
+    <radialGradient id="rc-glow" cx="50%" cy="60%" r="45%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.25" />
+      <stop offset="60%" stop-color="#FFC2CE" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
 
-  <!-- Gentle steam / worship notes -->
-  <path d="M96 115C94 110 97 106 95 101" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round"/>
-  <path d="M104 113C106 108 103 104 105 99" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round"/>
-  
-  <!-- Heart above bowl -->
-  <path d="M100 84C98 80 93 80 91 83C88 87 100 95 100 95C100 95 112 87 109 83C107 80 102 80 100 84Z" fill="#FF5A7E"/>
+    <!-- Pot Gradient -->
+    <linearGradient id="rc-pot" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#FFF5F7" />
+      <stop offset="100%" stop-color="#F5D0D8" />
+    </linearGradient>
 
-  <!-- Partner Left (Woman silhouette / line) -->
-  <!-- Head -->
-  <circle cx="68" cy="72" r="13" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
-  <!-- Hair bun -->
-  <circle cx="60" cy="68" r="6" fill="#1A1A1E"/>
-  <!-- Torso & modest dress -->
-  <path d="M68 85C60 88 54 98 52 118C52 134 54 152 54 152H78V126" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="#FFFFFF"/>
-  <!-- Arm reaching to bowl -->
-  <path d="M66 98C72 104 78 116 88 124" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Countertop Gradient -->
+    <linearGradient id="rc-counter" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#EFE2E4" />
+    </linearGradient>
 
-  <!-- Partner Right (Man silhouette / line) -->
-  <!-- Head -->
-  <circle cx="132" cy="68" r="13" stroke="#1A1A1E" stroke-width="1.5" fill="#FFFFFF"/>
-  <!-- Short hair -->
-  <path d="M121 68C121 60 126 56 134 56C142 56 145 61 145 68" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <!-- Torso & modest shirt -->
-  <path d="M132 81C140 85 146 95 148 116C148 132 146 152 146 152H122V126" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="#FFFFFF"/>
-  <!-- Arm reaching around to cook together -->
-  <path d="M134 94C126 102 118 112 108 122" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Attire Gradients -->
+    <linearGradient id="rc-man" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D292F" />
+      <stop offset="100%" stop-color="#1A1A1E" />
+    </linearGradient>
+    <linearGradient id="rc-woman" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF85A0" />
+      <stop offset="100%" stop-color="#FF5A7E" />
+    </linearGradient>
+    <linearGradient id="rc-skin" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FEE8E8" />
+      <stop offset="100%" stop-color="#F6B8C2" />
+    </linearGradient>
+
+    <filter id="rc-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#FF5A7E" flood-opacity="0.18" />
+    </filter>
+  </defs>
+
+  <style>
+    .rc-couple-sway {
+      transform-origin: 100px 150px;
+      animation: rc-sway 4.5s ease-in-out infinite;
+    }
+    .rc-heart-pulse {
+      transform-origin: 100px 84px;
+      animation: rc-heartbeat 2s ease-in-out infinite;
+    }
+    .rc-steam-1 {
+      animation: rc-steam-flow 2.8s ease-in-out infinite;
+    }
+    .rc-steam-2 {
+      animation: rc-steam-flow 3.2s ease-in-out infinite 0.9s;
+    }
+    .rc-candle-flicker {
+      transform-origin: 100px 122px;
+      animation: rc-flicker 1.8s ease-in-out infinite alternate;
+    }
+    .rc-sparkle {
+      transform-origin: 100px 42px;
+      animation: rc-twinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes rc-sway {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-2px) rotate(0.4deg); }
+    }
+    @keyframes rc-heartbeat {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,90,126,0.3)); }
+      20% { transform: scale(1.18); filter: drop-shadow(0 0 6px rgba(255,90,126,0.8)); }
+      40% { transform: scale(1.06); filter: drop-shadow(0 0 3px rgba(255,90,126,0.4)); }
+      60% { transform: scale(1.14); filter: drop-shadow(0 0 5px rgba(255,90,126,0.7)); }
+      80% { transform: scale(1); }
+    }
+    @keyframes rc-steam-flow {
+      0% { opacity: 0; transform: translateY(4px) scale(0.9); }
+      40% { opacity: 0.8; }
+      80% { opacity: 0.4; }
+      100% { opacity: 0; transform: translateY(-12px) scale(1.15); }
+    }
+    @keyframes rc-flicker {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      100% { transform: scale(1.1); opacity: 1; }
+    }
+    @keyframes rc-twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(0.7) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Card Background -->
+  <rect width="200" height="200" rx="28" fill="url(#rc-bg)" stroke="#F5E6E8" stroke-width="1.5" />
+  <circle cx="100" cy="115" r="70" fill="url(#rc-glow)" />
+
+  <!-- Animated Couple Group -->
+  <g class="rc-couple-sway">
+    <!-- Partner Left (Woman) -->
+    <!-- Head & Hair Updo -->
+    <circle cx="68" cy="62" r="5" fill="#1A1A1E" />
+    <circle cx="70" cy="72" r="11" fill="url(#rc-skin)" />
+    <!-- Hair Waves -->
+    <path d="M60 70C59 62 65 59 73 59C79 59 81 63 80 70C76 66 72 65 67 66Z" fill="#1A1A1E" />
+    <circle cx="63" cy="66" r="3.5" fill="#FF5A7E" />
+
+    <!-- Modest Rose Blouse & Skirt -->
+    <path d="M54 150V126C54 102 60 90 70 88L73 98C65 106 63 120 63 150H54Z" fill="url(#rc-woman)" />
+    <!-- Arm holding ladle -->
+    <path d="M72 96C78 102 84 112 92 120" stroke="url(#rc-skin)" stroke-width="6" stroke-linecap="round" />
+    <path d="M90 118L97 127" stroke="#FF5A7E" stroke-width="3" stroke-linecap="round" />
+
+    <!-- Partner Right (Man) -->
+    <!-- Short Hair & Head -->
+    <circle cx="130" cy="68" r="11" fill="url(#rc-skin)" />
+    <path d="M120 68C120 60 125 56 133 56C140 56 142 60 142 68C139 64 135 63 130 63C125 63 122 65 120 68Z" fill="url(#rc-man)" />
+
+    <!-- Ink Knit Sweater & Trousers -->
+    <path d="M146 150V126C146 100 138 88 128 86L125 96C133 104 136 120 136 150H146Z" fill="url(#rc-man)" />
+    <!-- Man's Arm warmly resting behind her -->
+    <path d="M128 92C116 94 96 98 84 102" stroke="url(#rc-man)" stroke-width="6" stroke-linecap="round" />
+    <!-- Hand gently near hers -->
+    <circle cx="82" cy="103" r="3.5" fill="url(#rc-skin)" />
+  </g>
+
+  <!-- Sleek Kitchen Counter -->
+  <g filter="url(#rc-shadow)">
+    <rect x="24" y="146" width="152" height="12" rx="4" fill="url(#rc-counter)" stroke="#F5E6E8" stroke-width="1.2" />
+  </g>
+
+  <!-- Simmering Cooking Pot -->
+  <!-- Pot Body -->
+  <g filter="url(#rc-shadow)">
+    <path d="M82 122C82 140 90 146 100 146C110 146 118 140 118 122H82Z" fill="url(#rc-pot)" stroke="#FFC2CE" stroke-width="1.5" />
+    <ellipse cx="100" cy="122" rx="18" ry="4.5" fill="#FFF0F3" stroke="#FFC2CE" stroke-width="1.2" />
+    <!-- Simmering rose broth inside pot -->
+    <ellipse class="rc-candle-flicker" cx="100" cy="122.5" rx="15" ry="3.2" fill="#FF5A7E" fill-opacity="0.45" />
+    <!-- Rose Gold Pot Handles -->
+    <path d="M78 124C75 124 74 128 77 131" stroke="#E84367" stroke-width="2" stroke-linecap="round" fill="none" />
+    <path d="M122 124C125 124 126 128 123 131" stroke="#E84367" stroke-width="2" stroke-linecap="round" fill="none" />
+  </g>
+
+  <!-- Animated Steam Rising into Love Curls -->
+  <g class="rc-steam-1">
+    <path d="M94 116C91 110 94 104 92 98C90 92 93 88 95 84" stroke="#FF5A7E" stroke-width="1.8" stroke-linecap="round" fill="none" />
+  </g>
+  <g class="rc-steam-2">
+    <path d="M106 115C109 109 106 103 108 97C110 91 107 87 105 83" stroke="#FF85A0" stroke-width="1.8" stroke-linecap="round" fill="none" />
+  </g>
+
+  <!-- Covenant Heart of Love Hovering above their Food -->
+  <g class="rc-heart-pulse">
+    <path d="M100 86C98 81 92 81 90 84.5C87 89 100 98 100 98C100 98 113 89 110 84.5C108 81 102 81 100 86Z" fill="#FF5A7E" />
+    <circle cx="95" cy="85" r="1.2" fill="#FFFFFF" />
+  </g>
+
+  <!-- Heavenly Blessing Twinkles -->
+  <path class="rc-sparkle" d="M100 36V44M96 40H104" stroke="#FF5A7E" stroke-width="1.5" stroke-linecap="round" />
+  <circle cx="100" cy="40" r="1" fill="#FFFFFF" />
 </svg>

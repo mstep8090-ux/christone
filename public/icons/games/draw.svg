@@ -1,11 +1,118 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Blush circle #FFC2CE -->
-  <circle cx="24" cy="24" r="22" fill="#FFC2CE"/>
-  <!-- Minimal tilted pencil -->
-  <path d="M29 15L33 19L19 33L15 33L15 29L29 15Z" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <line x1="26" y1="18" x2="30" y2="22" stroke="#1A1A1E" stroke-width="1.5"/>
-  <!-- Pencil tip point -->
-  <path d="M15 33L17 31" stroke="#FF5A7E" stroke-width="1.5"/>
-  <!-- Sketch stroke curve -->
-  <path d="M13 36C18 36 21 34 26 36" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="drw-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.32" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="drw-disc" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFD6DF" />
+    </radialGradient>
+
+    <!-- Palette Gradient -->
+    <linearGradient id="drw-palette" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF5F7" />
+      <stop offset="100%" stop-color="#FFDCE3" />
+    </linearGradient>
+
+    <!-- Brush Handle -->
+    <linearGradient id="drw-handle" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF5A7E" />
+      <stop offset="70%" stop-color="#FFA245" />
+      <stop offset="100%" stop-color="#FFF0F3" />
+    </linearGradient>
+
+    <filter id="drw-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .drw-aura {
+      transform-origin: 24px 24px;
+      animation: drw-pulse 3.2s ease-in-out infinite;
+    }
+    .drw-palette-group {
+      transform-origin: 24px 25px;
+      animation: drw-float 3.6s ease-in-out infinite;
+    }
+    .drw-brush-stroke {
+      transform-origin: 32px 18px;
+      animation: drw-paint 2.2s ease-in-out infinite;
+    }
+    .drw-paint-splat {
+      transform-origin: 28px 16px;
+      animation: drw-splat-glow 2s ease-in-out infinite alternate;
+    }
+    .drw-star {
+      transform-origin: 39px 10px;
+      animation: drw-twinkle 2.6s ease-in-out infinite;
+    }
+
+    @keyframes drw-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.05); }
+    }
+    @keyframes drw-float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-2px) rotate(1deg); }
+    }
+    @keyframes drw-paint {
+      0%, 100% { transform: rotate(0deg) translate(0, 0); }
+      30% { transform: rotate(-8deg) translate(-2px, -1px); }
+      70% { transform: rotate(6deg) translate(1px, 2px); }
+    }
+    @keyframes drw-splat-glow {
+      0% { opacity: 0.7; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1.15); filter: drop-shadow(0 0 3px rgba(255,90,126,0.8)); }
+    }
+    @keyframes drw-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Glow -->
+  <circle class="drw-aura" cx="24" cy="24" r="23" fill="url(#drw-bg)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="24" cy="24" r="21" fill="url(#drw-disc)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#drw-shadow)" />
+
+  <!-- Animated Palette Group -->
+  <g class="drw-palette-group">
+    <!-- Solid Artist Palette -->
+    <path d="M12 26C12 18 17 12 25 12C33 12 37 17 37 23C37 26 35 28 32 28C29 28 28 30 28 33C28 36 25 38 21 38C15 38 12 33 12 26Z" 
+          fill="url(#drw-palette)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#drw-shadow)" />
+
+    <!-- Thumbhole Inset -->
+    <ellipse cx="20" cy="31" rx="2.5" ry="3" fill="#FFFFFF" stroke="#EAD6DA" stroke-width="0.8" />
+
+    <!-- Jewel Paint Droplets on Palette -->
+    <circle cx="17" cy="18" r="2.2" fill="#FF5A7E" />
+    <circle cx="24" cy="16" r="2.2" fill="#FFD700" />
+    <circle cx="31" cy="19" r="2.2" fill="#8ADCA9" />
+    <circle cx="32" cy="24" r="2" fill="#E84367" />
+
+    <!-- Animated Dynamic Brush & Paint Stroke -->
+    <g class="drw-brush-stroke">
+      <!-- Brush Handle -->
+      <path d="M38 12L28 27" stroke="url(#drw-handle)" stroke-width="3" stroke-linecap="round" />
+      <!-- Metallic Ferrule -->
+      <path d="M30 24L28 27" stroke="#FF5A7E" stroke-width="3.5" stroke-linecap="round" />
+      <!-- Bristles Tip with Rose Wet Paint -->
+      <polygon points="27.5,27 25.5,30 28,29" fill="#E84367" />
+    </g>
+
+    <!-- Glowing Paint Arc / Heart Swirl -->
+    <path class="drw-paint-splat" d="M26 30C28 33 32 34 35 32" stroke="#FF5A7E" stroke-width="1.8" stroke-linecap="round" fill="none" />
+  </g>
+
+  <!-- Twinkling Celestial Star -->
+  <path class="drw-star" d="M39 7V13M36 10H42" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
 </svg>

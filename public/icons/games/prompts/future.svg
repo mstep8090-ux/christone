@@ -1,11 +1,111 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
-  <circle cx="32" cy="32" r="30" fill="#FFC2CE"/>
-  <!-- Future Rising Sun & Path Minimal Line -->
-  <line x1="18" y1="36" x2="46" y2="36" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <path d="M24 36C24 31.5817 27.5817 28 32 28C36.4183 28 40 31.5817 40 36" stroke="#1A1A1E" stroke-width="1.5"/>
-  <line x1="32" y1="21" x2="32" y2="24" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="24" y1="23" x2="26" y2="26" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="40" y1="23" x2="38" y2="26" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
-  <!-- Winding Path Ahead -->
-  <path d="M30 36C27 41 35 44 32 48" stroke="#1A1A1E" stroke-width="1.5" stroke-linecap="round"/>
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="ft-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.32" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="ft-disc" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFF0F3" />
+      <stop offset="100%" stop-color="#FFD6DF" />
+    </radialGradient>
+
+    <!-- Rising Sun Gradient -->
+    <radialGradient id="ft-sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#FFE082" />
+      <stop offset="70%" stop-color="#FFA245" />
+      <stop offset="100%" stop-color="#FF5A7E" />
+    </radialGradient>
+
+    <!-- Rolling Hills Gradient -->
+    <linearGradient id="ft-hills" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF5F7" />
+      <stop offset="100%" stop-color="#FFDCE3" />
+    </linearGradient>
+
+    <!-- Path Gradient -->
+    <linearGradient id="ft-path" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD6DF" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </linearGradient>
+
+    <filter id="ft-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .ft-aura {
+      transform-origin: 32px 32px;
+      animation: ft-pulse 3.2s ease-in-out infinite;
+    }
+    .ft-sun-group {
+      transform-origin: 32px 34px;
+      animation: ft-sun-breathe 3s ease-in-out infinite;
+    }
+    .ft-ray-1 {
+      animation: ft-ray-shine 2.4s ease-in-out infinite;
+    }
+    .ft-ray-2 {
+      animation: ft-ray-shine 2.4s ease-in-out infinite 0.8s;
+    }
+    .ft-star {
+      transform-origin: 50px 14px;
+      animation: ft-twinkle 2.6s ease-in-out infinite;
+    }
+
+    @keyframes ft-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.05); }
+    }
+    @keyframes ft-sun-breathe {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,162,69,0.5)); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(255,90,126,0.8)); }
+    }
+    @keyframes ft-ray-shine {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+    @keyframes ft-twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Glow -->
+  <circle class="ft-aura" cx="32" cy="32" r="30" fill="url(#ft-bg)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="32" cy="32" r="28" fill="url(#ft-disc)" stroke="#F5E6E8" stroke-width="1.5" filter="url(#ft-shadow)" />
+
+  <!-- Animated Rising Covenant Sun of Hope -->
+  <g class="ft-sun-group">
+    <!-- Rising Sun Rays -->
+    <path class="ft-ray-1" d="M32 20V16" stroke="#FFA245" stroke-width="2" stroke-linecap="round" />
+    <path class="ft-ray-2" d="M22 24L19 21" stroke="#FFA245" stroke-width="1.8" stroke-linecap="round" />
+    <path class="ft-ray-2" d="M42 24L45 21" stroke="#FFA245" stroke-width="1.8" stroke-linecap="round" />
+
+    <!-- Solid Semi-Circle Rising Sun -->
+    <path d="M21 34C21 27.9 25.9 23 32 23C38.1 23 43 27.9 43 34H21Z" 
+          fill="url(#ft-sun)" filter="url(#ft-shadow)" />
+    <circle cx="32" cy="34" r="6" fill="#FFFFFF" fill-opacity="0.8" />
+  </g>
+
+  <!-- Rolling Hills Horizon -->
+  <path d="M12 36C18 33 26 35 32 34C38 33 46 35 52 36V48C52 49 51 50 50 50H14C13 50 12 49 12 48V36Z" 
+        fill="url(#ft-hills)" stroke="#F5E6E8" stroke-width="1" filter="url(#ft-shadow)" />
+
+  <!-- Winding Golden Covenant Pathway Leading Forward into Destiny -->
+  <path d="M32 34C31 38 36 41 33 46C31 49 34 50 32 50" 
+        stroke="url(#ft-path)" stroke-width="3" stroke-linecap="round" fill="none" />
+
+  <!-- Twinkling Star of Destiny -->
+  <path class="ft-star" d="M50 10V18M46 14H54" stroke="#FF5A7E" stroke-width="1.4" stroke-linecap="round" />
 </svg>

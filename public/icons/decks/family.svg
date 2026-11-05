@@ -1,7 +1,138 @@
 <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="60" cy="60" r="54" fill="#FFC2CE" fill-opacity="0.8"/>
-  <g stroke="#1A1A1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M36 54L60 34L84 54V82C84 84.2091 82.2091 86 80 86H40C37.7909 86 36 84.2091 36 82V54Z"/>
-    <path d="M52 86V66H68V86"/>
+  <defs>
+    <!-- Halo Glow -->
+    <radialGradient id="fam-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.32" />
+      <stop offset="65%" stop-color="#FFC2CE" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Disc Gradient -->
+    <radialGradient id="fam-disc" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF0F3" />
+      <stop offset="85%" stop-color="#FFD6DF" />
+      <stop offset="100%" stop-color="#FFC2CE" />
+    </radialGradient>
+
+    <!-- Roof Rose Gradient -->
+    <linearGradient id="fam-roof" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF85A0" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </linearGradient>
+
+    <!-- House Wall Gradient -->
+    <linearGradient id="fam-wall" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFF5F7" />
+      <stop offset="100%" stop-color="#FFDCE3" />
+    </linearGradient>
+
+    <!-- Warm Golden Door Hearth Glow -->
+    <radialGradient id="fam-door-glow" cx="50%" cy="70%" r="70%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#FFE082" />
+      <stop offset="80%" stop-color="#FFA726" />
+      <stop offset="100%" stop-color="#FF5A7E" />
+    </radialGradient>
+
+    <filter id="fam-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .fam-aura {
+      transform-origin: 60px 60px;
+      animation: fam-pulse 3.5s ease-in-out infinite;
+    }
+    .fam-house-group {
+      transform-origin: 60px 70px;
+      animation: fam-breathe 4s ease-in-out infinite;
+    }
+    .fam-door-pulse {
+      animation: fam-warmth 2s ease-in-out infinite alternate;
+    }
+    .fam-smoke-1 {
+      animation: fam-puff 2.8s ease-in-out infinite;
+    }
+    .fam-smoke-2 {
+      animation: fam-puff 2.8s ease-in-out infinite 1.2s;
+    }
+    .fam-star {
+      transform-origin: 60px 24px;
+      animation: fam-twinkle 2.5s ease-in-out infinite;
+    }
+
+    @keyframes fam-pulse {
+      0%, 100% { opacity: 0.6; transform: scale(0.97); }
+      50% { opacity: 1; transform: scale(1.04); }
+    }
+    @keyframes fam-breathe {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-1.5px); }
+    }
+    @keyframes fam-warmth {
+      0% { opacity: 0.85; filter: drop-shadow(0 0 2px rgba(255,167,38,0.4)); }
+      100% { opacity: 1; filter: drop-shadow(0 0 8px rgba(255,167,38,0.9)); }
+    }
+    @keyframes fam-puff {
+      0% { opacity: 0; transform: translateY(0px) scale(0.6); }
+      35% { opacity: 0.9; }
+      100% { opacity: 0; transform: translateY(-16px) scale(1.2); }
+    }
+    @keyframes fam-twinkle {
+      0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.25) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Ambient Halo -->
+  <circle class="fam-aura" cx="60" cy="60" r="56" fill="url(#fam-glow)" />
+
+  <!-- Solid Badge Disc -->
+  <circle cx="60" cy="60" r="52" fill="url(#fam-disc)" stroke="#F5E6E8" stroke-width="2" filter="url(#fam-shadow)" />
+  <circle cx="60" cy="60" r="47" stroke="#FF5A7E" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="3 4" fill="none" />
+
+  <!-- Animated Sheltering Covenant Home -->
+  <g class="fam-house-group">
+    <!-- Chimney -->
+    <rect x="74" y="38" width="8" height="16" rx="2" fill="#E84367" />
+    <line x1="72" y1="38" x2="84" y2="38" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" />
+
+    <!-- Animated Hearth Smoke Curls -->
+    <circle class="fam-smoke-1" cx="78" cy="32" r="3" fill="#FFC2CE" />
+    <path class="fam-smoke-2" d="M78 28C77 26 75 26 74 27C73 29 78 32 78 32C78 32 83 29 82 27C81 26 79 26 78 28Z" fill="#FF85A0" />
+
+    <!-- Solid House Walls -->
+    <path d="M34 58V90C34 92 36 94 38 94H82C84 94 86 92 86 90V58H34Z" 
+          fill="url(#fam-wall)" stroke="#F5E6E8" stroke-width="1.5" filter="url(#fam-shadow)" />
+
+    <!-- Solid Gabled Roof with Eaves -->
+    <path d="M26 60L60 34L94 60H84L60 41L36 60H26Z" 
+          fill="url(#fam-roof)" filter="url(#fam-shadow)" />
+
+    <!-- Attic Faith Window / Cross Inset -->
+    <circle cx="60" cy="52" r="6" fill="#FFFFFF" stroke="#FFC2CE" stroke-width="1" />
+    <path d="M60 48V56M56 52H64" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" />
+
+    <!-- Luminous Arched Hearth Doorway -->
+    <g class="fam-door-pulse">
+      <path d="M50 94V76C50 70.5 54.5 66 60 66C65.5 66 70 70.5 70 76V94H50Z" 
+            fill="url(#fam-door-glow)" filter="url(#fam-shadow)" />
+      <!-- Golden Doorknob Heart -->
+      <circle cx="66" cy="82" r="1.5" fill="#FFFFFF" />
+    </g>
+
+    <!-- Olive Plant Pots at Doorstep -->
+    <circle cx="44" cy="91" r="3" fill="#8ADCA9" />
+    <circle cx="76" cy="91" r="3" fill="#8ADCA9" />
+  </g>
+
+  <!-- Guiding Holy Star Overhead -->
+  <g class="fam-star">
+    <path d="M60 16V26M55 21H65" stroke="#FF5A7E" stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="60" cy="21" r="1.2" fill="#FFFFFF" />
   </g>
 </svg>
