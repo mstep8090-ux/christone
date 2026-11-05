@@ -14,8 +14,8 @@ export async function POST(req: Request) {
     }
 
     const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
-    // Default to NGN because the Paystack merchant account is registered in Nigeria
-    const targetCurrency = clientCurrency || process.env.PAYSTACK_CURRENCY || "NGN";
+    // Default to USD for global app pricing ($7.99 / $49.00)
+    const targetCurrency = clientCurrency || process.env.PAYSTACK_CURRENCY || "USD";
 
     // Amounts in sub-units (cents for USD, kobo for NGN)
     // Monthly: ₦7,990 (799,000 kobo) / $7.99 (799 cents)

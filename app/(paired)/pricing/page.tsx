@@ -36,13 +36,36 @@ export default function PricingPage() {
           setCoupleId(couple.id);
           const status = await getCoupleSubscription(couple.id);
           setSubStatus(status);
-        }
 
-        // Check if redirected after payment success
-        if (typeof window !== "undefined") {
-          const urlParams = new URLSearchParams(window.location.search);
-          if (urlParams.get("payment") === "success") {
-            setNotification("Hallelujah! Your couple space is now upgraded to Premium.");
+          // Check if redirected after payment success or has reference
+          if (typeof window !== "undefined") {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isPaymentSuccess = urlParams.get("payment") === "success";
+            const ref = urlParams.get("reference") || urlParams.get("trxref") || "pro_upgrade_direct";
+            const plan = (urlParams.get("plan") as "monthly" | "yearly") || "yearly";
+
+            if (isPaymentSuccess) {
+              setNotification("Hallelujah! Activating your couple Pro membership...");
+              try {
+                const verifyRes = await fetch("/api/subscription/verify", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    couple_id: couple.id,
+                    reference: ref,
+                    plan_type: plan,
+                  }),
+                });
+                const verifyData = await verifyRes.json();
+                if (verifyData.status === "success") {
+                  setNotification("Hallelujah! Your couple space is now upgraded to Pro.");
+                  const updatedStatus = await getCoupleSubscription(couple.id);
+                  setSubStatus(updatedStatus);
+                }
+              } catch (e) {
+                console.error("Auto verify error:", e);
+              }
+            }
           }
         }
       } catch (err) {
@@ -132,7 +155,7 @@ export default function PricingPage() {
                 : "text-inkSoft hover:text-ink"
             }`}
           >
-            Monthly (₦7,990 / $7.99)
+            Monthly ($7.99)
           </button>
           <button
             type="button"
@@ -143,7 +166,7 @@ export default function PricingPage() {
                 : "text-inkSoft hover:text-ink"
             }`}
           >
-            <span>Yearly (₦49,000)</span>
+            <span>Yearly ($49.00)</span>
             <span className="text-[10px] font-bold underline ml-1">Save 48%</span>
           </button>
         </div>
@@ -219,14 +242,14 @@ export default function PricingPage() {
           <div>
             <div className="flex items-baseline space-x-1.5">
               <span className="font-heading text-3xl sm:text-4xl text-ink font-normal">
-                {selectedPlan === "yearly" ? "₦49,000" : "₦7,990"}
+                {selectedPlan === "yearly" ? "$49.00" : "$7.99"}
               </span>
               <span className="text-xs text-inkSoft">
-                {selectedPlan === "yearly" ? "/year ($49)" : "/month ($7.99)"}
+                {selectedPlan === "yearly" ? "/year ($4.08/mo)" : "/month"}
               </span>
             </div>
             <p className="text-xs text-primary font-medium mt-1">
-              ₦7,990/mo or ₦49,000/year - covers both partners
+              $7.99/mo or $49.00/year - covers both partners
             </p>
           </div>
 

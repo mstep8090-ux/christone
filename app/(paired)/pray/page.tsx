@@ -22,6 +22,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { requestNotificationPermission } from "@/lib/notifications";
 
 interface PrayerPoint {
   id: string;
@@ -272,12 +273,13 @@ export default function PrayPage() {
     }
   }, []);
 
-  // Listen for incoming prayer call on this page
+  // Listen for incoming prayer call on this page (Broadcast + Database poll)
   React.useEffect(() => {
     if (!coupleId || !currentUserId) return;
 
+    // 1. Listen on active prayer voice broadcast channel
     const channel = supabase
-      .channel(`prayer_voice_page_${coupleId}`, {
+      .channel(`prayer_voice_${coupleId}`, {
         config: { broadcast: { self: false } },
       })
       .on("broadcast", { event: "prayer_call_incoming" }, (payload) => {
@@ -290,7 +292,37 @@ export default function PrayPage() {
       })
       .subscribe();
 
+    // 2. Fast DB poll every 2s
+    const checkCalling = async () => {
+      try {
+        const { data } = await supabase
+          .from("prayer_calls")
+          .select("caller_id, created_at, status")
+          .eq("couple_id", coupleId)
+          .eq("status", "calling")
+          .neq("caller_id", currentUserId)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (data) {
+          const ageSecs = (Date.now() - new Date(data.created_at).getTime()) / 1000;
+          if (ageSecs < 60) {
+            setPartnerCalling(true);
+          } else {
+            setPartnerCalling(false);
+          }
+        } else {
+          setPartnerCalling(false);
+        }
+      } catch (_) {}
+    };
+
+    checkCalling();
+    const pollInterval = setInterval(checkCalling, 2000);
+
     return () => {
+      clearInterval(pollInterval);
       supabase.removeChannel(channel);
     };
   }, [coupleId, currentUserId]);
@@ -313,6 +345,7 @@ export default function PrayPage() {
   // Handlers for Prayer Voice Call
   const handleStartPrayerCall = () => {
     setPrayerDone(false);
+    requestNotificationPermission().catch(() => {});
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("christone:start-prayer-call"));
     }
@@ -321,6 +354,7 @@ export default function PrayPage() {
   const handleJoinPrayerCall = () => {
     setPartnerCalling(false);
     setPrayerDone(false);
+    requestNotificationPermission().catch(() => {});
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("christone:pick-prayer-call"));
     }

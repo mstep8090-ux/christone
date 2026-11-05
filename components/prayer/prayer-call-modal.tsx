@@ -63,6 +63,7 @@ export function PrayerCallModal({
   // ICE candidate queue to prevent InvalidStateError
   const iceCandidateQueueRef = React.useRef<RTCIceCandidateInit[]>([]);
   const hasRemoteDescriptionRef = React.useRef<boolean>(false);
+  const cleanupIntervalsRef = React.useRef<(() => void) | null>(null);
 
   // Clean up all resources
   const cleanupCall = React.useCallback(() => {
@@ -372,7 +373,7 @@ export function PrayerCallModal({
                 // 3. Trigger native browser web notification
                 showWebNotification(`🙏 Prayer Call from ${currentUserName}`, {
                   body: "Join hands in covenant prayer now.",
-                  url: "/pray?call=join",
+                  url: "/space",
                 }).catch(() => {});
               } else {
                 // Partner B picked the call!
@@ -392,6 +393,57 @@ export function PrayerCallModal({
               }
             }
           });
+
+        // 4. CALLER PERIODIC PULSE & PARTNER-PICKED POLLING
+        let pulseTimer: NodeJS.Timeout | null = null;
+        let pollTimer: NodeJS.Timeout | null = null;
+
+        if (isCaller) {
+          // Repeatedly pulse incoming alert every 2.5s while waiting
+          pulseTimer = setInterval(() => {
+            if (channelRef.current) {
+              channelRef.current.send({
+                type: "broadcast",
+                event: "prayer_call_incoming",
+                payload: {
+                  callerId: currentUserId,
+                  callerName: currentUserName,
+                  callerAvatar: currentUserAvatar,
+                },
+              });
+            }
+          }, 2500);
+
+          // Fast poll DB every 1.5s to detect if partner picked the call
+          pollTimer = setInterval(async () => {
+            if (!coupleId) return;
+            try {
+              const { data } = await supabase
+                .from("prayer_calls")
+                .select("status")
+                .eq("couple_id", coupleId)
+                .eq("caller_id", currentUserId)
+                .order("created_at", { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+              if (data?.status === "connected") {
+                if (pollTimer) clearInterval(pollTimer);
+                if (pulseTimer) clearInterval(pulseTimer);
+                console.log("[WebRTC] Partner picked detected from DB! Sending offer...");
+                ringtone.stopAll();
+                ringtone.playConnectedSound();
+                setCallState("picked");
+                await sendOffer();
+              }
+            } catch (_) {}
+          }, 1500);
+        }
+
+        cleanupIntervalsRef.current = () => {
+          if (pulseTimer) clearInterval(pulseTimer);
+          if (pollTimer) clearInterval(pollTimer);
+        };
       } catch (err: any) {
         console.error("Prayer call init error:", err);
         ringtone.stopAll();
@@ -407,6 +459,7 @@ export function PrayerCallModal({
 
     return () => {
       isSubscribed = false;
+      if (cleanupIntervalsRef.current) cleanupIntervalsRef.current();
       cleanupCall();
       if (channelRef.current) {
         supabase.removeChannel(channelRef.current);

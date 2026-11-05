@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Settings, Flame, Bell, PhoneCall, X } from "lucide-react";
+import { Settings, Flame, Bell, PhoneCall, X, Sparkles } from "lucide-react";
 import { BottomNav } from "@/components/ui/bottom-nav";
 import { Pill } from "@/components/ui/pill";
 import { supabase } from "@/lib/supabase/client";
@@ -11,6 +11,7 @@ import {
   registerServiceWorker,
   requestNotificationPermission,
   showWebNotification,
+  sendCoupleNotification,
 } from "@/lib/notifications";
 import { ringtone } from "@/lib/ringtone";
 import { IncomingCallModal } from "@/components/prayer/incoming-call-modal";
@@ -32,6 +33,7 @@ export default function PairedLayout({
   const [partnerName, setPartnerName] = React.useState<string>("Partner");
   const [partnerAvatar, setPartnerAvatar] = React.useState<string | null>(null);
   const [partnerInitial, setPartnerInitial] = React.useState<string>("P");
+  const [isPro, setIsPro] = React.useState<boolean>(false);
 
   // Notification state
   const [showNotificationPrompt, setShowNotificationPrompt] = React.useState(false);
@@ -138,6 +140,18 @@ export default function PairedLayout({
             if (streakRow?.count) {
               setStreakCount(streakRow.count);
             }
+
+            // Fetch subscription status
+            const { data: subRow } = await supabase
+              .from("subscriptions")
+              .select("status, expires_at")
+              .eq("couple_id", coupleData.id)
+              .maybeSingle();
+
+            if (subRow?.status === "premium") {
+              const active = !subRow.expires_at || new Date(subRow.expires_at) > new Date();
+              setIsPro(active);
+            }
           }
         }
       } catch (err) {
@@ -148,7 +162,7 @@ export default function PairedLayout({
     loadHeaderData();
   }, []);
 
-  // Realtime streak sync
+  // Realtime streak & subscription sync
   React.useEffect(() => {
     if (!coupleId) return;
 
@@ -169,6 +183,24 @@ export default function PairedLayout({
           }
         }
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "subscriptions",
+          filter: `couple_id=eq.${coupleId}`,
+        },
+        (payload) => {
+          const row = (payload.new || payload.old) as any;
+          if (row?.status === "premium") {
+            const active = !row.expires_at || new Date(row.expires_at) > new Date();
+            setIsPro(active);
+          } else if (row?.status === "free") {
+            setIsPro(false);
+          }
+        }
+      )
       .subscribe();
 
     return () => {
@@ -178,16 +210,59 @@ export default function PairedLayout({
 
   // Global event listeners to start or pick prayer call from anywhere in app
   React.useEffect(() => {
-    const handleStartCall = () => {
+    const handleStartCall = async () => {
       setIncomingCall(null);
       setActiveCallIsCaller(true);
       setActiveCallModal(true);
+
+      if (coupleId && currentUserId) {
+        try {
+          // 1. Mark previous active calls as ended
+          await supabase
+            .from("prayer_calls")
+            .update({ status: "ended", updated_at: new Date().toISOString() })
+            .eq("couple_id", coupleId)
+            .eq("status", "calling");
+
+          // 2. Insert fresh calling record directly into database
+          await supabase.from("prayer_calls").insert({
+            couple_id: coupleId,
+            caller_id: currentUserId,
+            caller_name: currentUserName || "Partner",
+            status: "calling",
+          });
+
+          // 3. Send notification to partner
+          if (partnerId) {
+            sendCoupleNotification({
+              coupleId,
+              recipientId: partnerId,
+              type: "prayer",
+              title: `🙏 Prayer Call from ${currentUserName || "Partner"}`,
+              body: "Tap to pick call and pray together live.",
+              url: "/space",
+            });
+          }
+
+          // 4. Send low-latency broadcast pulse
+          const voiceChannel = supabase.channel(`prayer_voice_${coupleId}`);
+          voiceChannel.send({
+            type: "broadcast",
+            event: "prayer_call_incoming",
+            payload: {
+              callerId: currentUserId,
+              callerName: currentUserName,
+              callerAvatar: currentUserAvatar,
+            },
+          });
+        } catch (err) {
+          console.warn("Prayer call eager dispatch note:", err);
+        }
+      }
     };
 
     const handlePickCallFromEvent = () => {
-      setIncomingCall(null);
-      setActiveCallIsCaller(false);
-      setActiveCallModal(true);
+      handlePickCall();
     };
 
     window.addEventListener("christone:start-prayer-call", handleStartCall);
@@ -197,13 +272,25 @@ export default function PairedLayout({
       window.removeEventListener("christone:start-prayer-call", handleStartCall);
       window.removeEventListener("christone:pick-prayer-call", handlePickCallFromEvent);
     };
-  }, []);
+  }, [coupleId, currentUserId, currentUserName, currentUserAvatar, partnerId]);
 
-  // Realtime Incoming Prayer Call Listener across ALL pages (including Home Dashboard /space)
+  // Realtime & Fast Heartbeat Incoming Prayer Call Listener across ALL pages (Home Dashboard /space, etc.)
   React.useEffect(() => {
     if (!coupleId || !currentUserId) return;
 
-    // 1. Broadcast Channel listener for zero-latency alert
+    // Helper: Trigger incoming call UI & browser notification
+    const triggerIncoming = (caller: string, callerId: string) => {
+      setIncomingCall((prev) => {
+        if (prev?.callerId === callerId) return prev;
+        showWebNotification(`🙏 Prayer Call from ${caller}`, {
+          body: "Tap to pick call and pray together live.",
+          url: "/space",
+        }).catch(() => {});
+        return { callerName: caller, callerId };
+      });
+    };
+
+    // 1. Broadcast Channel listener for zero-latency alert (<100ms)
     const broadcastChannel = supabase
       .channel(`prayer_voice_${coupleId}`, {
         config: { broadcast: { self: false } },
@@ -211,16 +298,7 @@ export default function PairedLayout({
       .on("broadcast", { event: "prayer_call_incoming" }, (payload) => {
         if (payload?.payload?.callerId && payload.payload.callerId !== currentUserId) {
           const caller = payload.payload.callerName || partnerName || "Partner";
-          setIncomingCall({
-            callerName: caller,
-            callerId: payload.payload.callerId,
-          });
-
-          // Show native browser notification
-          showWebNotification(`🙏 Prayer Call from ${caller}`, {
-            body: "Tap to pick call and pray together.",
-            url: "/space",
-          }).catch(() => {});
+          triggerIncoming(caller, payload.payload.callerId);
         }
       })
       .on("broadcast", { event: "prayer_call_end" }, () => {
@@ -229,7 +307,7 @@ export default function PairedLayout({
       })
       .subscribe();
 
-    // 2. Database changes on prayer_calls table for 100% reliable state sync
+    // 2. Database changes on prayer_calls table
     const dbChannel = supabase
       .channel(`db-prayer-calls-${coupleId}`)
       .on(
@@ -244,10 +322,7 @@ export default function PairedLayout({
           const row = payload.new as any;
           if (row?.status === "calling" && row.caller_id !== currentUserId) {
             const caller = row.caller_name || partnerName || "Partner";
-            setIncomingCall({
-              callerName: caller,
-              callerId: row.caller_id,
-            });
+            triggerIncoming(caller, row.caller_id);
           } else if (row?.status === "ended") {
             setIncomingCall(null);
             ringtone.stopAll();
@@ -256,42 +331,70 @@ export default function PairedLayout({
       )
       .subscribe();
 
-    // Check if there is an active calling record on mount
-    supabase
-      .from("prayer_calls")
-      .select("*")
-      .eq("couple_id", coupleId)
-      .eq("status", "calling")
-      .neq("caller_id", currentUserId)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle()
-      .then(({ data }) => {
+    // 3. Fast Heartbeat Poll (every 2s): guarantees the partner sees the call even if websockets are throttled
+    const checkActiveCalls = async () => {
+      if (activeCallModal) return;
+      try {
+        const { data } = await supabase
+          .from("prayer_calls")
+          .select("*")
+          .eq("couple_id", coupleId)
+          .eq("status", "calling")
+          .neq("caller_id", currentUserId)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
         if (data) {
-          // If created within last 45 seconds, trigger incoming call
           const ageSecs = (Date.now() - new Date(data.created_at).getTime()) / 1000;
-          if (ageSecs < 45) {
-            setIncomingCall({
-              callerName: data.caller_name || partnerName || "Partner",
-              callerId: data.caller_id,
-            });
+          if (ageSecs < 60) {
+            const caller = data.caller_name || partnerName || "Partner";
+            triggerIncoming(caller, data.caller_id);
+          } else {
+            setIncomingCall(null);
           }
+        } else {
+          setIncomingCall((prev) => {
+            if (prev) ringtone.stopAll();
+            return null;
+          });
         }
-      });
+      } catch (_) {}
+    };
+
+    checkActiveCalls();
+    const pollInterval = setInterval(checkActiveCalls, 2000);
 
     return () => {
+      clearInterval(pollInterval);
       supabase.removeChannel(broadcastChannel);
       supabase.removeChannel(dbChannel);
     };
-  }, [coupleId, currentUserId, partnerName]);
+  }, [coupleId, currentUserId, partnerName, activeCallModal]);
 
   // Handlers for Incoming Call Modal
-  const handlePickCall = () => {
+  const handlePickCall = async () => {
     ringtone.stopAll();
     ringtone.playConnectedSound();
     setIncomingCall(null);
     setActiveCallIsCaller(false);
     setActiveCallModal(true);
+
+    if (coupleId) {
+      try {
+        await supabase
+          .from("prayer_calls")
+          .update({ status: "connected", updated_at: new Date().toISOString() })
+          .eq("couple_id", coupleId)
+          .eq("status", "calling");
+
+        supabase.channel(`prayer_voice_${coupleId}`).send({
+          type: "broadcast",
+          event: "prayer_call_picked",
+          payload: { from: currentUserId },
+        });
+      } catch (_) {}
+    }
   };
 
   const handleDeclineCall = async () => {
@@ -408,12 +511,24 @@ export default function PairedLayout({
             </div>
           </div>
 
-          {/* Center: Flame icon lucide + count e.g., '7 days' pill blush bg */}
-          <div className="py-1 px-3.5 rounded-full text-xs flex items-center space-x-1.5 border border-primary/20 bg-[#FFC2CE]/40 shadow-sm text-primary">
-            <Flame size={14} strokeWidth={2} className="fill-current text-primary" />
-            <span className="font-semibold">
-              {streakCount} {streakCount === 1 ? "day" : "days"}
-            </span>
+          {/* Center: Flame streak + PRO badge */}
+          <div className="flex items-center space-x-2">
+            <div className="py-1 px-3 rounded-full text-xs flex items-center space-x-1.5 border border-primary/20 bg-[#FFC2CE]/40 shadow-sm text-primary">
+              <Flame size={14} strokeWidth={2} className="fill-current text-primary" />
+              <span className="font-semibold">
+                {streakCount} {streakCount === 1 ? "day" : "days"}
+              </span>
+            </div>
+
+            {isPro && (
+              <Link
+                href="/pricing"
+                className="py-1 px-2.5 rounded-full text-xs flex items-center space-x-1 border border-amber-300/80 bg-gradient-to-r from-amber-50 to-[#FFF7ED] text-amber-900 shadow-sm font-semibold tracking-wide hover:opacity-90 transition-opacity"
+              >
+                <Sparkles size={12} className="text-amber-600 fill-amber-500" />
+                <span>PRO</span>
+              </Link>
+            )}
           </div>
 
           {/* Right: Settings Icon */}

@@ -68,6 +68,7 @@ export default function SpacePage() {
   const [badges, setBadges] = React.useState<BadgeItem[]>([]);
   const [partnerId, setPartnerId] = React.useState<string>("");
   const [partnerName, setPartnerName] = React.useState<string>("Partner");
+  const [isPro, setIsPro] = React.useState<boolean>(false);
 
   // Checkin Sheet state
   const [isCheckinOpen, setIsCheckinOpen] = React.useState(false);
@@ -157,6 +158,18 @@ export default function SpacePage() {
           // Fetch badges
           const coupleBadges = await getCoupleBadges(couple.id);
           setBadges(coupleBadges);
+
+          // Fetch subscription
+          const { data: subData } = await supabase
+            .from("subscriptions")
+            .select("status, expires_at")
+            .eq("couple_id", couple.id)
+            .maybeSingle();
+
+          if (subData?.status === "premium") {
+            const active = !subData.expires_at || new Date(subData.expires_at) > new Date();
+            setIsPro(active);
+          }
         }
       } catch (err) {
         console.error("Failed to load space data:", err);
@@ -272,9 +285,17 @@ export default function SpacePage() {
       {/* 1. TOP: VISION CARD PINNED */}
       <Card className="rounded-[24px] bg-white border border-border p-5 shadow-[0_8px_32px_rgba(255,90,126,0.08)]">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[14px] uppercase tracking-wider font-semibold text-primary">
-            Our Kingdom Why
-          </span>
+          <div className="flex items-center space-x-2">
+            <span className="text-[14px] uppercase tracking-wider font-semibold text-primary">
+              Our Kingdom Why
+            </span>
+            {isPro && (
+              <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-300/80 text-amber-900 text-[10px] font-bold tracking-wide shadow-xs">
+                <span>👑</span>
+                <span>PRO</span>
+              </span>
+            )}
+          </div>
           {savingVision && (
             <span className="text-[10px] text-inkSoft animate-pulse">Saving...</span>
           )}
