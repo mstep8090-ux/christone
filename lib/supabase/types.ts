@@ -12,6 +12,36 @@ export type Database = {
   };
   public: {
     Tables: {
+      prayer_calls: {
+        Row: {
+          id: string;
+          couple_id: string;
+          caller_id: string;
+          caller_name: string | null;
+          status: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          couple_id: string;
+          caller_id: string;
+          caller_name?: string | null;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          couple_id?: string;
+          caller_id?: string;
+          caller_name?: string | null;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       checkins: {
         Row: {
           couple_id: string;

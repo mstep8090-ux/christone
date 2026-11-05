@@ -12,6 +12,9 @@ import {
   requestNotificationPermission,
   showWebNotification,
 } from "@/lib/notifications";
+import { ringtone } from "@/lib/ringtone";
+import { IncomingCallModal } from "@/components/prayer/incoming-call-modal";
+import { PrayerCallModal } from "@/components/prayer/prayer-call-modal";
 
 export default function PairedLayout({
   children,
@@ -22,18 +25,28 @@ export default function PairedLayout({
   const [streakCount, setStreakCount] = React.useState<number>(1);
   const [coupleId, setCoupleId] = React.useState<string>("");
   const [currentUserId, setCurrentUserId] = React.useState<string>("");
+  const [currentUserName, setCurrentUserName] = React.useState<string>("You");
+  const [currentUserAvatar, setCurrentUserAvatar] = React.useState<string | null>(null);
   const [userInitial, setUserInitial] = React.useState<string>("Y");
-  const [partnerInitial, setPartnerInitial] = React.useState<string>("P");
+  const [partnerId, setPartnerId] = React.useState<string>("");
   const [partnerName, setPartnerName] = React.useState<string>("Partner");
+  const [partnerAvatar, setPartnerAvatar] = React.useState<string | null>(null);
+  const [partnerInitial, setPartnerInitial] = React.useState<string>("P");
 
   // Notification state
   const [showNotificationPrompt, setShowNotificationPrompt] = React.useState(false);
+
+  // Incoming Call State (triggers popup modal on Home Dashboard & all pages)
   const [incomingCall, setIncomingCall] = React.useState<{
     callerName: string;
     callerId: string;
   } | null>(null);
 
-  // Initialize service worker and check notification permission
+  // Active In-Call Modal State (WebRTC Voice Call)
+  const [activeCallModal, setActiveCallModal] = React.useState(false);
+  const [activeCallIsCaller, setActiveCallIsCaller] = React.useState(false);
+
+  // Initialize service worker and notification permission
   React.useEffect(() => {
     registerServiceWorker();
 
@@ -57,6 +70,7 @@ export default function PairedLayout({
     }
   };
 
+  // Load user & couple profile
   React.useEffect(() => {
     async function loadHeaderData() {
       try {
@@ -68,12 +82,16 @@ export default function PairedLayout({
           setCurrentUserId(user.id);
           const { data: myProfile } = await supabase
             .from("profiles")
-            .select("display_name")
+            .select("display_name, avatar_url")
             .eq("id", user.id)
             .maybeSingle();
 
           if (myProfile?.display_name) {
+            setCurrentUserName(myProfile.display_name);
             setUserInitial(myProfile.display_name.charAt(0).toUpperCase());
+          }
+          if (myProfile?.avatar_url) {
+            setCurrentUserAvatar(myProfile.avatar_url);
           }
 
           const { data: coupleData } = await supabase
@@ -92,15 +110,21 @@ export default function PairedLayout({
                 : coupleData.partner_a;
 
             if (pId) {
+              setPartnerId(pId);
               const { data: pProfile } = await supabase
                 .from("profiles")
-                .select("display_name")
+                .select("display_name, avatar_url")
                 .eq("id", pId)
                 .maybeSingle();
 
-              if (pProfile?.display_name) {
-                setPartnerName(pProfile.display_name);
-                setPartnerInitial(pProfile.display_name.charAt(0).toUpperCase());
+              if (pProfile) {
+                if (pProfile.display_name) {
+                  setPartnerName(pProfile.display_name);
+                  setPartnerInitial(pProfile.display_name.charAt(0).toUpperCase());
+                }
+                if (pProfile.avatar_url) {
+                  setPartnerAvatar(pProfile.avatar_url);
+                }
               }
             }
 
@@ -152,11 +176,35 @@ export default function PairedLayout({
     };
   }, [coupleId]);
 
-  // Realtime Incoming Prayer Call Listener across all pages
+  // Global event listeners to start or pick prayer call from anywhere in app
+  React.useEffect(() => {
+    const handleStartCall = () => {
+      setIncomingCall(null);
+      setActiveCallIsCaller(true);
+      setActiveCallModal(true);
+    };
+
+    const handlePickCallFromEvent = () => {
+      setIncomingCall(null);
+      setActiveCallIsCaller(false);
+      setActiveCallModal(true);
+    };
+
+    window.addEventListener("christone:start-prayer-call", handleStartCall);
+    window.addEventListener("christone:pick-prayer-call", handlePickCallFromEvent);
+
+    return () => {
+      window.removeEventListener("christone:start-prayer-call", handleStartCall);
+      window.removeEventListener("christone:pick-prayer-call", handlePickCallFromEvent);
+    };
+  }, []);
+
+  // Realtime Incoming Prayer Call Listener across ALL pages (including Home Dashboard /space)
   React.useEffect(() => {
     if (!coupleId || !currentUserId) return;
 
-    const channel = supabase
+    // 1. Broadcast Channel listener for zero-latency alert
+    const broadcastChannel = supabase
       .channel(`prayer_voice_${coupleId}`, {
         config: { broadcast: { self: false } },
       })
@@ -168,22 +216,119 @@ export default function PairedLayout({
             callerId: payload.payload.callerId,
           });
 
-          // Show native browser notification if allowed
+          // Show native browser notification
           showWebNotification(`🙏 Prayer Call from ${caller}`, {
-            body: "Tap to join in covenant prayer now.",
-            url: "/pray?call=join",
+            body: "Tap to pick call and pray together.",
+            url: "/space",
           }).catch(() => {});
         }
       })
       .on("broadcast", { event: "prayer_call_end" }, () => {
         setIncomingCall(null);
+        ringtone.stopAll();
       })
       .subscribe();
 
+    // 2. Database changes on prayer_calls table for 100% reliable state sync
+    const dbChannel = supabase
+      .channel(`db-prayer-calls-${coupleId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "prayer_calls",
+          filter: `couple_id=eq.${coupleId}`,
+        },
+        (payload) => {
+          const row = payload.new as any;
+          if (row?.status === "calling" && row.caller_id !== currentUserId) {
+            const caller = row.caller_name || partnerName || "Partner";
+            setIncomingCall({
+              callerName: caller,
+              callerId: row.caller_id,
+            });
+          } else if (row?.status === "ended") {
+            setIncomingCall(null);
+            ringtone.stopAll();
+          }
+        }
+      )
+      .subscribe();
+
+    // Check if there is an active calling record on mount
+    supabase
+      .from("prayer_calls")
+      .select("*")
+      .eq("couple_id", coupleId)
+      .eq("status", "calling")
+      .neq("caller_id", currentUserId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) {
+          // If created within last 45 seconds, trigger incoming call
+          const ageSecs = (Date.now() - new Date(data.created_at).getTime()) / 1000;
+          if (ageSecs < 45) {
+            setIncomingCall({
+              callerName: data.caller_name || partnerName || "Partner",
+              callerId: data.caller_id,
+            });
+          }
+        }
+      });
+
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(broadcastChannel);
+      supabase.removeChannel(dbChannel);
     };
   }, [coupleId, currentUserId, partnerName]);
+
+  // Handlers for Incoming Call Modal
+  const handlePickCall = () => {
+    ringtone.stopAll();
+    ringtone.playConnectedSound();
+    setIncomingCall(null);
+    setActiveCallIsCaller(false);
+    setActiveCallModal(true);
+  };
+
+  const handleDeclineCall = async () => {
+    ringtone.stopAll();
+    ringtone.playEndSound();
+    setIncomingCall(null);
+
+    if (coupleId) {
+      try {
+        supabase.channel(`prayer_voice_${coupleId}`).send({
+          type: "broadcast",
+          event: "prayer_call_end",
+          payload: { endedBy: currentUserId },
+        });
+
+        await supabase
+          .from("prayer_calls")
+          .update({ status: "ended", updated_at: new Date().toISOString() })
+          .eq("couple_id", coupleId)
+          .eq("status", "calling");
+      } catch (_) {}
+    }
+  };
+
+  const handlePrayerCompleted = async () => {
+    setActiveCallModal(false);
+    if (!coupleId || !currentUserId) return;
+
+    try {
+      await supabase.from("moments").insert({
+        couple_id: coupleId,
+        author_id: currentUserId,
+        type: "prayer",
+        content: `Joined hearts in covenant prayer call today. Amen. 🙏`,
+      });
+    } catch (_) {}
+  };
 
   return (
     <div className="relative min-h-screen bg-canvas text-ink">
@@ -197,43 +342,29 @@ export default function PairedLayout({
         }}
       />
 
-      {/* GLOBAL INCOMING PRAYER CALL NOTIFICATION BANNER */}
-      {incomingCall && pathname !== "/pray" && (
-        <div className="fixed top-4 left-0 right-0 z-50 px-4 animate-in slide-in-from-top-4 duration-300">
-          <div className="mx-auto max-w-[480px] bg-white border-2 border-primary rounded-[20px] p-3.5 shadow-[0_8px_32px_rgba(255,90,126,0.22)] flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <span className="w-10 h-10 rounded-full bg-[#FF5A7E] text-white flex items-center justify-center flex-shrink-0 animate-pulse">
-                <PhoneCall size={18} strokeWidth={2} />
-              </span>
-              <div className="min-w-0">
-                <p className="text-xs font-semibold text-ink truncate">
-                  Prayer Call: {incomingCall.callerName}
-                </p>
-                <p className="text-[11px] text-primary font-medium truncate">
-                  Waiting to pray together...
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <Link
-                href="/pray?call=join"
-                onClick={() => setIncomingCall(null)}
-                className="h-8 px-3 rounded-full bg-primary hover:bg-deep text-white text-xs font-semibold flex items-center justify-center transition-colors shadow-xs"
-              >
-                Join
-              </Link>
-              <button
-                type="button"
-                onClick={() => setIncomingCall(null)}
-                aria-label="Dismiss"
-                className="w-7 h-7 rounded-full bg-canvas text-inkSoft hover:text-ink flex items-center justify-center"
-              >
-                <X size={14} />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* 1. INCOMING PRAYER CALL POPUP MODAL (Prominently shows on Home Dashboard and everywhere with Ringtone!) */}
+      <IncomingCallModal
+        isOpen={Boolean(incomingCall && !activeCallModal)}
+        callerName={incomingCall?.callerName || partnerName || "Partner"}
+        callerAvatar={partnerAvatar}
+        onPickCall={handlePickCall}
+        onDeclineCall={handleDeclineCall}
+      />
+
+      {/* 2. ACTIVE PRAYER VOICE CALL MODAL (Live 2-Way Audio via WebRTC) */}
+      <PrayerCallModal
+        isOpen={activeCallModal}
+        onClose={() => setActiveCallModal(false)}
+        coupleId={coupleId}
+        currentUserId={currentUserId}
+        currentUserName={currentUserName}
+        currentUserAvatar={currentUserAvatar}
+        partnerId={partnerId}
+        partnerName={partnerName}
+        partnerAvatar={partnerAvatar}
+        isCaller={activeCallIsCaller}
+        onPrayerCompleted={handlePrayerCompleted}
+      />
 
       {/* SUBTLE WEB NOTIFICATION OPT-IN PROMPT */}
       {showNotificationPrompt && (

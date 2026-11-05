@@ -21,7 +21,6 @@ import { Pill } from "@/components/ui/pill";
 import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { supabase } from "@/lib/supabase/client";
-import { PrayerCallModal } from "@/components/prayer/prayer-call-modal";
 import { cn } from "@/lib/utils";
 
 interface PrayerPoint {
@@ -313,16 +312,18 @@ export default function PrayPage() {
 
   // Handlers for Prayer Voice Call
   const handleStartPrayerCall = () => {
-    setIsCaller(true);
-    setIsCallModalOpen(true);
     setPrayerDone(false);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("christone:start-prayer-call"));
+    }
   };
 
   const handleJoinPrayerCall = () => {
-    setIsCaller(false);
-    setIsCallModalOpen(true);
     setPartnerCalling(false);
     setPrayerDone(false);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("christone:pick-prayer-call"));
+    }
   };
 
   const handlePrayerCompleted = async () => {
@@ -718,19 +719,19 @@ export default function PrayPage() {
         ) : partnerCalling ? (
           /* INCOMING PRAYER CALL VIEW */
           <div className="space-y-4 py-2">
-            <div className="w-16 h-16 rounded-full bg-[#FF5A7E] text-white flex items-center justify-center mx-auto animate-pulse shadow-md">
+            <div className="w-16 h-16 rounded-full bg-[#2C6E49] text-white flex items-center justify-center mx-auto animate-pulse shadow-md">
               <PhoneCall size={28} strokeWidth={2} />
             </div>
 
             <div className="space-y-1">
-              <span className="inline-block text-[11px] font-semibold text-primary uppercase tracking-wider bg-[#FFC2CE]/40 px-3 py-0.5 rounded-full">
+              <span className="inline-block text-[11px] font-semibold text-[#2C6E49] uppercase tracking-wider bg-[#DDF2E6] px-3 py-0.5 rounded-full">
                 Incoming Call
               </span>
               <h2 className="font-heading text-2xl sm:text-3xl text-ink font-normal">
                 {partnerName} is calling for prayer
               </h2>
               <p className="text-xs text-inkSoft max-w-xs mx-auto">
-                Tap below to join hands in live voice prayer.
+                Tap below to pick call and pray together live.
               </p>
             </div>
 
@@ -738,10 +739,10 @@ export default function PrayPage() {
               <button
                 type="button"
                 onClick={handleJoinPrayerCall}
-                className="w-full h-12 rounded-full bg-primary hover:bg-deep text-white font-medium text-sm transition-all flex items-center justify-center space-x-2 shadow-[0_8px_32px_rgba(255,90,126,0.22)] active:scale-[0.99]"
+                className="w-full h-12 rounded-full bg-[#2C6E49] hover:bg-[#23583A] text-white font-semibold text-sm transition-all flex items-center justify-center space-x-2 shadow-[0_8px_32px_rgba(44,110,73,0.25)] active:scale-[0.99] animate-pulse"
               >
                 <PhoneCall size={18} strokeWidth={2} />
-                <span>Join Prayer Call</span>
+                <span>Pick Call</span>
               </button>
             </div>
           </div>
@@ -1049,21 +1050,6 @@ export default function PrayPage() {
           </form>
         )}
       </Card>
-
-      {/* LIVE WEBRTC PRAYER VOICE CALL MODAL */}
-      <PrayerCallModal
-        isOpen={isCallModalOpen}
-        onClose={() => setIsCallModalOpen(false)}
-        coupleId={coupleId}
-        currentUserId={currentUserId}
-        currentUserName={currentUserName}
-        currentUserAvatar={currentUserAvatar}
-        partnerId={partnerId}
-        partnerName={partnerName}
-        partnerAvatar={partnerAvatar}
-        isCaller={isCaller}
-        onPrayerCompleted={handlePrayerCompleted}
-      />
     </div>
   );
 }
