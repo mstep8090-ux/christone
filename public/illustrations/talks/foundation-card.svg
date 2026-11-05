@@ -1,0 +1,255 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 140" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Sky Background Gradient -->
+    <linearGradient id="fnd-sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF0F3" />
+      <stop offset="45%" stop-color="#FFDCE3" />
+      <stop offset="85%" stop-color="#FFF5F7" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+
+    <!-- Divine Sunburst Halo -->
+    <radialGradient id="fnd-halo" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#FFD700" stop-opacity="0.45" />
+      <stop offset="40%" stop-color="#FF5A7E" stop-opacity="0.25" />
+      <stop offset="75%" stop-color="#FFC2CE" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Cloud Gradients -->
+    <linearGradient id="fnd-cloud-back" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#FCDCE1" />
+    </linearGradient>
+    <linearGradient id="fnd-cloud-front" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#FFF0F3" />
+    </linearGradient>
+
+    <!-- Altar Stone Chiseled Gradients -->
+    <linearGradient id="fnd-stone-top" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#F6E7EA" />
+      <stop offset="100%" stop-color="#E5D1D5" />
+    </linearGradient>
+    <linearGradient id="fnd-stone-front" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EDE0E3" />
+      <stop offset="60%" stop-color="#D9C3C7" />
+      <stop offset="100%" stop-color="#C5ACB1" />
+    </linearGradient>
+
+    <!-- Flame Spirit Body Gradient -->
+    <linearGradient id="fnd-flame-body" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#E84367" />
+      <stop offset="40%" stop-color="#FF5A7E" />
+      <stop offset="75%" stop-color="#FFA245" />
+      <stop offset="100%" stop-color="#FFD700" />
+    </linearGradient>
+
+    <!-- Inner Flame Core Gradient -->
+    <radialGradient id="fnd-flame-core" cx="50%" cy="55%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFEFA8" />
+      <stop offset="90%" stop-color="#FFA245" />
+      <stop offset="100%" stop-color="#FF5A7E" />
+    </radialGradient>
+
+    <!-- Gold Cross Gradient -->
+    <linearGradient id="fnd-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF8D6" />
+      <stop offset="40%" stop-color="#FFD700" />
+      <stop offset="85%" stop-color="#FFA245" />
+      <stop offset="100%" stop-color="#E84367" />
+    </linearGradient>
+
+    <filter id="fnd-drop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .fnd-halo-pulse {
+      transform-origin: 120px 55px;
+      animation: fnd-sun-breathe 4s ease-in-out infinite alternate;
+    }
+    .fnd-cloud-drift-1 {
+      animation: fnd-cloud-float-1 8s ease-in-out infinite alternate;
+    }
+    .fnd-cloud-drift-2 {
+      animation: fnd-cloud-float-2 7s ease-in-out infinite alternate;
+    }
+    .fnd-spirit-group {
+      transform-origin: 120px 62px;
+      animation: fnd-spirit-dance 3.2s ease-in-out infinite;
+    }
+    .fnd-eye-blink {
+      animation: fnd-blink 4s infinite;
+      transform-origin: 120px 58px;
+    }
+    .fnd-spark-1 {
+      animation: fnd-rise-spark 2.8s ease-in-out infinite;
+    }
+    .fnd-spark-2 {
+      animation: fnd-rise-spark 3.4s ease-in-out infinite 0.9s;
+    }
+    .fnd-spark-3 {
+      animation: fnd-rise-spark 3s ease-in-out infinite 1.7s;
+    }
+    .fnd-star-1 {
+      transform-origin: 45px 28px;
+      animation: fnd-twinkle 2.5s ease-in-out infinite;
+    }
+    .fnd-star-2 {
+      transform-origin: 195px 24px;
+      animation: fnd-twinkle 3s ease-in-out infinite 0.7s;
+    }
+    .fnd-star-3 {
+      transform-origin: 175px 50px;
+      animation: fnd-twinkle 2.8s ease-in-out infinite 1.4s;
+    }
+
+    @keyframes fnd-sun-breathe {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      100% { transform: scale(1.1); opacity: 1; }
+    }
+    @keyframes fnd-cloud-float-1 {
+      0% { transform: translateX(0px); }
+      100% { transform: translateX(8px); }
+    }
+    @keyframes fnd-cloud-float-2 {
+      0% { transform: translateX(0px); }
+      100% { transform: translateX(-8px); }
+    }
+    @keyframes fnd-spirit-dance {
+      0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+      25% { transform: translateY(-3.5px) rotate(2.5deg) scale(1.03, 0.97); }
+      50% { transform: translateY(-1px) rotate(-1.5deg) scale(0.98, 1.02); }
+      75% { transform: translateY(-4px) rotate(-2deg) scale(1.04, 0.96); }
+    }
+    @keyframes fnd-blink {
+      0%, 94%, 98%, 100% { transform: scaleY(1); }
+      96% { transform: scaleY(0.1); }
+    }
+    @keyframes fnd-rise-spark {
+      0% { opacity: 0; transform: translateY(0px) scale(0.6); }
+      30% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-24px) scale(1.2); }
+    }
+    @keyframes fnd-twinkle {
+      0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.25) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Sky Canvas -->
+  <rect width="240" height="140" fill="url(#fnd-sky)" />
+
+  <!-- Heavenly Radiance Sunburst Halo -->
+  <circle class="fnd-halo-pulse" cx="120" cy="55" r="75" fill="url(#fnd-halo)" />
+
+  <!-- Holy Light Rays streaming down -->
+  <path d="M120 10L90 140H150L120 10Z" fill="#FFFFFF" fill-opacity="0.16" />
+  <path d="M120 10L60 140H90L120 10Z" fill="#FFFFFF" fill-opacity="0.10" />
+  <path d="M120 10L150 140H180L120 10Z" fill="#FFFFFF" fill-opacity="0.10" />
+
+  <!-- Background Celestial Fluffy Clouds -->
+  <g class="fnd-cloud-drift-1" opacity="0.85">
+    <path d="M-10 115C-10 105 5 100 18 103C26 95 44 95 52 104C62 102 74 110 74 120H-10V115Z" fill="url(#fnd-cloud-back)" />
+    <path d="M170 112C170 102 186 98 198 102C206 94 222 94 230 103C238 102 250 109 250 120H170V112Z" fill="url(#fnd-cloud-back)" />
+  </g>
+
+  <!-- Solid Stone Altar of Covenant Faith -->
+  <!-- Altar Pedestal Base Block -->
+  <path d="M68 116H172V128C172 130 170 132 168 132H72C70 132 68 130 68 128V116Z" 
+        fill="url(#fnd-stone-front)" filter="url(#fnd-drop)" />
+  <line x1="70" y1="117" x2="170" y2="117" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7" />
+
+  <!-- Altar Main Body Block -->
+  <path d="M78 90H162V116H78V90Z" fill="url(#fnd-stone-front)" />
+  <!-- Left Shade & Right Highlight on stone -->
+  <rect x="78" y="90" width="8" height="26" fill="#000000" fill-opacity="0.08" />
+  <rect x="156" y="90" width="6" height="26" fill="#FFFFFF" fill-opacity="0.3" />
+
+  <!-- Altar Table Top Slab -->
+  <path d="M72 82C72 80.5 73.5 79 75.5 79H164.5C166.5 79 168 80.5 168 82V90H72V82Z" 
+        fill="url(#fnd-stone-top)" />
+  <line x1="74" y1="80.5" x2="166" y2="80.5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+
+  <!-- Carved Golden Cross on Altar Center -->
+  <g filter="url(#fnd-drop)">
+    <!-- Cross Background Chisel Inset -->
+    <path d="M120 95V111M113 100H127" stroke="#C5ACB1" stroke-width="6" stroke-linecap="round" />
+    <!-- Solid Gold Inscribed Cross -->
+    <path d="M120 95V111M113 100H127" stroke="url(#fnd-gold)" stroke-width="4" stroke-linecap="round" />
+    <circle cx="120" cy="100" r="1.8" fill="#FFFFFF" />
+  </g>
+
+  <!-- Open Miniature Sacred Bible on Left Side of Altar -->
+  <path d="M84 76C87 75 92 76 95 78V84C92 82 87 81 84 82V76Z" fill="#FFFFFF" stroke="#E5D1D5" stroke-width="0.8" />
+  <path d="M106 76C103 75 98 76 95 78V84C98 82 103 81 106 82V76Z" fill="#FFFFFF" stroke="#E5D1D5" stroke-width="0.8" />
+  <!-- Red Bookmark Ribbon -->
+  <path d="M95 78V87L96.5 85.5L98 87V78" fill="#FF5A7E" />
+
+  <!-- Animated Living Cartoon Holy Flame Spirit -->
+  <g class="fnd-spirit-group">
+    <!-- Ambient Flame Aura Glow -->
+    <ellipse cx="120" cy="58" rx="22" ry="26" fill="#FF5A7E" fill-opacity="0.25" filter="url(#fnd-drop)" />
+
+    <!-- Outer Dancing Flame Body -->
+    <path d="M120 22C120 22 104 38 104 55C104 66 111 74 120 74C129 74 136 66 136 55C136 38 120 22 120 22Z" 
+          fill="url(#fnd-flame-body)" filter="url(#fnd-drop)" />
+
+    <!-- Cute Flame Top Flick Tress -->
+    <path d="M120 22C122 26 128 27 127 33C126 31 122 30 120 22Z" fill="#FFD700" />
+
+    <!-- Inner Luminous Warm Core -->
+    <path d="M120 34C120 34 110 44 110 56C110 64 114.5 70 120 70C125.5 70 130 64 130 56C130 44 120 34 120 34Z" 
+          fill="url(#fnd-flame-core)" />
+
+    <!-- Cute Cartoon Face on the Flame Spirit -->
+    <!-- Blinking Eyes -->
+    <g class="fnd-eye-blink">
+      <!-- Left Eye with Star Specular -->
+      <ellipse cx="116" cy="55" rx="2.5" ry="3.5" fill="#1A1A1E" />
+      <circle cx="115" cy="54" r="1.1" fill="#FFFFFF" />
+      <!-- Right Eye with Star Specular -->
+      <ellipse cx="124" cy="55" rx="2.5" ry="3.5" fill="#1A1A1E" />
+      <circle cx="123" cy="54" r="1.1" fill="#FFFFFF" />
+    </g>
+
+    <!-- Rosy Blushing Cheeks -->
+    <circle cx="112.5" cy="59" r="2.2" fill="#E84367" fill-opacity="0.6" />
+    <circle cx="127.5" cy="59" r="2.2" fill="#E84367" fill-opacity="0.6" />
+
+    <!-- Cute Smiling Mouth -->
+    <path d="M117.5 61C118.5 63 121.5 63 122.5 61" stroke="#1A1A1E" stroke-width="1.2" stroke-linecap="round" fill="none" />
+  </g>
+
+  <!-- Ascending Golden Embers and Sparks -->
+  <circle class="fnd-spark-1" cx="106" cy="46" r="1.8" fill="#FFD700" />
+  <circle class="fnd-spark-2" cx="134" cy="38" r="2" fill="#FFA245" />
+  <circle class="fnd-spark-3" cx="118" cy="24" r="1.5" fill="#FFFFFF" />
+
+  <!-- Foreground Pillowy Fluffy Clouds Hugging the Altar -->
+  <g class="fnd-cloud-drift-2">
+    <!-- Left Cloud Puff -->
+    <path d="M10 140C10 126 22 118 36 120C44 112 60 112 68 122C74 118 84 122 86 130C90 130 94 135 94 140H10Z" 
+          fill="url(#fnd-cloud-front)" filter="url(#fnd-drop)" />
+    <!-- Right Cloud Puff -->
+    <path d="M150 140C150 132 156 124 166 126C174 116 192 116 200 124C208 120 220 124 224 134C228 134 234 136 236 140H150Z" 
+          fill="url(#fnd-cloud-front)" filter="url(#fnd-drop)" />
+  </g>
+
+  <!-- Twinkling Faith Stars in Sky -->
+  <g class="fnd-star-1">
+    <path d="M45 22V34M39 28H51" stroke="#FF5A7E" stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="45" cy="28" r="1.3" fill="#FFD700" />
+  </g>
+  <g class="fnd-star-2">
+    <path d="M195 18V30M189 24H201" stroke="#FF5A7E" stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="195" cy="24" r="1.3" fill="#FFD700" />
+  </g>
+  <g class="fnd-star-3">
+    <circle cx="175" cy="50" r="1.5" fill="#FF85A0" />
+  </g>
+</svg>

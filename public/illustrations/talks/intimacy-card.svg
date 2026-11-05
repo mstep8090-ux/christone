@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 140" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Sanctuary Atmosphere Gradient -->
+    <linearGradient id="int-sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4A1828" />
+      <stop offset="35%" stop-color="#80213E" />
+      <stop offset="70%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#FFF0F3" />
+    </linearGradient>
+
+    <!-- Warm Golden Flame Spirit Gradient -->
+    <linearGradient id="int-flame-gold" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#FF5A7E" />
+      <stop offset="50%" stop-color="#FFA245" />
+      <stop offset="85%" stop-color="#FFD700" />
+      <stop offset="100%" stop-color="#FFFCE6" />
+    </linearGradient>
+
+    <!-- Rose Flame Spirit Gradient -->
+    <linearGradient id="int-flame-rose" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#A81D3E" />
+      <stop offset="50%" stop-color="#E84367" />
+      <stop offset="85%" stop-color="#FF85A0" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+
+    <!-- Center Covenant Heart Gradient -->
+    <radialGradient id="int-heart-gem" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#FF85A0" />
+      <stop offset="75%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#C22045" />
+    </radialGradient>
+
+    <!-- Gold Ring Gradient -->
+    <linearGradient id="int-ring-y" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDE8" />
+      <stop offset="35%" stop-color="#FFD700" />
+      <stop offset="75%" stop-color="#FFA245" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+
+    <!-- Rose Gold Ring Gradient -->
+    <linearGradient id="int-ring-r" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#FFA4B8" />
+      <stop offset="70%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#C22045" />
+    </linearGradient>
+
+    <filter id="int-drop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#FF5A7E" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <style>
+    .int-flame-dance {
+      transform-origin: 120px 65px;
+      animation: int-sway 3.4s ease-in-out infinite alternate;
+    }
+    .int-heart-core {
+      transform-origin: 120px 60px;
+      animation: int-heartbeat 1.8s ease-in-out infinite;
+    }
+    .int-rings-float {
+      transform-origin: 120px 108px;
+      animation: int-rings-hover 3.8s ease-in-out infinite;
+    }
+    .int-diamond-sparkle {
+      transform-origin: 120px 92px;
+      animation: int-flash 2.2s ease-in-out infinite;
+    }
+    .int-bokeh-1 {
+      animation: int-float-bokeh 5s ease-in-out infinite;
+    }
+    .int-bokeh-2 {
+      animation: int-float-bokeh 6s ease-in-out infinite 1.5s;
+    }
+    .int-star-1 {
+      transform-origin: 35px 25px;
+      animation: int-twinkle 2.5s ease-in-out infinite;
+    }
+    .int-star-2 {
+      transform-origin: 205px 25px;
+      animation: int-twinkle 3s ease-in-out infinite 0.7s;
+    }
+
+    @keyframes int-sway {
+      0% { transform: translateY(0px) rotate(-2deg); }
+      100% { transform: translateY(-3px) rotate(2deg); }
+    }
+    @keyframes int-heartbeat {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,90,126,0.4)); }
+      20% { transform: scale(1.18); filter: drop-shadow(0 0 10px rgba(255,90,126,0.9)); }
+      40% { transform: scale(1.05); }
+      60% { transform: scale(1.14); filter: drop-shadow(0 0 6px rgba(255,90,126,0.7)); }
+      80% { transform: scale(1); }
+    }
+    @keyframes int-rings-hover {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-3.5px) scale(1.03); }
+    }
+    @keyframes int-flash {
+      0%, 100% { opacity: 0.3; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.3) rotate(45deg); filter: drop-shadow(0 0 6px #FFFFFF); }
+    }
+    @keyframes int-float-bokeh {
+      0% { opacity: 0.2; transform: translateY(0px); }
+      50% { opacity: 0.7; transform: translateY(-10px); }
+      100% { opacity: 0.2; transform: translateY(0px); }
+    }
+    @keyframes int-twinkle {
+      0%, 100% { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1.25) rotate(45deg); }
+    }
+  </style>
+
+  <!-- Sky Canvas -->
+  <rect width="240" height="140" fill="url(#int-sky)" />
+
+  <!-- Ambient Floating Bokeh Orbs -->
+  <circle class="int-bokeh-1" cx="50" cy="40" r="16" fill="#FFA245" fill-opacity="0.25" />
+  <circle class="int-bokeh-2" cx="190" cy="50" r="20" fill="#FF5A7E" fill-opacity="0.2" />
+  <circle class="int-bokeh-1" cx="120" cy="30" r="28" fill="#FFFFFF" fill-opacity="0.15" />
+
+  <!-- Dancing & Embracing Cartoon Covenant Twin Flame Spirits -->
+  <g class="int-flame-dance">
+    <!-- Left Sacred Flame Spirit (Rose) -->
+    <path d="M120 22C120 22 92 40 92 62C92 78 104 88 120 92C108 78 106 65 110 52C113 41 120 32 120 22Z" 
+          fill="url(#int-flame-rose)" filter="url(#int-drop)" />
+    <!-- Cute Blinking Eye & Blush on Rose Flame -->
+    <ellipse cx="106" cy="58" rx="1.6" ry="2.2" fill="#FFFFFF" />
+    <circle cx="106" cy="58" r="1" fill="#1A1A1E" />
+    <circle cx="104" cy="62" r="2" fill="#E84367" />
+
+    <!-- Right Sacred Flame Spirit (Gold) -->
+    <path d="M120 22C120 22 148 40 148 62C148 78 136 88 120 92C132 78 134 65 130 52C127 41 120 32 120 22Z" 
+          fill="url(#int-flame-gold)" filter="url(#int-drop)" />
+    <!-- Cute Blinking Eye & Blush on Gold Flame -->
+    <ellipse cx="134" cy="58" rx="1.6" ry="2.2" fill="#FFFFFF" />
+    <circle cx="134" cy="58" r="1" fill="#1A1A1E" />
+    <circle cx="136" cy="62" r="2" fill="#FFA245" />
+
+    <!-- Center Living Covenant Heart formed by the two flames -->
+    <g class="int-heart-core">
+      <path d="M120 76C120 76 102 61 102 49C102 41 108 36 114 36C117.5 36 119.5 38 120 39.5C120.5 38 122.5 36 126 36C132 36 138 41 138 49C138 61 120 76 120 76Z" 
+            fill="url(#int-heart-gem)" filter="url(#int-drop)" />
+      <!-- Specular Facet Highlights -->
+      <path d="M106 46C106 42 109 39 113 39" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.9" />
+      <circle cx="108" cy="48" r="1.3" fill="#FFFFFF" />
+      <!-- Inscribed Faith Cross in Heart -->
+      <path d="M120 48V58M116 52H124" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" />
+    </g>
+  </g>
+
+  <!-- Intertwined Solid Covenant Wedding Rings at the Base -->
+  <g class="int-rings-float">
+    <!-- Base Platform Soft Halo -->
+    <ellipse cx="120" cy="115" rx="50" ry="12" fill="#FFFFFF" fill-opacity="0.15" />
+
+    <!-- Rose Gold Ring (Left) -->
+    <ellipse cx="108" cy="110" rx="18" ry="12" fill="none" stroke="url(#int-ring-r)" stroke-width="4.5" filter="url(#int-drop)" />
+    <ellipse cx="108" cy="110" rx="17" ry="11" fill="none" stroke="#FFFFFF" stroke-width="1.2" stroke-opacity="0.8" />
+
+    <!-- Yellow Gold Ring (Right, Intertwined) -->
+    <ellipse cx="132" cy="110" rx="18" ry="12" fill="none" stroke="url(#int-ring-y)" stroke-width="4.5" filter="url(#int-drop)" />
+    <ellipse cx="132" cy="110" rx="17" ry="11" fill="none" stroke="#FFFFFF" stroke-width="1.2" stroke-opacity="0.8" />
+
+    <!-- Brilliant Solitaire Diamond atop Ring Intersection -->
+    <polygon points="120,95 125,101 120,107 115,101" fill="#FFFFFF" filter="url(#int-drop)" />
+    <polygon points="120,95 123,101 120,105 117,101" fill="#FFD6DF" />
+
+    <!-- Diamond Flash Sparkle Star -->
+    <g class="int-diamond-sparkle">
+      <polygon points="120,86 122,91 127,92 122,93 120,98 118,93 113,92 118,91" fill="#FFFFFF" />
+      <circle cx="120" cy="92" r="1.5" fill="#FFD700" />
+    </g>
+  </g>
+
+  <!-- Twinkling Celestial Sanctuary Stars -->
+  <g class="int-star-1">
+    <path d="M35 18V28M30 23H40" stroke="#FF5A7E" stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="35" cy="23" r="1.2" fill="#FFD700" />
+  </g>
+  <g class="int-star-2">
+    <path d="M205 18V28M200 23H210" stroke="#FFA245" stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="205" cy="23" r="1.2" fill="#FFFFFF" />
+  </g>
+</svg>

@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 140" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Sky Background Gradient -->
+    <linearGradient id="fun-sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF0F8" />
+      <stop offset="50%" stop-color="#FFF8E7" />
+      <stop offset="85%" stop-color="#FFF5F7" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+
+    <!-- Joyous Sunburst Halo -->
+    <radialGradient id="fun-sun-glow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#FFA245" stop-opacity="0.35" />
+      <stop offset="45%" stop-color="#FF5A7E" stop-opacity="0.2" />
+      <stop offset="80%" stop-color="#FFFFFF" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Balloon Rose Gradient -->
+    <radialGradient id="fun-balloon-rose" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="30%" stop-color="#FF85A0" />
+      <stop offset="70%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </radialGradient>
+
+    <!-- Balloon Gold Gradient -->
+    <radialGradient id="fun-balloon-gold" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="30%" stop-color="#FFE082" />
+      <stop offset="70%" stop-color="#FFA245" />
+      <stop offset="100%" stop-color="#FF5A7E" />
+    </radialGradient>
+
+    <!-- Starburst Gradient -->
+    <radialGradient id="fun-starburst" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#FFD700" />
+      <stop offset="75%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </radialGradient>
+
+    <filter id="fun-drop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#FF5A7E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <style>
+    .fun-glow-pulse {
+      transform-origin: 120px 50px;
+      animation: fun-sun-breathe 4s ease-in-out infinite alternate;
+    }
+    .fun-balloon-left {
+      transform-origin: 95px 75px;
+      animation: fun-balloon-bob-1 3s ease-in-out infinite;
+    }
+    .fun-balloon-right {
+      transform-origin: 145px 75px;
+      animation: fun-balloon-bob-2 3.4s ease-in-out infinite 0.6s;
+    }
+    .fun-star-burst-anim {
+      transform-origin: 120px 30px;
+      animation: fun-burst 2.2s ease-in-out infinite;
+    }
+    .fun-ribbon-sway {
+      animation: fun-ribbon-wave 4s ease-in-out infinite alternate;
+    }
+    .fun-confetti-1 {
+      animation: fun-pop 2.5s ease-in-out infinite;
+    }
+    .fun-confetti-2 {
+      animation: fun-pop 2.5s ease-in-out infinite 0.8s;
+    }
+    .fun-confetti-3 {
+      animation: fun-pop 2.5s ease-in-out infinite 1.6s;
+    }
+    .fun-note-dance {
+      animation: fun-note-float 3s ease-in-out infinite;
+    }
+
+    @keyframes fun-sun-breathe {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      100% { transform: scale(1.1); opacity: 1; }
+    }
+    @keyframes fun-balloon-bob-1 {
+      0%, 100% { transform: translateY(0px) rotate(-6deg); }
+      50% { transform: translateY(-7px) rotate(-2deg); }
+    }
+    @keyframes fun-balloon-bob-2 {
+      0%, 100% { transform: translateY(0px) rotate(6deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+    @keyframes fun-burst {
+      0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 2px rgba(255,215,0,0.5)); }
+      50% { transform: scale(1.22) rotate(20deg); filter: drop-shadow(0 0 10px rgba(255,90,126,0.9)); }
+    }
+    @keyframes fun-ribbon-wave {
+      0% { transform: scale(0.98) rotate(-2deg); }
+      100% { transform: scale(1.02) rotate(2deg); }
+    }
+    @keyframes fun-pop {
+      0%, 100% { opacity: 0.3; transform: scale(0.6); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+    @keyframes fun-note-float {
+      0% { opacity: 0; transform: translateY(0px) rotate(0deg); }
+      40% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-20px) rotate(25deg); }
+    }
+  </style>
+
+  <!-- Sky Canvas -->
+  <rect width="240" height="140" fill="url(#fun-sky)" />
+
+  <!-- Joyous Sunburst Halo -->
+  <circle class="fun-glow-pulse" cx="120" cy="50" r="75" fill="url(#fun-sun-glow)" />
+
+  <!-- Swirling Festive Ribbon Streams in Background -->
+  <g class="fun-ribbon-sway" opacity="0.6">
+    <path d="M-10 40C40 20 80 80 120 40C160 10 200 60 250 30" stroke="#FFC2CE" stroke-width="3" stroke-linecap="round" fill="none" />
+    <path d="M-10 70C30 90 90 30 140 70C180 100 220 50 250 80" stroke="#FFE082" stroke-width="2.5" stroke-linecap="round" fill="none" />
+    <path d="M-10 110C50 90 100 130 160 100C200 80 230 110 250 100" stroke="#B2E7C6" stroke-width="2.5" stroke-linecap="round" fill="none" />
+  </g>
+
+  <!-- Bouncing Cartoon Heart Balloon Left (Primary Rose) -->
+  <g class="fun-balloon-left">
+    <!-- Balloon Body with Specular Highlight -->
+    <path d="M96 68C96 68 76 54 76 39C76 29 83 23 91 23C95 23 98 25 100 27C102 25 105 23 109 23C117 23 124 29 124 39C124 54 96 68 96 68Z" 
+          fill="url(#fun-balloon-rose)" filter="url(#fun-drop)" />
+    <!-- Specular Highlight Curved Sheen -->
+    <path d="M82 36C82 30 86 26 91 26" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-opacity="0.85" />
+    <circle cx="84" cy="38" r="1.3" fill="#FFFFFF" />
+
+    <!-- Cute Smiling Eyes on Rose Balloon -->
+    <ellipse cx="94" cy="40" rx="1.6" ry="2.2" fill="#1A1A1E" />
+    <circle cx="93.5" cy="39.5" r="0.7" fill="#FFFFFF" />
+    <ellipse cx="104" cy="40" rx="1.6" ry="2.2" fill="#1A1A1E" />
+    <circle cx="103.5" cy="39.5" r="0.7" fill="#FFFFFF" />
+    <!-- Cheerful Blushes -->
+    <circle cx="91" cy="43" r="1.8" fill="#FFFFFF" fill-opacity="0.5" />
+    <circle cx="107" cy="43" r="1.8" fill="#FFFFFF" fill-opacity="0.5" />
+    <!-- Big Joyful Smile -->
+    <path d="M96 44C97.5 47 101.5 47 103 44" stroke="#1A1A1E" stroke-width="1.3" stroke-linecap="round" fill="none" />
+
+    <!-- Knot and Tether Ribbon String -->
+    <polygon points="94,68 98,68 96,71" fill="#E84367" />
+    <path d="M96 71C94 82 99 94 95 108C92 120 96 132 94 140" stroke="#FF5A7E" stroke-width="1.8" stroke-linecap="round" fill="none" />
+  </g>
+
+  <!-- Bouncing Cartoon Heart Balloon Right (Golden Blush) -->
+  <g class="fun-balloon-right">
+    <path d="M144 68C144 68 124 54 124 39C124 29 131 23 139 23C143 23 146 25 148 27C150 25 153 23 157 23C165 23 172 29 172 39C172 54 144 68 144 68Z" 
+          fill="url(#fun-balloon-gold)" filter="url(#fun-drop)" />
+    <!-- Specular Highlight Curved Sheen -->
+    <path d="M130 36C130 30 134 26 139 26" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-opacity="0.85" />
+    <circle cx="132" cy="38" r="1.3" fill="#FFFFFF" />
+
+    <!-- Cute Smiling Eyes on Gold Balloon (Winking!) -->
+    <path d="M140 40C141 38 143 38 144 40" stroke="#1A1A1E" stroke-width="1.4" stroke-linecap="round" fill="none" />
+    <ellipse cx="152" cy="40" rx="1.6" ry="2.2" fill="#1A1A1E" />
+    <circle cx="151.5" cy="39.5" r="0.7" fill="#FFFFFF" />
+    <!-- Cheerful Blushes -->
+    <circle cx="138" cy="43" r="1.8" fill="#FF5A7E" fill-opacity="0.5" />
+    <circle cx="155" cy="43" r="1.8" fill="#FF5A7E" fill-opacity="0.5" />
+    <!-- Sweet Smile -->
+    <path d="M144 44C145.5 47 149.5 47 151 44" stroke="#1A1A1E" stroke-width="1.3" stroke-linecap="round" fill="none" />
+
+    <!-- Knot and Tether Ribbon String -->
+    <polygon points="142,68 146,68 144,71" fill="#FFA245" />
+    <path d="M144 71C146 82 141 94 145 108C148 120 144 132 146 140" stroke="#FFA245" stroke-width="1.8" stroke-linecap="round" fill="none" />
+  </g>
+
+  <!-- Celebratory Exploding Starburst Above Them -->
+  <g class="fun-star-burst-anim">
+    <!-- 8-Point Diamond Star of Laughter -->
+    <path d="M120 16L123 25L132 22L126 29L133 35L123 34L120 44L117 34L107 35L114 29L108 22L117 25Z" 
+          fill="url(#fun-starburst)" filter="url(#fun-drop)" />
+    <circle cx="120" cy="29" r="2.8" fill="#FFFFFF" />
+  </g>
+
+  <!-- Dancing Musical & Laughter Notes -->
+  <g class="fun-note-dance" style="transform-origin: 55px 70px;">
+    <!-- Eighth Note Left -->
+    <path d="M52 68C50 68 48 70 48 72C48 74 50 75 52 75C54 75 56 73 56 71V62L62 60V64" stroke="#FF5A7E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <circle cx="51" cy="72" r="2.5" fill="#FF5A7E" />
+  </g>
+  <g class="fun-note-dance" style="transform-origin: 185px 65px; animation-delay: 1.2s;">
+    <!-- Double Note Right -->
+    <path d="M182 66V56L192 54V64M182 60L192 58" stroke="#FFA245" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <circle cx="180" cy="66" r="2.2" fill="#FFA245" />
+    <circle cx="190" cy="64" r="2.2" fill="#FFA245" />
+  </g>
+
+  <!-- Exploding Confetti Particles -->
+  <g class="fun-confetti-1">
+    <circle cx="45" cy="40" r="3" fill="#FFD700" />
+    <path d="M42 90L46 94L42 98L38 94Z" fill="#FF5A7E" />
+    <circle cx="195" cy="95" r="3.5" fill="#B2E7C6" />
+  </g>
+  <g class="fun-confetti-2">
+    <circle cx="65" cy="110" r="2.5" fill="#FFA245" />
+    <circle cx="175" cy="40" r="3" fill="#FF5A7E" />
+    <path d="M198 45L201 49L197 52L194 48Z" fill="#FFD700" />
+  </g>
+  <g class="fun-confetti-3">
+    <!-- Joyful Floating Hearts -->
+    <path d="M60 25C59 23 56 23 55 24.5C53 27 60 31 60 31C60 31 67 27 65 24.5C64 23 61 23 60 25Z" fill="#FF5A7E" />
+    <path d="M180 28C179 26 176 26 175 27.5C173 30 180 34 180 34C180 34 187 30 185 27.5C184 26 181 26 180 28Z" fill="#FFA245" />
+  </g>
+</svg>

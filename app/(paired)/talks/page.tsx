@@ -35,6 +35,17 @@ const DECK_ICONS: Record<string, string> = {
   "Married Intimacy": "/icons/decks/intimacy.svg",
 };
 
+const DECK_CARTOON_ILLUSTRATIONS: Record<string, string> = {
+  Foundation: "/illustrations/talks/foundation-card.svg",
+  Money: "/illustrations/talks/money-card.svg",
+  Family: "/illustrations/talks/family-card.svg",
+  Conflict: "/illustrations/talks/conflict-card.svg",
+  "Fun & Gist": "/illustrations/talks/fun-card.svg",
+  "Kingdom Purpose": "/illustrations/talks/purpose-card.svg",
+  "Romance & Affection": "/illustrations/talks/romance-card.svg",
+  "Married Intimacy": "/illustrations/talks/intimacy-card.svg",
+};
+
 export default function TalksPage() {
   const router = useRouter();
   const [decks, setDecks] = React.useState<Deck[]>([]);
@@ -139,25 +150,36 @@ export default function TalksPage() {
         </p>
       </header>
 
-      {/* Featured Card: Today's Talk */}
+      {/* Featured Card: Today's Talk with Animated Cartoon Backdrop */}
       {dailyPrompt && !loading && !error && (
-        <section className="rounded-[24px] border-2 border-primary bg-[#FFC2CE]/30 p-5 shadow-[0_8px_32px_rgba(255,90,126,0.08)] space-y-3">
-          <div className="flex items-center justify-between">
+        <section className="relative rounded-[24px] border-2 border-primary/30 bg-gradient-to-br from-[#FFF0F3] via-white to-[#FFF5F7] p-5 shadow-[0_8px_32px_rgba(255,90,126,0.12)] overflow-hidden space-y-3">
+          {/* Ambient Living Cartoon Illustration Floating on Right Side */}
+          <div className="absolute -right-3 -bottom-3 w-40 h-36 opacity-35 sm:opacity-50 pointer-events-none select-none z-0">
+            <Image
+              src="/illustrations/talks/daily-talk.svg"
+              alt="Today's Talk"
+              width={200}
+              height={160}
+              className="w-full h-full object-contain"
+            />
+          </div>
+
+          <div className="relative z-10 flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-primary">
               {dailyPrompt.prompt.deck?.title || "Daily Question"}
             </span>
             <span className="text-[11px] text-inkSoft font-medium">Daily</span>
           </div>
 
-          <h2 className="font-heading text-2xl text-ink font-normal leading-snug">
+          <h2 className="relative z-10 font-heading text-2xl text-ink font-normal leading-snug">
             Today&apos;s Talk
           </h2>
 
-          <p className="text-sm text-ink leading-relaxed font-body">
+          <p className="relative z-10 text-sm text-ink leading-relaxed font-body max-w-[85%]">
             {dailyPrompt.prompt.prompt_text}
           </p>
 
-          <div className="pt-1">
+          <div className="relative z-10 pt-1">
             <Link
               href={`/talks/${dailyPrompt.prompt.deck_id}?promptId=${dailyPrompt.prompt_id}`}
               className="inline-flex items-center justify-center h-10 px-5 rounded-full bg-primary hover:bg-deep text-white text-xs font-medium transition-all shadow-xs active:scale-[0.98] space-x-1.5"
@@ -196,9 +218,7 @@ export default function TalksPage() {
           className="grid grid-cols-2 gap-4"
         >
         {decks.map((deck, idx) => {
-          const isEven = idx % 2 === 0;
-          const bgClass = isEven ? "bg-white" : "bg-[#FFC2CE]/20";
-          const iconSrc = DECK_ICONS[deck.title] || "/icons/decks/foundation.svg";
+          const cartoonSrc = DECK_CARTOON_ILLUSTRATIONS[deck.title] || "/illustrations/talks/foundation-card.svg";
 
           // Intimacy gating logic
           const isIntimacyDeck = !!deck.is_intimacy;
@@ -225,40 +245,53 @@ export default function TalksPage() {
               whileTap={{ scale: 0.98 }}
               onClick={handleCardClick}
               className={cn(
-                "relative rounded-[24px] border border-border p-4 shadow-[0_8px_32px_rgba(255,90,126,0.08)] flex flex-col justify-between min-h-[170px] transition-all overflow-hidden select-none cursor-pointer",
-                bgClass,
-                "hover:border-primary/50"
+                "group relative rounded-[24px] border border-border/90 bg-white shadow-[0_8px_32px_rgba(255,90,126,0.08)] flex flex-col justify-between min-h-[200px] transition-all duration-300 overflow-hidden select-none cursor-pointer",
+                "hover:shadow-[0_12px_36px_rgba(255,90,126,0.16)] hover:border-primary/50"
               )}
             >
-              {/* Top: 32px circle icon with white bg */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-8 h-8 rounded-full bg-white border border-border/80 flex items-center justify-center p-1 shadow-xs">
-                  <Image
-                    src={iconSrc}
-                    alt={deck.title}
-                    width={20}
-                    height={20}
-                    className="w-5 h-5 object-contain"
-                  />
+              {/* Top: Animated Cartoon Visual Stage */}
+              <div className="relative w-full h-[115px] overflow-hidden bg-gradient-to-b from-[#FFF5F7] to-white flex items-center justify-center">
+                <Image
+                  src={cartoonSrc}
+                  alt={deck.title}
+                  width={240}
+                  height={140}
+                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  priority={idx < 4}
+                />
+                {/* Bottom subtle gradient fade onto white card surface */}
+                <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+
+                {/* Top Badge: Category Pill */}
+                <div className="absolute top-2.5 left-2.5 z-10 flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-xs border border-border/80 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  <span className="text-[10px] font-semibold text-inkSoft uppercase tracking-wider">{deck.category || "Deck"}</span>
                 </div>
+
+                {/* Top Right: Sparkles for Intimacy */}
                 {isIntimacyDeck && (
-                  <Sparkles size={14} strokeWidth={1.5} className="text-primary" />
+                  <div className="absolute top-2.5 right-2.5 z-10 w-6 h-6 rounded-full bg-white/90 backdrop-blur-xs border border-border/80 flex items-center justify-center text-primary shadow-xs">
+                    <Sparkles size={12} strokeWidth={1.5} />
+                  </div>
                 )}
               </div>
 
-              {/* Bottom: Title 16px serif + Count "15 prompts" 12px #6B5B5F */}
-              <div className="space-y-1">
-                <h2 className="font-heading text-[16px] text-ink leading-snug line-clamp-2">
+              {/* Bottom: Typography & Prompts Count */}
+              <div className="p-3.5 pt-1.5 flex flex-col justify-between flex-1 space-y-1">
+                <h2 className="font-heading text-[16px] text-ink font-normal leading-snug line-clamp-1 group-hover:text-primary transition-colors">
                   {deck.title}
                 </h2>
-                <p className="text-[12px] text-inkSoft">15 prompts</p>
+                <div className="flex items-center justify-between text-[11px] text-inkSoft">
+                  <span>15 prompts</span>
+                  <span className="text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">Explore &rarr;</span>
+                </div>
               </div>
 
               {/* Lock Overlay for Gated Intimacy */}
               {(isLockedForNonMarried || isUnconfirmedMarried) && (
-                <div className="absolute inset-0 z-10 bg-white/85 backdrop-blur-[2px] flex flex-col items-center justify-center p-3 text-center">
-                  <div className="w-8 h-8 rounded-full bg-blush/40 flex items-center justify-center text-ink mb-1.5 shadow-xs">
-                    <Lock size={15} strokeWidth={1.5} />
+                <div className="absolute inset-0 z-20 bg-white/90 backdrop-blur-[2px] flex flex-col items-center justify-center p-3 text-center">
+                  <div className="w-9 h-9 rounded-full bg-blush/40 flex items-center justify-center text-ink mb-1.5 shadow-xs">
+                    <Lock size={16} strokeWidth={1.5} />
                   </div>
                   <p className="text-[11px] font-medium text-ink leading-tight max-w-[110px]">
                     {isLockedForNonMarried ? "Unlocks when married" : "Confirm to unlock"}

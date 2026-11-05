@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Background Halo Glow -->
+    <radialGradient id="dt-glow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#FF5A7E" stop-opacity="0.3" />
+      <stop offset="60%" stop-color="#FFC2CE" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#FFFBFC" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Couple Gradients -->
+    <linearGradient id="dt-woman" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF85A0" />
+      <stop offset="50%" stop-color="#FF5A7E" />
+      <stop offset="100%" stop-color="#E84367" />
+    </linearGradient>
+    <linearGradient id="dt-man" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#352F33" />
+      <stop offset="60%" stop-color="#1A1A1E" />
+      <stop offset="100%" stop-color="#121214" />
+    </linearGradient>
+    <linearGradient id="dt-skin" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FEE8E8" />
+      <stop offset="100%" stop-color="#F6B8C2" />
+    </linearGradient>
+
+    <!-- Table Surface Gradient -->
+    <linearGradient id="dt-table" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#EEDDE0" />
+    </linearGradient>
+
+    <filter id="dt-drop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#FF5A7E" flood-opacity="0.2" />
+    </filter>
+  </defs>
+
+  <style>
+    .dt-couple-sway {
+      transform-origin: 100px 110px;
+      animation: dt-lean 4s ease-in-out infinite alternate;
+    }
+    .dt-steam-1 {
+      animation: dt-steam-rise 2.8s ease-in-out infinite;
+    }
+    .dt-steam-2 {
+      animation: dt-steam-rise 2.8s ease-in-out infinite 1.2s;
+    }
+    .dt-bubble-float {
+      transform-origin: 100px 48px;
+      animation: dt-bubble-bounce 3.5s ease-in-out infinite;
+    }
+    .dt-typing-dot-1 {
+      animation: dt-dot 1.4s ease-in-out infinite 0s;
+    }
+    .dt-typing-dot-2 {
+      animation: dt-dot 1.4s ease-in-out infinite 0.22s;
+    }
+    .dt-typing-dot-3 {
+      animation: dt-dot 1.4s ease-in-out infinite 0.44s;
+    }
+    .dt-heart-center {
+      transform-origin: 100px 88px;
+      animation: dt-heartbeat 1.8s ease-in-out infinite;
+    }
+
+    @keyframes dt-lean {
+      0% { transform: scale(1) translateY(0px); }
+      100% { transform: scale(1.02) translateY(-2px); }
+    }
+    @keyframes dt-steam-rise {
+      0% { opacity: 0; transform: translateY(0px) scale(0.6); }
+      40% { opacity: 0.9; }
+      100% { opacity: 0; transform: translateY(-14px) scale(1.2); }
+    }
+    @keyframes dt-bubble-bounce {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+    @keyframes dt-dot {
+      0%, 100% { transform: translateY(0px); opacity: 0.4; }
+      40% { transform: translateY(-3px); opacity: 1; }
+      60% { transform: translateY(0px); opacity: 0.6; }
+    }
+    @keyframes dt-heartbeat {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(255,90,126,0.3)); }
+      20% { transform: scale(1.22); filter: drop-shadow(0 0 6px rgba(255,90,126,0.8)); }
+      40% { transform: scale(1.05); }
+      60% { transform: scale(1.15); filter: drop-shadow(0 0 4px rgba(255,90,126,0.6)); }
+      80% { transform: scale(1); }
+    }
+  </style>
+
+  <!-- Ambient Morning Sun Halo -->
+  <circle cx="100" cy="80" r="75" fill="url(#dt-glow)" />
+
+  <!-- Animated Couple Leaning Across Morning Table -->
+  <g class="dt-couple-sway">
+    <!-- Partner Left (Woman with Warm Mug) -->
+    <!-- Head & Hair -->
+    <circle cx="58" cy="62" r="5" fill="#1A1A1E" />
+    <circle cx="63" cy="70" r="10" fill="url(#dt-skin)" />
+    <path d="M54 70C53 62 58 59 66 59C72 59 74 63 73 69C70 66 66 65 61 66Z" fill="#1A1A1E" />
+    <circle cx="58" cy="65" r="2.8" fill="#FF5A7E" />
+    <circle cx="65" cy="72" r="2" fill="#FF5A7E" fill-opacity="0.6" />
+
+    <!-- Modest Rose Cardigan / Blouse -->
+    <path d="M48 136V114C48 94 56 84 66 82L69 92C61 98 58 110 58 136H48Z" fill="url(#dt-woman)" filter="url(#dt-drop)" />
+    <!-- Arm Holding Pastel Mug -->
+    <path d="M68 90L78 116" stroke="url(#dt-skin)" stroke-width="5" stroke-linecap="round" />
+
+    <!-- Partner Right (Man with Warm Mug) -->
+    <!-- Head & Hair -->
+    <circle cx="137" cy="68" r="10" fill="url(#dt-skin)" />
+    <path d="M127 68C127 60 131 56 138 56C145 56 148 60 148 68C145 64 141 63 137 63C132 63 129 65 127 68Z" fill="url(#dt-man)" />
+    <circle cx="135" cy="70" r="2" fill="#FF5A7E" fill-opacity="0.6" />
+
+    <!-- Dark Knit Sweater -->
+    <path d="M152 136V114C152 92 144 82 134 80L131 90C139 96 142 110 142 136H152Z" fill="url(#dt-man)" filter="url(#dt-drop)" />
+    <path d="M132 88L122 116" stroke="url(#dt-skin)" stroke-width="5" stroke-linecap="round" />
+  </g>
+
+  <!-- Solid Wooden Cafe / Communion Table -->
+  <rect x="25" y="118" width="150" height="12" rx="4" fill="url(#dt-table)" stroke="#F5E6E8" stroke-width="1.2" filter="url(#dt-drop)" />
+
+  <!-- Conversation Cards Deck on Table -->
+  <rect x="92" y="112" width="16" height="10" rx="2" fill="#FFFFFF" stroke="#FFC2CE" stroke-width="1" />
+  <rect x="95" y="110" width="16" height="10" rx="2" fill="#FF5A7E" />
+  <circle cx="103" cy="115" r="2" fill="#FFFFFF" />
+
+  <!-- Partner Left Mug with Animated Rising Heart Steam -->
+  <rect x="76" y="112" width="9" height="10" rx="2.5" fill="#FFE082" stroke="#FFA245" stroke-width="0.8" />
+  <path d="M85 114C87 114 88 116 86 118" stroke="#FFA245" stroke-width="1.2" stroke-linecap="round" fill="none" />
+  <g class="dt-steam-1">
+    <path d="M80 108C78 104 81 101 79 97" stroke="#FF85A0" stroke-width="1.4" stroke-linecap="round" fill="none" />
+  </g>
+
+  <!-- Partner Right Mug with Animated Rising Heart Steam -->
+  <rect x="115" y="112" width="9" height="10" rx="2.5" fill="#FFC2CE" stroke="#FF5A7E" stroke-width="0.8" />
+  <path d="M115 114C113 114 112 116 114 118" stroke="#FF5A7E" stroke-width="1.2" stroke-linecap="round" fill="none" />
+  <g class="dt-steam-2">
+    <path d="M120 108C122 104 119 101 121 97" stroke="#FF5A7E" stroke-width="1.4" stroke-linecap="round" fill="none" />
+  </g>
+
+  <!-- Little Beating Heart on the Table between Them -->
+  <g class="dt-heart-center">
+    <path d="M100 88C98.5 85 94.5 85 93 87.5C91 91 100 96 100 96C100 96 109 91 107 87.5C105.5 85 101.5 85 100 88Z" fill="#FF5A7E" />
+  </g>
+
+  <!-- Animated Speech Bubble Overhead with Typing Dots -->
+  <g class="dt-bubble-float" filter="url(#dt-drop)">
+    <!-- Speech Bubble Shape with Pointer -->
+    <path d="M80 44H120C126 44 130 48 130 54C130 60 126 64 120 64H104L98 70V64H80C74 64 70 60 70 54C70 48 74 44 80 44Z" 
+          fill="#FFFFFF" stroke="#F5E6E8" stroke-width="1.2" />
+    <!-- Three Animated Typing Rhythm Dots -->
+    <circle class="dt-typing-dot-1" cx="88" cy="54" r="2.2" fill="#FF5A7E" />
+    <circle class="dt-typing-dot-2" cx="100" cy="54" r="2.2" fill="#FF85A0" />
+    <circle class="dt-typing-dot-3" cx="112" cy="54" r="2.2" fill="#FFA245" />
+  </g>
+</svg>
